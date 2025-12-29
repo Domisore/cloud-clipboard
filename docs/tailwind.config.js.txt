@@ -1,0 +1,38 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        // The Hacker Palette
+        terminal: {
+          black: '#0D0D0D',   // Deep Ink
+          gray: '#1A1A1A',    // Surface
+          green: '#00FF41',   // Matrix Neon
+          white: '#F0F0F0',   // Paper White
+          danger: '#FF3E3E',  // Self-Destruct Red
+        }
+      },
+      fontFamily: {
+        // Enforce the "IDE" look
+        mono: ['"JetBrains Mono"', '"Fira Code"', 'monospace'],
+      },
+      boxShadow: {
+        // Hard-Pop shadows (Neo-Brutalist)
+        'hacker': '5px 5px 0px 0px rgba(0, 0, 0, 1)',
+        'hacker-green': '5px 5px 0px 0px #00FF41',
+        'hacker-white': '5px 5px 0px 0px #F0F0F0',
+      },
+      borderWidth: {
+        '3': '3px',
+      },
+      borderRadius: {
+        'none': '0px', // Strict enforcement: No rounded corners
+      }
+    },
+  },
+  plugins: [],
+}

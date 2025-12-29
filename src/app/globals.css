@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0D0D0D;
+  --color-surface: #1A1A1A;
+  --color-accent: #00FF41;
+  --color-danger: #FF3E3E;
+  --color-foreground: #F0F0F0;
+  --color-border-color: #333333;
+
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+/* Neo-Brutalist Reset */
+* {
+  border-radius: 0 !important;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-mono);
+}
+
+/* Hard Shadows Utility */
+@utility shadow-hacker {
+  box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 1);
+}
+
+@utility shadow-hacker-green {
+  box-shadow: 5px 5px 0px 0px #00FF41;
+}
+
+@utility shadow-hacker-white {
+  box-shadow: 5px 5px 0px 0px #F0F0F0;
+}
+
+/* Animations */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 20s linear infinite;
+}
