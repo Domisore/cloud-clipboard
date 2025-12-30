@@ -18,20 +18,38 @@ export default function FilePage() {
     const [timeLeft, setTimeLeft] = useState(0);
 
     useEffect(() => {
-        // Try to find the file in localStorage
-        const stored = localStorage.getItem('recent_uploads');
-        if (stored) {
-            const uploads: UploadResult[] = JSON.parse(stored);
-            const file = uploads.find(u => u.id === id);
-
-            if (file) {
-                setFileData(file);
-                // Calculate time left in minutes
-                const minutesLeft = Math.max(0, Math.round((file.expiresAt - Date.now()) / 1000 / 60));
-                setTimeLeft(minutesLeft);
+        const fetchFile = async () => {
+            try {
+                // 1. Try fetching from API (Real Backend)
+                const res = await fetch(`/api/file/${id}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setFileData(data);
+                    // Initial time calc
+                    const minutesLeft = Math.max(0, Math.round((data.expiresAt - Date.now()) / 1000 / 60));
+                    setTimeLeft(minutesLeft);
+                    return;
+                }
+            } catch (e) {
+                console.error("Failed to fetch file from API", e);
             }
-        }
-        setLoading(false);
+
+            // 2. Fallback: Try localStorage (Mock Mode / Legacy)
+            const stored = localStorage.getItem('recent_uploads');
+            if (stored) {
+                const uploads: UploadResult[] = JSON.parse(stored);
+                const file = uploads.find(u => u.id === id);
+
+                if (file) {
+                    setFileData(file);
+                    // Initial time calc
+                    const minutesLeft = Math.max(0, Math.round((file.expiresAt - Date.now()) / 1000 / 60));
+                    setTimeLeft(minutesLeft);
+                }
+            }
+        };
+
+        fetchFile().finally(() => setLoading(false));
     }, [id]);
 
     useEffect(() => {
@@ -119,6 +137,28 @@ export default function FilePage() {
                         </div>
                     </div>
 
+                    {/* Large Preview Area */}
+                    <div className="mb-6 bg-background border border-border-color p-2 min-h-[100px] flex items-center justify-center">
+                        {fileData.mimeType?.startsWith('image/') ? (
+                            <img
+                                src={fileData.url}
+                                alt={fileData.filename}
+                                className="max-w-full max-h-[400px] object-contain"
+                            />
+                        ) : fileData.mimeType?.startsWith('video/') ? (
+                            <video
+                                src={fileData.url}
+                                controls
+                                className="max-w-full max-h-[400px]"
+                            />
+                        ) : (
+                            <div className="text-center p-8">
+                                <span className="text-4xl mb-2 block">📄</span>
+                                <p className="text-sm text-gray-500">No preview available</p>
+                            </div>
+                        )}
+                    </div>
+
                     <div className="flex flex-col gap-4">
                         {/* Only show Mock Mode banner if it's actually a mock upload (detected by URL or explicit flag) */}
                         {fileData.url.includes('drive.io') && (
@@ -131,20 +171,19 @@ export default function FilePage() {
                         )}
 
 
-
                         <button
                             onClick={() => {
                                 if (fileData.url.includes('drive.io')) {
                                     alert(`In production, this would download:\n${fileData.filename}\n\nFor now, this is just a mock preview.`);
                                 } else {
-                                    // Real download logic (if we had the download URL)
+                                    // Browser native behavior - open in new tab
                                     window.open(fileData.url, '_blank');
                                 }
                             }}
                             className="w-full h-12 bg-foreground text-background font-bold flex items-center justify-center gap-2 hover:bg-accent hover:text-black transition-colors shadow-hacker"
                         >
                             <Download className="w-4 h-4" />
-                            DOWNLOAD_NOW
+                            OPEN / DOWNLOAD
                         </button>
 
                         {/* Ad Placement */}
