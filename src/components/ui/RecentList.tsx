@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { UploadResult } from '@/services/mockUpload';
+import { migrateOldUploads } from '@/services/migrateUploads';
 import { Trash2, Copy, FileText, Image as ImageIcon, File, Clock } from 'lucide-react';
 
 export function RecentList() {
@@ -57,7 +58,8 @@ export function RecentList() {
         return `${Math.floor(seconds / 86400)}d ago`;
     };
 
-    const getFileIcon = (mimeType: string) => {
+    const getFileIcon = (mimeType: string | undefined) => {
+        if (!mimeType) return <File className="w-5 h-5" />;
         if (mimeType.startsWith('image/')) {
             return <ImageIcon className="w-5 h-5" />;
         }
@@ -67,7 +69,8 @@ export function RecentList() {
         return <File className="w-5 h-5" />;
     };
 
-    const getFileTypeLabel = (mimeType: string): string => {
+    const getFileTypeLabel = (mimeType: string | undefined): string => {
+        if (!mimeType) return 'FILE';
         if (mimeType.startsWith('image/')) return 'IMAGE';
         if (mimeType.startsWith('text/')) return 'TEXT';
         if (mimeType.startsWith('video/')) return 'VIDEO';

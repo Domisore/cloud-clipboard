@@ -3,7 +3,7 @@ export interface UploadResult {
     url: string;
     filename: string;
     size: number;
-    mimeType: string;
+    mimeType?: string; // Optional for backward compatibility
     uploadedAt: number;
     expiresAt: number;
     burnOnRead: boolean;
