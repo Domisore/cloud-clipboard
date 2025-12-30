@@ -50,3 +50,67 @@ body {
   display: inline-block;
   animation: marquee 20s linear infinite;
 }
+
+/* Carbon Ads Custom Styling */
+#carbonads {
+  font-family: var(--font-mono) !important;
+  display: block;
+  overflow: hidden;
+  padding: 1rem;
+  border: 2px solid var(--color-border-color);
+  background-color: var(--color-surface);
+  color: var(--color-foreground);
+  transition: all 0.2s ease;
+}
+
+#carbonads:hover {
+  border-color: var(--color-accent);
+  box-shadow: 5px 5px 0px 0px var(--color-accent);
+}
+
+#carbonads a {
+  color: var(--color-foreground);
+  text-decoration: none;
+}
+
+#carbonads a:hover {
+  color: var(--color-accent);
+}
+
+#carbonads span {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.carbon-img {
+  display: block;
+  margin: 0 auto 0.75rem;
+  border: 1px solid var(--color-border-color);
+}
+
+.carbon-text {
+  display: block;
+  padding: 0;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: left;
+  color: var(--color-foreground);
+}
+
+.carbon-poweredby {
+  display: block;
+  padding: 0.5rem 0 0;
+  border-top: 1px solid var(--color-border-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  font-size: 0.625rem;
+  text-align: center;
+  color: #666;
+}
+
+.carbon-poweredby:hover {
+  color: var(--color-accent);
+}

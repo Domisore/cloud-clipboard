@@ -2,6 +2,7 @@ import { Header } from "@/components/ui/Header";
 import { Footer } from "@/components/ui/Footer";
 import { DropZone } from "@/components/ui/DropZone";
 import { RecentList } from "@/components/ui/RecentList";
+import { CarbonAd } from "@/components/ui/CarbonAd";
 
 export default function Home() {
   return (
@@ -12,6 +13,10 @@ export default function Home() {
         {/* Main Drop Zone Area */}
         <div className="flex-1 flex flex-col items-center justify-start p-4 sm:p-8 gap-12">
           <DropZone />
+
+          {/* Carbon Ad - Strategically placed for visibility */}
+          <CarbonAd />
+
           <RecentList />
         </div>
       </main>

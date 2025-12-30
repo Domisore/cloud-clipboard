@@ -1,6 +1,6 @@
 import { UploadResult } from './mockUpload'; // Re-using interface for now
 
-export async function uploadFile(file: File): Promise<UploadResult> {
+export async function uploadFile(file: File, burnOnRead: boolean = false): Promise<UploadResult> {
     // 1. Get Presigned URL
     const initRes = await fetch('/api/upload', {
         method: 'POST',
@@ -26,6 +26,8 @@ export async function uploadFile(file: File): Promise<UploadResult> {
 
     if (!uploadRes.ok) throw new Error('Failed to upload file to storage');
 
+    const uploadedAt = Date.now();
+
     // 3. Complete Upload (Save Metadata)
     const completeRes = await fetch('/api/complete', {
         method: 'POST',
@@ -36,6 +38,8 @@ export async function uploadFile(file: File): Promise<UploadResult> {
             filename: file.name,
             size: file.size,
             contentType: file.type,
+            burnOnRead,
+            uploadedAt,
         }),
     });
 
@@ -46,6 +50,9 @@ export async function uploadFile(file: File): Promise<UploadResult> {
         url: `${window.location.origin}/${id}`, // Link to our view page
         filename: file.name,
         size: file.size,
-        expiresAt: Date.now() + 24 * 60 * 60 * 1000,
+        mimeType: file.type || 'application/octet-stream',
+        uploadedAt,
+        expiresAt: uploadedAt + 24 * 60 * 60 * 1000,
+        burnOnRead,
     };
 }
