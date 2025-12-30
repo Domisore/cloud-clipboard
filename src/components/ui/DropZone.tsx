@@ -10,6 +10,7 @@ export function DropZone() {
     const [isUploading, setIsUploading] = useState(false);
     const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
     const [burnOnRead, setBurnOnRead] = useState(false);
+    const [showTooltip, setShowTooltip] = useState(false);
 
     const handleUpload = useCallback(async (file: File) => {
         setIsUploading(true);
@@ -133,13 +134,31 @@ export function DropZone() {
                                     }`}
                             ></div>
                         </button>
-                        <span className="text-xs text-gray-500 hidden sm:inline">
-                            {burnOnRead ? (
-                                <span className="text-danger font-bold">BURN_ON_READ</span>
-                            ) : (
-                                'Burn-on-Read'
-                            )}
-                        </span>
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs text-gray-500 hidden sm:inline">
+                                {burnOnRead ? (
+                                    <span className="text-danger font-bold">BURN_ON_READ</span>
+                                ) : (
+                                    'Burn-on-Read'
+                                )}
+                            </span>
+                            <div
+                                className="relative hidden sm:inline-block"
+                                onMouseEnter={() => setShowTooltip(true)}
+                                onMouseLeave={() => setShowTooltip(false)}
+                            >
+                                <span className="text-xs text-gray-500 cursor-help">
+                                    ⓘ
+                                </span>
+                                {showTooltip && (
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-surface border border-accent p-3 text-xs text-gray-300 z-50 shadow-hacker-green">
+                                        <div className="mb-1 font-bold text-accent">Burn-on-Read</div>
+                                        <div>Files are automatically deleted after the first download for maximum privacy.</div>
+                                        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-4 border-transparent border-t-accent"></div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
                     {/* Buy Me Coffee */}
