@@ -20,3 +20,6 @@ export async function mockUpload(file: File): Promise<UploadResult> {
         }, 1500); // Simulate 1.5s upload
     });
 }
+
+// Export as uploadFile for easy switching between mock and real upload
+export const uploadFile = mockUpload;

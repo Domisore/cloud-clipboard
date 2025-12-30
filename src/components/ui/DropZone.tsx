@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { usePaste } from '@/hooks/usePaste';
 import { clsx } from 'clsx';
-import { uploadFile } from '@/services/upload';
+import { uploadFile } from '@/services/mockUpload';
 
 export function DropZone() {
     const [isDragging, setIsDragging] = useState(false);
