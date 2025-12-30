@@ -62,15 +62,21 @@ After setting up the environment variables:
 3. Files will be stored in your R2 bucket
 4. Metadata will be stored in Upstash Redis
 
-## Current Status: Mock Mode Enabled ✅
+## Current Status: Real Cloud Storage Enabled ☁️
 
-**The application is currently configured to use mock uploads**, which means you can test file uploads without setting up Cloudflare R2 or Upstash Redis.
+**The application is configured to use real cloud storage (Cloudflare R2 + Upstash Redis).**
 
 ### What this means:
-- File uploads will simulate a 1.5-second upload process
-- Files are NOT actually stored anywhere (they only exist in browser memory)
-- You'll see mock URLs like `https://drive.io/abc123`
-- Perfect for testing the UI and functionality locally
+- Files are securely uploaded to your R2 bucket
+- Metadata is stored in your Upstash Redis database
+- Links are persistent and shareable
+- "MOCK MODE" banners will no longer appear
+
+### Troubleshooting
+If you encounter errors:
+1. Ensure your `.env.local` file is populated (run `npx vercel env pull`)
+2. Check your R2 bucket CORS settings
+3. Verify your Upstash Redis credentials
 
 ### To enable real cloud storage:
 

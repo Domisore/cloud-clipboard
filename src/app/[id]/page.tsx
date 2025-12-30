@@ -6,6 +6,7 @@ import { Download } from "lucide-react";
 import { Header } from "@/components/ui/Header";
 import { Footer } from "@/components/ui/Footer";
 import { UploadResult } from "@/services/mockUpload";
+import { CarbonAd } from "@/components/ui/CarbonAd";
 
 export default function FilePage() {
     const params = useParams();
@@ -100,7 +101,7 @@ export default function FilePage() {
                     <div className="flex justify-between items-start mb-8">
                         <div className="flex-1 pr-4">
                             <h1 className="text-xl font-bold break-all">{fileData.filename}</h1>
-                            <p className="text-xs text-gray-500 mt-1">{fileSizeMB} MB // text/plain</p>
+                            <p className="text-xs text-gray-500 mt-1">{fileSizeMB} MB // {fileData.mimeType || 'unknown'}</p>
                         </div>
                         <div className="text-right flex-shrink-0">
                             <p className="text-xs text-danger font-bold animate-pulse whitespace-nowrap">
@@ -119,22 +120,37 @@ export default function FilePage() {
                     </div>
 
                     <div className="flex flex-col gap-4">
-                        <div className="bg-background border border-accent p-4 text-center">
-                            <p className="text-xs text-accent mb-2">⚠️ MOCK MODE</p>
-                            <p className="text-xs text-gray-400">
-                                This is a demo. In production, you would download the actual file here.
-                            </p>
-                        </div>
+                        {/* Only show Mock Mode banner if it's actually a mock upload (detected by URL or explicit flag) */}
+                        {fileData.url.includes('drive.io') && (
+                            <div className="bg-background border border-accent p-4 text-center">
+                                <p className="text-xs text-accent mb-2">⚠️ MOCK MODE</p>
+                                <p className="text-xs text-gray-400">
+                                    This is a demo. In production, you would download the actual file here.
+                                </p>
+                            </div>
+                        )}
+
+
 
                         <button
                             onClick={() => {
-                                alert(`In production, this would download:\n${fileData.filename}\n\nFor now, this is just a mock preview.`);
+                                if (fileData.url.includes('drive.io')) {
+                                    alert(`In production, this would download:\n${fileData.filename}\n\nFor now, this is just a mock preview.`);
+                                } else {
+                                    // Real download logic (if we had the download URL)
+                                    window.open(fileData.url, '_blank');
+                                }
                             }}
                             className="w-full h-12 bg-foreground text-background font-bold flex items-center justify-center gap-2 hover:bg-accent hover:text-black transition-colors shadow-hacker"
                         >
                             <Download className="w-4 h-4" />
                             DOWNLOAD_NOW
                         </button>
+
+                        {/* Ad Placement */}
+                        <div className="mt-4">
+                            <CarbonAd />
+                        </div>
 
                         <div className="text-center mt-4">
                             <a href="/" className="text-xs text-gray-500 hover:text-accent border-b border-transparent hover:border-accent transition-colors">
