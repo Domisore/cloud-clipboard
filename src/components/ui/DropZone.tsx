@@ -9,13 +9,14 @@ export function DropZone() {
     const [isDragging, setIsDragging] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
+    const [burnOnRead, setBurnOnRead] = useState(false);
 
     const handleUpload = useCallback(async (file: File) => {
         setIsUploading(true);
         setUploadSuccess(null);
 
         try {
-            const result = await uploadFile(file);
+            const result = await uploadFile(file, burnOnRead);
 
             // Save to local storage
             const existing = JSON.parse(localStorage.getItem('recent_uploads') || '[]');
@@ -34,7 +35,7 @@ export function DropZone() {
         } finally {
             setIsUploading(false);
         }
-    }, []);
+    }, [burnOnRead]);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -115,13 +116,30 @@ export function DropZone() {
             {/* Footer Actions */}
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <p className="text-sm text-gray-400 max-w-xs text-center sm:text-left">
-                    Upload files, paste text, or share clipboard images instantly.
+                    Paste here, get a link, access from any device. Your universal cloud clipboard.
                 </p>
 
                 <div className="flex items-center gap-4">
-                    {/* Toggle Placeholder */}
-                    <div className="w-12 h-6 bg-gray-600 rounded-full relative cursor-pointer">
-                        <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+                    {/* Burn-on-Read Toggle */}
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setBurnOnRead(!burnOnRead)}
+                            className={`w-12 h-6 rounded-full relative transition-colors ${burnOnRead ? 'bg-danger' : 'bg-gray-600'
+                                }`}
+                            title={burnOnRead ? 'Burn-on-Read: ON' : 'Burn-on-Read: OFF'}
+                        >
+                            <div
+                                className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${burnOnRead ? 'right-1' : 'left-1'
+                                    }`}
+                            ></div>
+                        </button>
+                        <span className="text-xs text-gray-500 hidden sm:inline">
+                            {burnOnRead ? (
+                                <span className="text-danger font-bold">BURN_ON_READ</span>
+                            ) : (
+                                'Burn-on-Read'
+                            )}
+                        </span>
                     </div>
 
                     {/* Buy Me Coffee */}
