@@ -6,8 +6,10 @@ import { Trash2, Copy, ExternalLink } from 'lucide-react';
 
 export function RecentList() {
     const [uploads, setUploads] = useState<UploadResult[]>([]);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
         const stored = localStorage.getItem('recent_uploads');
         if (stored) {
             setUploads(JSON.parse(stored));
@@ -36,7 +38,7 @@ export function RecentList() {
         localStorage.setItem('recent_uploads', JSON.stringify(newUploads));
     };
 
-    if (uploads.length === 0) return null;
+    if (!mounted || uploads.length === 0) return null;
 
     return (
         <div className="w-full max-w-4xl mx-auto">

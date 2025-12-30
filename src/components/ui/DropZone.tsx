@@ -8,11 +8,11 @@ import { uploadFile } from '@/services/mockUpload';
 export function DropZone() {
     const [isDragging, setIsDragging] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
-    const [lastAction, setLastAction] = useState<string | null>(null);
+    const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
 
-    const handleUpload = async (file: File) => {
+    const handleUpload = useCallback(async (file: File) => {
         setIsUploading(true);
-        setLastAction(`Uploading ${file.name}...`);
+        setUploadSuccess(null);
 
         try {
             const result = await uploadFile(file);
@@ -25,14 +25,16 @@ export function DropZone() {
             // Dispatch event for RecentList
             window.dispatchEvent(new Event('storage-update'));
 
-            setLastAction(`Uploaded: ${result.url}`);
+            setUploadSuccess(result.url);
+
+            // Clear success message after 3 seconds
+            setTimeout(() => setUploadSuccess(null), 3000);
         } catch (error) {
-            setLastAction('Upload failed.');
             console.error(error);
         } finally {
             setIsUploading(false);
         }
-    };
+    }, []);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -51,7 +53,7 @@ export function DropZone() {
         if (files.length > 0) {
             handleUpload(files[0]);
         }
-    }, []);
+    }, [handleUpload]);
 
     const handlePaste = useCallback((files: File[], text: string | null) => {
         if (files.length > 0) {
@@ -62,7 +64,7 @@ export function DropZone() {
             const file = new File([blob], `paste-${Date.now()}.txt`, { type: 'text/plain' });
             handleUpload(file);
         }
-    }, []);
+    }, [handleUpload]);
 
     usePaste(handlePaste);
 
@@ -139,6 +141,29 @@ export function DropZone() {
                 <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-10">
                     <div className="text-accent font-bold text-xl animate-pulse">
                         UPLOADING...
+                    </div>
+                </div>
+            )}
+
+            {/* Success Overlay */}
+            {uploadSuccess && !isUploading && (
+                <div className="absolute inset-0 bg-black/90 flex items-center justify-center z-10">
+                    <div className="text-center space-y-4 p-6">
+                        <div className="text-accent font-bold text-2xl">
+                            ✓ UPLOADED
+                        </div>
+                        <div className="text-white text-sm font-mono break-all max-w-md">
+                            {uploadSuccess}
+                        </div>
+                        <button
+                            onClick={() => {
+                                navigator.clipboard.writeText(uploadSuccess);
+                                setUploadSuccess(null);
+                            }}
+                            className="bg-white text-black px-4 py-2 text-sm font-bold hover:bg-accent transition-colors"
+                        >
+                            COPY_LINK
+                        </button>
                     </div>
                 </div>
             )}
