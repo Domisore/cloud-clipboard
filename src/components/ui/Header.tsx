@@ -5,7 +5,7 @@ export function Header() {
         <header className="w-full flex flex-col">
             {/* Top Bar */}
             <div className="w-full bg-surface text-gray-400 text-[10px] sm:text-xs py-1 text-center border-b border-border-color">
-                DRIVE.IO DOMAIN FOR SALE. SERIOUS INQUIRIES: contact@drive.io
+                DRIVE.IO DOMAIN FOR SALE. SERIOUS INQUIRIES: d0332486@gmail.com
             </div>
 
             {/* Header with Logo and Hero */}
