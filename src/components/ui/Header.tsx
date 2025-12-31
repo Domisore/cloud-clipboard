@@ -32,7 +32,7 @@ export function Header() {
                         `}
                     >
                         {isConnected ? <Check className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
-                        {isConnected ? 'DEVICES PAIRED' : 'SYNC DEVICES'}
+                        SYNC DEVICES
                     </button>
                 </div>
 
