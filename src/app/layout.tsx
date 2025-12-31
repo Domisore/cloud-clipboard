@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { SessionProvider } from "@/context/SessionContext";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -30,7 +31,9 @@ export default function RootLayout({
         className={`${jetbrainsMono.variable} antialiased bg-background text-foreground font-mono`}
         suppressHydrationWarning
       >
-        {children}
+        <SessionProvider>
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );

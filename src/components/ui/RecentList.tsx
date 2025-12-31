@@ -5,9 +5,11 @@ import { UploadResult } from '@/services/mockUpload';
 import { migrateOldUploads } from '@/services/migrateUploads';
 import { Trash2, Copy, FileText, Image as ImageIcon, File, Clock } from 'lucide-react';
 import { RecentItem } from './RecentItem';
+import { useSession } from '@/context/SessionContext';
 
 export function RecentList() {
-    const [uploads, setUploads] = useState<UploadResult[]>([]);
+    const { isConnected, files: sessionFiles } = useSession();
+    const [localUploads, setLocalUploads] = useState<UploadResult[]>([]);
     const [mounted, setMounted] = useState(false);
     const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -15,20 +17,23 @@ export function RecentList() {
         setMounted(true);
         const stored = localStorage.getItem('recent_uploads');
         if (stored) {
-            setUploads(JSON.parse(stored));
+            setLocalUploads(JSON.parse(stored));
         }
 
         // Listen for updates
         const handleStorage = () => {
             const stored = localStorage.getItem('recent_uploads');
             if (stored) {
-                setUploads(JSON.parse(stored));
+                setLocalUploads(JSON.parse(stored));
             }
         };
 
         window.addEventListener('storage-update', handleStorage);
         return () => window.removeEventListener('storage-update', handleStorage);
     }, []);
+
+    // Use session files if connected, otherwise local files
+    const uploads = isConnected ? sessionFiles : localUploads;
 
     const copyToClipboard = (url: string, id: string) => {
         navigator.clipboard.writeText(url);
@@ -37,8 +42,12 @@ export function RecentList() {
     };
 
     const deleteItem = (id: string) => {
-        const newUploads = uploads.filter(u => u.id !== id);
-        setUploads(newUploads);
+        if (isConnected) {
+            alert("Deleting files from shared session is restricted to the host device.");
+            return;
+        }
+        const newUploads = localUploads.filter(u => u.id !== id);
+        setLocalUploads(newUploads);
         localStorage.setItem('recent_uploads', JSON.stringify(newUploads));
     };
 

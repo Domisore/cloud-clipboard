@@ -1,6 +1,15 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from 'react';
+import { SyncHub } from '@/components/sync/SyncHub';
+import { useSession } from '@/context/SessionContext';
+import { Zap, Check } from 'lucide-react';
 
 export function Header() {
+    const [isSyncOpen, setIsSyncOpen] = useState(false);
+    const { isConnected } = useSession();
+
     return (
         <header className="w-full flex flex-col">
             {/* Top Bar */}
@@ -9,7 +18,24 @@ export function Header() {
             </div>
 
             {/* Header with Logo and Hero */}
-            <div className="w-full px-4 sm:px-8 py-8 sm:py-12">
+            <div className="w-full px-4 sm:px-8 py-8 sm:py-12 relative">
+                {/* Sync Button (Absolute Top Right) */}
+                <div className="absolute top-4 right-4 sm:top-8 sm:right-8">
+                    <button
+                        onClick={() => setIsSyncOpen(true)}
+                        className={`
+                            border font-bold text-xs sm:text-sm px-4 py-2 flex items-center gap-2 transition-all
+                            ${isConnected
+                                ? 'border-accent text-accent bg-accent/10 hover:bg-accent/20'
+                                : 'border-border-color text-gray-400 hover:text-white hover:border-white'
+                            }
+                        `}
+                    >
+                        {isConnected ? <Check className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
+                        {isConnected ? 'DEVICES PAIRED' : 'SYNC DEVICES'}
+                    </button>
+                </div>
+
                 <div className="max-w-7xl mx-auto">
                     {/* Logo */}
                     <Link href="/" className="inline-flex items-center gap-2 mb-8 sm:mb-12 group hover:opacity-80 transition-opacity">
@@ -34,6 +60,8 @@ export function Header() {
                     </div>
                 </div>
             </div>
+
+            {isSyncOpen && <SyncHub onClose={() => setIsSyncOpen(false)} />}
         </header>
     );
 }
