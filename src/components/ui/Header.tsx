@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { SyncHub } from '@/components/sync/SyncHub';
 import { useSession } from '@/context/SessionContext';
 import { Zap, Check } from 'lucide-react';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 export function Header() {
     const [isSyncOpen, setIsSyncOpen] = useState(false);
@@ -20,20 +21,22 @@ export function Header() {
             {/* Header with Logo and Hero */}
             <div className="w-full px-4 sm:px-8 py-4 sm:py-6 relative">
                 {/* Sync Button (Absolute Top Right) */}
-                <div className="absolute top-3 right-4 sm:top-4 sm:right-8">
-                    <button
-                        onClick={() => setIsSyncOpen(true)}
-                        className={`
-                            border font-bold text-[10px] sm:text-xs px-3 py-1.5 flex items-center gap-2 transition-all
-                            ${isConnected
-                                ? 'border-accent text-accent bg-accent/10 hover:bg-accent/20'
-                                : 'border-border-color text-gray-400 hover:text-white hover:border-white'
-                            }
-                        `}
-                    >
-                        {isConnected ? <Check className="w-3 h-3" /> : <Zap className="w-3 h-3" />}
-                        SYNC DEVICES
-                    </button>
+                <div className="absolute top-3 right-4 sm:top-4 sm:right-8 z-20">
+                    <Tooltip content="Instantly link devices to share files without logging in.">
+                        <button
+                            onClick={() => setIsSyncOpen(true)}
+                            className={`
+                                border-2 font-bold text-xs px-4 py-2 flex items-center gap-2 transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,0.1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
+                                ${isConnected
+                                    ? 'border-accent text-accent bg-accent/10 hover:bg-accent/20 hover:shadow-[4px_4px_0px_0px_rgba(95,255,172,0.3)]'
+                                    : 'border-gray-500 text-gray-300 bg-surface hover:text-white hover:border-white hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)]'
+                                }
+                            `}
+                        >
+                            {isConnected ? <Check className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
+                            SYNC DEVICES
+                        </button>
+                    </Tooltip>
                 </div>
 
                 <div className="max-w-7xl mx-auto">

@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "@/context/SessionContext";
+import { AdUnit } from "@/components/monetization/AdUnit";
+import { BMCWidget } from "@/components/monetization/BMCWidget";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -33,6 +35,8 @@ export default function RootLayout({
       >
         <SessionProvider>
           {children}
+          <AdUnit />
+          <BMCWidget />
         </SessionProvider>
       </body>
     </html>

@@ -6,6 +6,8 @@ import { migrateOldUploads } from '@/services/migrateUploads';
 import { Trash2, Copy, FileText, Image as ImageIcon, File, Clock } from 'lucide-react';
 import { RecentItem } from './RecentItem';
 import { useSession } from '@/context/SessionContext';
+import { MONETIZATION } from '@/components/monetization/MonetizationWrapper';
+
 
 export function RecentList() {
     const { isConnected, files: sessionFiles } = useSession();
@@ -74,13 +76,18 @@ export function RecentList() {
             </div>
 
             {/* Carbon Ads Placeholder */}
-            <div className="mt-12 border border-border-color p-4 flex items-center justify-between bg-surface/20 max-w-sm ml-auto">
-                <div className="text-xs text-gray-500">
-                    <p className="font-bold text-white mb-1">Developer Portfolio Hosting</p>
-                    <p>Showcase your work with style.</p>
+            {MONETIZATION.CARBON.ENABLED && (
+                <div className="mt-12 border border-border-color p-4 flex items-center justify-between bg-surface/20 max-w-sm ml-auto">
+                    <div className="text-xs text-gray-500">
+                        <p className="font-bold text-white mb-1">Developer Portfolio Hosting</p>
+                        <p>Showcase your work with style.</p>
+                    </div>
+
+                    <div className="w-8 h-8 bg-gray-700"></div>
                 </div>
-                <div className="w-8 h-8 bg-gray-700"></div>
-            </div>
+            )}
+
+
         </div>
     );
 }

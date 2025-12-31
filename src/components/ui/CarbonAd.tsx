@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
+import { MONETIZATION } from '@/components/monetization/MonetizationWrapper';
 
 export function CarbonAd() {
     const adRef = useRef<HTMLDivElement>(null);
@@ -9,6 +10,8 @@ export function CarbonAd() {
         // Carbon Ads configuration
         const CARBON_SERVE_ID = 'YOUR_CARBON_SERVE_ID';
         const CARBON_PLACEMENT = 'YOUR_PLACEMENT';
+
+        if (!MONETIZATION.CARBON.ENABLED) return;
 
         // Only load if properly configured (not using placeholder values)
         if (CARBON_SERVE_ID === 'YOUR_CARBON_SERVE_ID' || CARBON_PLACEMENT === 'YOUR_PLACEMENT') {

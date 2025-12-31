@@ -7,6 +7,8 @@ import { Header } from "@/components/ui/Header";
 import { Footer } from "@/components/ui/Footer";
 import { UploadResult } from "@/services/mockUpload";
 import { CarbonAd } from "@/components/ui/CarbonAd";
+import { MONETIZATION } from "@/components/monetization/MonetizationWrapper";
+import { ShieldAlert } from "lucide-react";
 
 export default function FilePage() {
     const params = useParams();
@@ -186,10 +188,33 @@ export default function FilePage() {
                             OPEN / DOWNLOAD
                         </button>
 
+                        {/* Affiliate: VPN Safe-Share */}
+                        {MONETIZATION.AFFILIATES.ENABLED && (
+                            <div className="bg-surface border border-accent/30 p-4 text-center mt-2">
+                                <div className="flex items-center justify-center gap-2 mb-2">
+                                    <ShieldAlert className="w-4 h-4 text-accent" />
+                                    <p className="text-xs font-bold text-gray-300">UNSECURED CONNECTION DETECTED</p>
+                                </div>
+                                <p className="text-xs text-gray-400 mb-3">
+                                    Your IP address is visible. Protect your downloads with a no-logs VPN.
+                                </p>
+                                <a
+                                    href={MONETIZATION.AFFILIATES.VPN_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-block bg-accent/10 text-accent border border-accent px-4 py-2 text-xs font-bold hover:bg-accent hover:text-black transition-all"
+                                >
+                                    [ ENABLE_CLOAKING_MODE ]
+                                </a>
+                            </div>
+                        )}
+
                         {/* Ad Placement */}
-                        <div className="mt-4">
-                            <CarbonAd />
-                        </div>
+                        {MONETIZATION.CARBON.ENABLED && (
+                            <div className="mt-4">
+                                <CarbonAd />
+                            </div>
+                        )}
 
                         <div className="text-center mt-4">
                             <a href="/" className="text-xs text-gray-500 hover:text-accent border-b border-transparent hover:border-accent transition-colors">
