@@ -23,6 +23,9 @@ export async function POST(request: Request) {
         // Store OTP -> SessionID mapping with 120s TTL
         await redis.set(`pair_token:${otp}`, sessionId, { ex: 120 });
 
+        // Mark Session as Active (Revocable)
+        await redis.set(`session_meta:${sessionId}`, 'active', { ex: 86400 });
+
         // If it was a new session, ensure we set the cookie on the generator too (optional, but good practice)
         // actually, mostly we just return the OTP. The generator already "knows" its session or will adopt this one?
         // Usually generator is the 'host'. If it didn't have a session, it now 'has' one effectively.

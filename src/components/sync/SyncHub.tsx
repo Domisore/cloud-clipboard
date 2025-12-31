@@ -7,7 +7,7 @@ import { Copy, RefreshCw, Smartphone, Monitor, Check } from 'lucide-react';
 import { JoinSession } from './JoinSession';
 
 export function SyncHub({ onClose }: { onClose: () => void }) {
-    const { generateSyncCode, isConnected, disconnect } = useSession();
+    const { generateSyncCode, isConnected, disconnect, burnSession } = useSession();
     const [otp, setOtp] = useState<string>('...');
     const [expiresAt, setExpiresAt] = useState<number>(0);
     const [magicLink, setMagicLink] = useState<string>('');
@@ -49,6 +49,12 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const handleBurn = async () => {
+        if (confirm('ARE YOU SURE? This will destroy the session for everyone connected.')) {
+            await burnSession();
+        }
+    };
+
 
 
     return (
@@ -64,8 +70,11 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
                                 <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
                                 SESSION ACTIVE
                             </span>
-                            <button onClick={disconnect} className="text-[10px] text-danger border border-danger/50 px-2 py-1 hover:bg-danger hover:text-white transition-colors">
-                                DISCONNECT
+                            <button onClick={disconnect} className="text-[10px] text-gray-500 border border-gray-700 px-2 py-1 hover:bg-gray-800 hover:text-white transition-colors">
+                                LEAVE SESSION
+                            </button>
+                            <button onClick={handleBurn} className="text-[10px] text-danger border border-danger/50 px-2 py-1 hover:bg-danger hover:text-white transition-colors font-bold">
+                                BURN SESSION
                             </button>
                         </div>
                     )}

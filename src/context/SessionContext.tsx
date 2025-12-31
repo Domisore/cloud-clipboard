@@ -11,6 +11,7 @@ interface SessionContextType {
     joinSession: (otp: string) => Promise<boolean>;
     refreshFiles: () => Promise<void>;
     disconnect: () => void;
+    burnSession: () => Promise<void>;
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
@@ -99,6 +100,17 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         setFiles([]);
     };
 
+    const burnSession = async () => {
+        try {
+            await fetch('/api/sync/burn', { method: 'POST' });
+        } catch (e) {
+            console.error(e);
+        } finally {
+            // Force disconnect locally
+            disconnect();
+        }
+    };
+
     return (
         <SessionContext.Provider value={{
             sessionId,
@@ -107,7 +119,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             generateSyncCode,
             joinSession,
             refreshFiles,
-            disconnect
+            disconnect,
+            burnSession
         }}>
             {children}
         </SessionContext.Provider>

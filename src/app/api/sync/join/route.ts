@@ -17,6 +17,9 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid or expired code' }, { status: 401 });
         }
 
+        // Refresh/Ensure Session Meta is Active
+        await redis.set(`session_meta:${sessionId}`, 'active', { ex: 86400 });
+
         // 2. Set Session Cookie
         const cookieStore = await cookies();
         cookieStore.set('drive_session', sessionId, {
