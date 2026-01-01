@@ -31,7 +31,16 @@ export function RecentList() {
         };
 
         window.addEventListener('storage-update', handleStorage);
-        return () => window.removeEventListener('storage-update', handleStorage);
+        window.addEventListener('storage', handleStorage); // Cross-tab support
+
+        // Backup poller (every 2s) to catch any missed events on mobile
+        const interval = setInterval(handleStorage, 2000);
+
+        return () => {
+            window.removeEventListener('storage-update', handleStorage);
+            window.removeEventListener('storage', handleStorage);
+            clearInterval(interval);
+        };
     }, []);
 
     // Combine local and session uploads (deduplicated by ID)
