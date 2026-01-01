@@ -1,3 +1,7 @@
+"use client";
+
+import { MONETIZATION } from '@/components/monetization/MonetizationWrapper';
+
 export function Footer() {
     return (
         <footer className="fixed bottom-0 left-0 right-0 h-8 border-t border-border-color bg-background flex items-center justify-center gap-2 text-xs text-gray-500 z-50">

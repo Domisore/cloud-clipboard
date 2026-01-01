@@ -161,11 +161,7 @@ export function DropZone() {
                         </div>
                     </div>
 
-                    {/* Buy Me Coffee */}
-                    <button className="flex items-center gap-2 bg-white text-black px-3 py-1 text-xs font-bold hover:bg-accent transition-colors">
-                        <span>☕</span>
-                        <span>Buy Me a Coffee</span>
-                    </button>
+
 
                     <button className="bg-white text-black px-3 py-1 text-xs font-bold hover:bg-accent transition-colors">
                         Copy Link

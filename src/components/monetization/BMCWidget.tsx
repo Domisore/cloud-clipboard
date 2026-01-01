@@ -1,41 +1,25 @@
 "use client";
 
-import { useEffect } from "react";
 import { MONETIZATION } from "./MonetizationWrapper";
 
 export function BMCWidget() {
-    useEffect(() => {
-        if (!MONETIZATION.BMC.ENABLED) return;
+    if (!MONETIZATION.BMC.ENABLED) return null;
 
-        // Prevent duplicate scripts based on ID or source
-        if (document.querySelector('script[src*="buymeacoffee"]')) return;
-
-        const script = document.createElement('script');
-        script.src = "https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js";
-        script.setAttribute('data-name', 'BMC-Widget');
-        script.setAttribute('data-cfasync', 'false');
-        script.setAttribute('data-id', MONETIZATION.BMC.USER_ID);
-        script.setAttribute('data-description', 'Support me on Buy me a coffee!');
-        script.setAttribute('data-message', 'Thank you for visiting.  I like my coffee with 3 creams and 3 sugars, with the occasional extra espresso shot.');
-        script.setAttribute('data-color', '#5F7FFF');
-        script.setAttribute('data-position', 'Right');
-        script.setAttribute('data-x_margin', '18');
-        script.setAttribute('data-y_margin', '18');
-
-        script.async = true;
-
-        script.onload = () => {
-            // Force widget initialization since DOMContentLoaded likely already fired
-            const evt = new Event('DOMContentLoaded', {
-                bubbles: true,
-                cancelable: true
-            });
-            window.dispatchEvent(evt);
-        };
-
-        document.body.appendChild(script);
-
-    }, []);
-
-    return null;
+    return (
+        <a
+            href={`https://www.buymeacoffee.com/${MONETIZATION.BMC.USER_ID}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fixed bottom-10 right-4 z-50 hover:scale-105 transition-transform"
+            style={{
+                lineHeight: 0 // Prevent extra height from text baseline
+            }}
+        >
+            <img
+                src={`https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=${MONETIZATION.BMC.USER_ID}&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff`}
+                alt="Buy Me a Coffee"
+                style={{ height: '40px' }}
+            />
+        </a>
+    );
 }

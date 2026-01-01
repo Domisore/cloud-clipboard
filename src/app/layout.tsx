@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "@/context/SessionContext";
+import { MonetizationWrapper } from "@/components/monetization/MonetizationWrapper";
 import { AdUnit } from "@/components/monetization/AdUnit";
 import { BMCWidget } from "@/components/monetization/BMCWidget";
 
@@ -33,11 +34,13 @@ export default function RootLayout({
         className={`${jetbrainsMono.variable} antialiased bg-background text-foreground font-mono`}
         suppressHydrationWarning
       >
-        <SessionProvider>
-          {children}
-          <AdUnit />
-          <BMCWidget />
-        </SessionProvider>
+        <MonetizationWrapper>
+          <SessionProvider>
+            {children}
+            <AdUnit />
+            <BMCWidget />
+          </SessionProvider>
+        </MonetizationWrapper>
       </body>
     </html>
   );
