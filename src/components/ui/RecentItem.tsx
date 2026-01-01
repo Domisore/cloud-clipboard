@@ -130,6 +130,12 @@ export function RecentItem({ upload, isCopied, onCopy, onDelete }: RecentItemPro
                                     </>
                                 )}
                             </div>
+                            {/* Text Snippet Preview */}
+                            {upload.textSnippet && (
+                                <div className="mt-2 p-2 bg-black/40 border border-border-color font-mono text-xs text-gray-300 break-words line-clamp-2">
+                                    "{upload.textSnippet}..."
+                                </div>
+                            )}
                         </div>
                     </div>
 

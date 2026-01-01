@@ -20,8 +20,13 @@ export function DropZone() {
             const result = await uploadFile(file, burnOnRead);
 
             // Save to local storage
+            // Save to local storage
             const existing = JSON.parse(localStorage.getItem('recent_uploads') || '[]');
-            const updated = [result, ...existing];
+            const uploadWithSnippet = {
+                ...result,
+                textSnippet: file.type === 'text/plain' && file.size < 10240 ? await file.text().then(t => t.slice(0, 50)) : undefined
+            };
+            const updated = [uploadWithSnippet, ...existing];
             localStorage.setItem('recent_uploads', JSON.stringify(updated));
 
             // Dispatch event for RecentList
@@ -72,44 +77,55 @@ export function DropZone() {
 
     return (
         <div className="w-full max-w-4xl mx-auto p-4 sm:p-8 border-2 border-dashed border-border-color rounded-none relative">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
 
                 {/* Card 1: Paste Text */}
-                <div className="aspect-square border border-border-color bg-surface/50 flex flex-col items-center justify-center gap-4 hover:border-accent hover:text-accent transition-colors group cursor-pointer" onClick={() => navigator.clipboard.readText().then(t => handlePaste([], t))}>
-                    <div className="w-16 h-16 border-2 border-current flex items-center justify-center rounded-lg">
-                        <span className="text-4xl font-bold">T</span>
+                <div className="aspect-square border border-border-color bg-surface/50 flex flex-col items-center justify-center gap-2 sm:gap-4 hover:border-accent hover:text-accent transition-colors group cursor-pointer" onClick={() => navigator.clipboard.readText().then(t => handlePaste([], t))}>
+                    <div className="w-10 h-10 sm:w-16 sm:h-16 border-2 border-current flex items-center justify-center rounded-lg transition-all">
+                        <span className="text-xl sm:text-4xl font-bold">T</span>
                     </div>
-                    <p className="text-sm font-medium">Paste Text (Ctrl+V)</p>
+                    <p className="text-[10px] sm:text-sm font-medium text-center leading-tight">Paste Text<span className="hidden sm:inline"> (Ctrl+V)</span></p>
                 </div>
 
                 {/* Card 2: Paste Image */}
-                <div className="aspect-square border border-border-color bg-surface/50 flex flex-col items-center justify-center gap-4 hover:border-accent hover:text-accent transition-colors group cursor-pointer">
-                    <div className="w-16 h-16 border-2 border-current flex items-center justify-center rounded-lg">
-                        <div className="w-10 h-8 border-2 border-current rounded-sm relative">
-                            <div className="absolute top-1 right-1 w-2 h-2 bg-current rounded-full"></div>
+                <div className="aspect-square border border-border-color bg-surface/50 flex flex-col items-center justify-center gap-2 sm:gap-4 hover:border-accent hover:text-accent transition-colors group cursor-pointer">
+                    <div className="w-10 h-10 sm:w-16 sm:h-16 border-2 border-current flex items-center justify-center rounded-lg transition-all">
+                        <div className="w-6 h-5 sm:w-10 sm:h-8 border-2 border-current rounded-sm relative">
+                            <div className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 w-1 h-1 sm:w-2 sm:h-2 bg-current rounded-full"></div>
                         </div>
                     </div>
-                    <p className="text-sm font-medium">Paste Image (Ctrl+V)</p>
+                    <p className="text-[10px] sm:text-sm font-medium text-center leading-tight">Paste Image<span className="hidden sm:inline"> (Ctrl+V)</span></p>
                 </div>
 
-                {/* Card 3: Drag & Drop */}
+                {/* Card 3: Drag & Drop (Click to Select) */}
                 <div
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
+                    onClick={() => document.getElementById('file-input')?.click()}
                     className={clsx(
-                        "aspect-square border border-border-color bg-surface/50 flex flex-col items-center justify-center gap-4 transition-colors cursor-pointer",
+                        "aspect-square border border-border-color bg-surface/50 flex flex-col items-center justify-center gap-2 sm:gap-4 transition-colors cursor-pointer",
                         isDragging ? "border-accent bg-accent/10 shadow-hacker-green" : "hover:border-accent hover:text-accent"
                     )}
                 >
-                    <div className="w-16 h-16 flex items-center justify-center">
-                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <input
+                        type="file"
+                        id="file-input"
+                        className="hidden"
+                        onChange={(e) => {
+                            if (e.target.files && e.target.files.length > 0) {
+                                handleUpload(e.target.files[0]);
+                            }
+                        }}
+                    />
+                    <div className="w-10 h-10 sm:w-16 sm:h-16 flex items-center justify-center transition-all">
+                        <svg className="w-8 h-8 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
                         </svg>
                     </div>
                     <div className="text-center">
-                        <p className="text-lg font-bold">Drag & Drop</p>
-                        <p className="text-lg font-bold">Here</p>
+                        <p className="text-xs sm:text-lg font-bold leading-none sm:leading-normal">Upload</p>
+                        <p className="text-[10px] sm:text-base font-medium hidden sm:block">Drag or Click</p>
                     </div>
                 </div>
             </div>

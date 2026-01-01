@@ -7,6 +7,7 @@ export interface UploadResult {
     uploadedAt: number;
     expiresAt: number;
     burnOnRead: boolean;
+    textSnippet?: string;
 }
 
 export async function mockUpload(file: File, burnOnRead: boolean = false): Promise<UploadResult> {

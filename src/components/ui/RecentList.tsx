@@ -34,8 +34,13 @@ export function RecentList() {
         return () => window.removeEventListener('storage-update', handleStorage);
     }, []);
 
-    // Use session files if connected, otherwise local files
-    const uploads = isConnected ? sessionFiles : localUploads;
+    // Combine local and session uploads (deduplicated by ID)
+    const combinedUploads = [...localUploads, ...sessionFiles];
+    const uploads = combinedUploads.filter((upload, index, self) =>
+        index === self.findIndex((u) => (
+            u.id === upload.id
+        ))
+    );
 
     const copyToClipboard = (url: string, id: string) => {
         navigator.clipboard.writeText(url);
@@ -54,7 +59,19 @@ export function RecentList() {
     };
 
 
-    if (!mounted || uploads.length === 0) return null;
+    if (!mounted) return null;
+
+    if (uploads.length === 0) {
+        return (
+            <div className="w-full max-w-4xl mx-auto p-8 border border-border-color bg-surface/30 text-center animate-in fade-in duration-500">
+                <div className="flex flex-col items-center gap-4 text-gray-500">
+                    <Clock className="w-12 h-12 opacity-50" />
+                    <p className="font-bold">NO RECENT UPLOADS</p>
+                    <p className="text-xs max-w-xs">Files you upload or session files you receive will appear here.</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full max-w-4xl mx-auto">

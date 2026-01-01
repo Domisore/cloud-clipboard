@@ -20,8 +20,13 @@ export function Header() {
 
             {/* Header with Logo and Hero */}
             <div className="w-full px-4 sm:px-8 py-4 sm:py-6 relative">
-                {/* Sync Button (Absolute Top Right) */}
-                <div className="absolute top-3 right-4 sm:top-4 sm:right-8 z-20">
+                <div className="absolute top-3 right-4 sm:top-4 sm:right-8 z-20 flex items-center gap-4">
+                    <Link
+                        href="/how-it-works"
+                        className="hidden sm:flex text-xs font-bold text-gray-500 hover:text-white transition-colors tracking-wide items-center gap-1"
+                    >
+                        HOW IT WORKS
+                    </Link>
                     <Tooltip content="Instantly link devices to share files without logging in.">
                         <button
                             onClick={() => setIsSyncOpen(true)}
