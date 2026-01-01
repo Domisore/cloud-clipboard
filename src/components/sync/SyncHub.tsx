@@ -79,7 +79,8 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
                         </div>
                     )}
                     <Monitor className="w-8 h-8 text-gray-500 mb-4" />
-                    <h3 className="text-sm font-bold text-gray-400 mb-6">PAIR WITH DESKTOP</h3>
+                    <h3 className="text-sm font-bold text-gray-400 mb-2">PAIR WITH DESKTOP</h3>
+                    <p className="text-[10px] text-gray-500 mb-6 uppercase tracking-wider">Use this code for any device</p>
 
                     <div className="font-mono text-6xl md:text-7xl font-bold text-white tracking-widest mb-2 font-numeric select-all">
                         {otp.slice(0, 3)} {otp.slice(3)}
@@ -92,7 +93,8 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
                 {/* Right: Mobile QR & Link */}
                 <div className="flex-1 p-8 flex flex-col justify-center items-center bg-surface">
                     <Smartphone className="w-8 h-8 text-gray-500 mb-4" />
-                    <h3 className="text-sm font-bold text-gray-400 mb-6">PAIR WITH MOBILE</h3>
+                    <h3 className="text-sm font-bold text-gray-400 mb-2">PAIR WITH MOBILE</h3>
+                    <p className="text-[10px] text-gray-500 mb-6 uppercase tracking-wider">Scan with your mobile camera</p>
 
                     <div className="bg-white p-2 mb-6">
                         <QRCodeSVG value={magicLink} size={180} level="L" />
@@ -105,6 +107,9 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
                         {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                         {copied ? 'LINK COPIED' : 'COPY MAGIC LINK'}
                     </button>
+                    <p className="text-[10px] text-gray-500 mt-2 text-center max-w-[200px]">
+                        Share link via WhatsApp or Messenger
+                    </p>
                 </div>
             </div>
 

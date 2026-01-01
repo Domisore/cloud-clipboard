@@ -14,6 +14,7 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-accent transition-colors font-bold"
+                suppressHydrationWarning
             >
                 CONTACT
             </a>
