@@ -46,6 +46,7 @@ export const metadata: Metadata = {
     description: "Drop files here, pick them up there. Zero friction encryption.",
     images: ["/icon.png"], // Using the new favicon/icon as a basic twitter image
   },
+  manifest: "/manifest.json",
 };
 
 import { Analytics } from "@vercel/analytics/next";
