@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Download } from "lucide-react";
+import Link from "next/link";
 import { Header } from "@/components/ui/Header";
 import { Footer } from "@/components/ui/Footer";
 import { UploadResult } from "@/services/mockUpload";
@@ -94,12 +95,12 @@ export default function FilePage() {
                         <p className="text-gray-400 mb-6">
                             This file doesn't exist or has already been burned.
                         </p>
-                        <a
+                        <Link
                             href="/"
                             className="inline-block bg-foreground text-background px-4 py-2 font-bold hover:bg-accent hover:text-black transition-colors"
                         >
                             [ GO_HOME ]
-                        </a>
+                        </Link>
                     </div>
                 </main>
                 <Footer />
@@ -217,9 +218,9 @@ export default function FilePage() {
                         )}
 
                         <div className="text-center mt-4">
-                            <a href="/" className="text-xs text-gray-500 hover:text-accent border-b border-transparent hover:border-accent transition-colors">
+                            <Link href="/" className="text-xs text-gray-500 hover:text-accent border-b border-transparent hover:border-accent transition-colors">
                                 [ I_WANT_TO_TOSS_A_FILE_TOO ]
-                            </a>
+                            </Link>
                         </div>
                     </div>
 

@@ -16,8 +16,8 @@ export function Header() {
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2 group">
-                    <div className="w-8 h-8 rounded-lg bg-surface border border-border-color flex items-center justify-center group-hover:border-accent/50 transition-colors shadow-sm">
-                        <Command className="w-4 h-4 text-foreground group-hover:text-accent transition-colors" />
+                    <div className="w-8 h-8 rounded-lg bg-surface border border-border-color flex items-center justify-center group-hover:border-accent/50 transition-colors shadow-sm overflow-hidden">
+                        <img src="/icon-192x192.png" alt="Drive.io Logo" className="w-full h-full object-cover" />
                     </div>
                     <span className="font-sans font-semibold text-sm tracking-tight text-foreground group-hover:text-white transition-colors">
                         Drive.io

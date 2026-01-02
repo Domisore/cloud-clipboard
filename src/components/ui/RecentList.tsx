@@ -100,7 +100,7 @@ export function RecentList() {
                         <div className="flex items-center justify-between pt-3 border-t border-border-color/50">
                             <div className="flex items-center gap-1.5 text-[10px] text-foreground-muted">
                                 <Clock size={12} />
-                                <span>{formatTimeAgo(upload.expiresAt)} left</span>
+                                <span suppressHydrationWarning>{formatTimeAgo(upload.expiresAt)} left</span>
                             </div>
 
                             <button

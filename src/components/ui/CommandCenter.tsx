@@ -172,8 +172,8 @@ export function CommandCenter() {
                                 <button
                                     onClick={() => setBurnOnRead(!burnOnRead)}
                                     className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${burnOnRead
-                                            ? 'bg-danger/10 border-danger/30 text-danger'
-                                            : 'bg-surface/50 border-transparent text-foreground-muted hover:text-foreground'
+                                        ? 'bg-danger/10 border-danger/30 text-danger'
+                                        : 'bg-surface/50 border-transparent text-foreground-muted hover:text-foreground'
                                         }`}
                                 >
                                     <Flame className="w-3.5 h-3.5" />
@@ -186,7 +186,7 @@ export function CommandCenter() {
                             onClick={handleUpload}
                             className="flex items-center gap-2 px-6 py-2.5 bg-accent text-background font-bold text-sm rounded-lg hover:bg-accent/90 transform hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(88,166,255,0.3)]"
                         >
-                            {state === 'uploading' ? 'Publishing...' : 'Create Link'}
+                            Create Link
                             <UploadCloud className="w-4 h-4 ml-1" />
                         </button>
                     </div>
