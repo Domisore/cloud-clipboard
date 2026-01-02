@@ -41,7 +41,7 @@ export function InstallPrompt() {
     if (!isVisible) return null;
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-50 p-4 animate-in slide-in-from-bottom duration-300">
+        <div className="fixed bottom-0 left-0 right-0 z-50 p-4">
             <div className="max-w-md mx-auto bg-surface border-2 border-accent shadow-2xl p-4 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                     <div className="bg-accent/10 p-2 rounded-lg">
