@@ -3,6 +3,7 @@
     "short_name": "Drive.io",
     "description": "High-utility, ephemeral storage PWA.",
     "start_url": "/",
+    "id": "/",
     "display": "standalone",
     "background_color": "#0D0D0D",
     "theme_color": "#0D0D0D",
