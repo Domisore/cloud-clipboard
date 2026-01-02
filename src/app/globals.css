@@ -1,116 +1,112 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0D0D0D;
-  --color-surface: #1A1A1A;
-  --color-accent: #00FF41;
-  --color-danger: #FF3E3E;
-  --color-foreground: #F0F0F0;
-  --color-border-color: #333333;
+  --color-background: #0D1117;
+  --color-surface: #161B22;
+  --color-surface-hover: #21262D;
+  --color-accent: #58A6FF;
+  --color-accent-dim: rgba(88, 166, 255, 0.1);
+  --color-danger: #F85149;
+  --color-foreground: #C9D1D9;
+  --color-foreground-muted: #8B949E;
+  --color-border-color: #30363D;
 
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
+
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-slide-up: slide-up 0.4s ease-out;
 }
 
-/* Neo-Brutalist Reset */
-* {
-  border-radius: 0 !important;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
+@keyframes slide-up {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Base Reset */
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Hard Shadows Utility */
-@utility shadow-hacker {
-  box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 1);
+/* Utilities */
+@utility glass-panel {
+  background: rgba(22, 27, 34, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border-color);
 }
 
-@utility shadow-hacker-green {
-  box-shadow: 5px 5px 0px 0px #00FF41;
+@utility focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent-dim);
+  border-color: var(--color-accent);
 }
 
-@utility shadow-hacker-white {
-  box-shadow: 5px 5px 0px 0px #F0F0F0;
+@utility container-wide {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
-/* Animations */
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.animate-marquee {
-  display: inline-block;
-  animation: marquee 20s linear infinite;
+::-webkit-scrollbar-track {
+  background: var(--color-background);
 }
 
-/* Carbon Ads Custom Styling */
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-surface-hover);
+}
+
+/* Carbon Ads Override for Dark Theme */
 #carbonads {
-  font-family: var(--font-mono) !important;
+  font-family: var(--font-sans) !important;
   display: block;
   overflow: hidden;
   padding: 1rem;
-  border: 2px solid var(--color-border-color);
+  border: 1px solid var(--color-border-color);
   background-color: var(--color-surface);
-  color: var(--color-foreground);
-  transition: all 0.2s ease;
+  border-radius: 6px;
+  max-width: 300px;
 }
 
 #carbonads:hover {
   border-color: var(--color-accent);
-  box-shadow: 5px 5px 0px 0px var(--color-accent);
-}
-
-#carbonads a {
-  color: var(--color-foreground);
-  text-decoration: none;
-}
-
-#carbonads a:hover {
-  color: var(--color-accent);
-}
-
-#carbonads span {
-  position: relative;
-  display: block;
-  overflow: hidden;
-}
-
-.carbon-img {
-  display: block;
-  margin: 0 auto 0.75rem;
-  border: 1px solid var(--color-border-color);
 }
 
 .carbon-text {
-  display: block;
-  padding: 0;
-  margin-bottom: 0.75rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  text-align: left;
   color: var(--color-foreground);
+  font-size: 0.8rem;
 }
 
 .carbon-poweredby {
-  display: block;
-  padding: 0.5rem 0 0;
-  border-top: 1px solid var(--color-border-color);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
-  font-size: 0.625rem;
-  text-align: center;
-  color: #666;
-}
-
-.carbon-poweredby:hover {
-  color: var(--color-accent);
+  color: var(--color-foreground-muted);
 }

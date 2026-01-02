@@ -1,23 +1,18 @@
 "use client";
 
-import { MONETIZATION } from '@/components/monetization/MonetizationWrapper';
+import Link from 'next/link';
 
 export function Footer() {
     return (
-        <footer className="fixed bottom-0 left-0 right-0 h-8 border-t border-border-color bg-background flex items-center justify-center gap-2 text-xs text-gray-500 z-50">
-            <p>
-                Copyright <a href="https://bigbrane.com" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors font-bold">Brane Technologies</a> 2026 // NO LOGS // NO MASTERS
-            </p>
-            <p>//</p>
-            <a
-                href="https://forms.fillout.com/t/vej46NKrCkus"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-accent transition-colors font-bold"
-                suppressHydrationWarning
-            >
-                CONTACT
-            </a>
+        <footer className="w-full py-8 text-center text-[10px] text-foreground-muted/40">
+            <div className="flex items-center justify-center gap-4 mb-2">
+                <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+                <span>•</span>
+                <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+                <span>•</span>
+                <a href="https://github.com/Domisore/cloud-clipboard" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
+            </div>
+            <p>End-to-end encrypted · Serverless · No Logs</p>
         </footer>
     );
 }

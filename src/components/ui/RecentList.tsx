@@ -1,119 +1,119 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { UploadResult } from '@/services/mockUpload';
-import { migrateOldUploads } from '@/services/migrateUploads';
-import { Trash2, Copy, FileText, Image as ImageIcon, File, Clock } from 'lucide-react';
-import { RecentItem } from './RecentItem';
-import { useSession } from '@/context/SessionContext';
-import { MONETIZATION } from '@/components/monetization/MonetizationWrapper';
+import { FileText, Image as ImageIcon, Link as LinkIcon, Clock, Trash2 } from 'lucide-react';
 
+type Upload = {
+    url: string;
+    key: string;
+    expiresAt: number;
+    filename?: string;
+    textSnippet?: string;
+    type?: string;
+};
+
+function formatTimeAgo(timestamp: number): string {
+    const seconds = Math.floor((Date.now() - timestamp) / 1000); // Actually we want time until expiry? No, logic says "Expires in..."
+    // The previous logic was "Expires in 23 hours". 
+    // Let's assume expiresAt is future.
+    const diff = Math.max(0, Math.floor((timestamp - Date.now()) / 1000));
+
+    if (diff < 60) return `${diff}s`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+    return `${Math.floor(diff / 86400)}d`;
+}
 
 export function RecentList() {
-    const { isConnected, files: sessionFiles } = useSession();
-    const [localUploads, setLocalUploads] = useState<UploadResult[]>([]);
-    const [mounted, setMounted] = useState(false);
-    const [copiedId, setCopiedId] = useState<string | null>(null);
+    const [uploads, setUploads] = useState<Upload[]>([]);
 
-    useEffect(() => {
-        setMounted(true);
+    const loadUploads = () => {
         const stored = localStorage.getItem('recent_uploads');
         if (stored) {
-            setLocalUploads(JSON.parse(stored));
-        }
-
-        // Listen for updates
-        const handleStorage = () => {
-            const stored = localStorage.getItem('recent_uploads');
-            if (stored) {
-                setLocalUploads(JSON.parse(stored));
+            try {
+                const parsed = JSON.parse(stored);
+                // Filter out expired stuff
+                const now = Date.now();
+                const active = parsed.filter((u: Upload) => u.expiresAt > now);
+                if (active.length !== parsed.length) {
+                    localStorage.setItem('recent_uploads', JSON.stringify(active));
+                }
+                setUploads(active);
+            } catch (e) {
+                console.error("Failed to parse recent uploads", e);
             }
-        };
+        }
+    };
 
-        window.addEventListener('storage-update', handleStorage);
-        window.addEventListener('storage', handleStorage); // Cross-tab support
-
-        // Backup poller (every 2s) to catch any missed events on mobile
-        const interval = setInterval(handleStorage, 2000);
-
+    useEffect(() => {
+        loadUploads();
+        window.addEventListener('storage-update', loadUploads);
+        const interval = setInterval(loadUploads, 30000); // Check expiry every 30s
         return () => {
-            window.removeEventListener('storage-update', handleStorage);
-            window.removeEventListener('storage', handleStorage);
+            window.removeEventListener('storage-update', loadUploads);
             clearInterval(interval);
         };
     }, []);
 
-    // Combine local and session uploads (deduplicated by ID)
-    const combinedUploads = [...localUploads, ...sessionFiles];
-    const uploads = combinedUploads.filter((upload, index, self) =>
-        index === self.findIndex((u) => (
-            u.id === upload.id
-        ))
-    );
-
-    const copyToClipboard = (url: string, id: string) => {
-        navigator.clipboard.writeText(url);
-        setCopiedId(id);
-        setTimeout(() => setCopiedId(null), 2000);
+    const deleteUpload = (key: string) => {
+        const updated = uploads.filter(u => u.key !== key);
+        setUploads(updated);
+        localStorage.setItem('recent_uploads', JSON.stringify(updated));
     };
 
-    const deleteItem = (id: string) => {
-        if (isConnected) {
-            alert("Deleting files from shared session is restricted to the host device.");
-            return;
-        }
-        const newUploads = localUploads.filter(u => u.id !== id);
-        setLocalUploads(newUploads);
-        localStorage.setItem('recent_uploads', JSON.stringify(newUploads));
-    };
-
-
-    if (!mounted) return null;
-
-    if (uploads.length === 0) {
-        return (
-            <div className="w-full max-w-4xl mx-auto p-8 border border-border-color bg-surface/30 text-center animate-in fade-in duration-500">
-                <div className="flex flex-col items-center gap-4 text-gray-500">
-                    <Clock className="w-12 h-12 opacity-50" />
-                    <p className="font-bold">NO RECENT UPLOADS</p>
-                    <p className="text-xs max-w-xs">Files you upload or session files you receive will appear here.</p>
-                </div>
-            </div>
-        );
-    }
+    if (uploads.length === 0) return null;
 
     return (
-        <div className="w-full max-w-4xl mx-auto">
-            <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold">Recent Uploads</h3>
-                <span className="text-xs text-gray-500">{uploads.length} FILE{uploads.length !== 1 ? 'S' : ''}</span>
-            </div>
+        <div className="w-full max-w-5xl mx-auto space-y-6 animate-fade-in">
+            <h2 className="text-xs font-bold text-foreground-muted uppercase tracking-wider pl-1">Recent Activity</h2>
 
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {uploads.map((upload) => (
-                    <RecentItem
-                        key={upload.id}
-                        upload={upload}
-                        isCopied={copiedId === upload.id}
-                        onCopy={copyToClipboard}
-                        onDelete={deleteItem}
-                    />
+                    <div
+                        key={upload.key}
+                        className="group relative bg-surface/50 hover:bg-surface border border-border-color rounded-lg p-5 transition-all text-left"
+                    >
+                        <div className="flex items-start justify-between mb-3">
+                            <div className="p-2 rounded-md bg-background border border-border-color text-accent/80">
+                                {upload.type?.startsWith('image') ? <ImageIcon size={18} /> : <FileText size={18} />}
+                            </div>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); deleteUpload(upload.key); }}
+                                className="text-foreground-muted hover:text-danger opacity-0 group-hover:opacity-100 transition-opacity"
+                                title="Remove from history"
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        </div>
+
+                        <div className="mb-4">
+                            <h3 className="text-foreground font-medium text-sm truncate pr-4" title={upload.filename}>
+                                {upload.filename || 'Untitled Paste'}
+                            </h3>
+                            {upload.textSnippet && (
+                                <p className="text-xs text-foreground-muted mt-1 font-mono line-clamp-2 opacity-70">
+                                    {upload.textSnippet}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex items-center justify-between pt-3 border-t border-border-color/50">
+                            <div className="flex items-center gap-1.5 text-[10px] text-foreground-muted">
+                                <Clock size={12} />
+                                <span>{formatTimeAgo(upload.expiresAt)} left</span>
+                            </div>
+
+                            <button
+                                onClick={() => navigator.clipboard.writeText(upload.url)}
+                                className="flex items-center gap-1.5 text-xs font-bold text-accent hover:underline opacity-80 hover:opacity-100"
+                            >
+                                <LinkIcon size={12} />
+                                Copy Link
+                            </button>
+                        </div>
+                    </div>
                 ))}
             </div>
-
-            {/* Carbon Ads Placeholder */}
-            {MONETIZATION.CARBON.ENABLED && (
-                <div className="mt-12 border border-border-color p-4 flex items-center justify-between bg-surface/20 max-w-sm ml-auto">
-                    <div className="text-xs text-gray-500">
-                        <p className="font-bold text-white mb-1">Developer Portfolio Hosting</p>
-                        <p>Showcase your work with style.</p>
-                    </div>
-
-                    <div className="w-8 h-8 bg-gray-700"></div>
-                </div>
-            )}
-
-
         </div>
     );
 }
