@@ -61,7 +61,16 @@ export function RecentList() {
         localStorage.setItem('recent_uploads', JSON.stringify(updated));
     };
 
-    if (uploads.length === 0) return null;
+    if (uploads.length === 0) {
+        return (
+            <div className="w-full max-w-5xl mx-auto space-y-6 animate-fade-in opacity-50 text-center py-12">
+                <h2 className="text-xs font-bold text-foreground-muted uppercase tracking-wider">Recent Activity</h2>
+                <div className="border border-dashed border-border-color rounded-lg p-8">
+                    <p className="text-sm text-foreground-muted">No recent uploads found.</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full max-w-5xl mx-auto space-y-6 animate-fade-in">
