@@ -15,20 +15,20 @@
         {
             "src": "/icon-512x512.png",
             "sizes": "512x512",
-            "type": "image/png"
-        ],
-        "screenshots": [
-            {
-                "src": "/demo.webp",
-                "sizes": "1280x720",
-                "type": "image/webp",
-                "form_factor": "wide"
-            },
-            {
-                "src": "/demo.webp",
-                "sizes": "1280x720",
-                "type": "image/webp",
-                "form_factor": "narrow"
-            }
-        ]
-    }
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/demo.webp",
+            "sizes": "1280x720",
+            "type": "image/webp",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/demo.webp",
+            "sizes": "1280x720",
+            "type": "image/webp",
+            "form_factor": "narrow"
+        }
+    ]
+}
