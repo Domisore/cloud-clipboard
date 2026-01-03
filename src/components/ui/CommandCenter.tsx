@@ -127,7 +127,7 @@ export function CommandCenter() {
                                 setText(e.target.value);
                                 setState(e.target.value ? 'has-content' : 'idle');
                             }}
-                            placeholder="Type plain text, code, or paste anything..."
+                            placeholder="Type plain text, code, or paste an image..."
                             className="w-full h-full min-h-[300px] bg-transparent p-6 sm:p-8 text-foreground font-mono resize-none focus:outline-none placeholder:text-foreground-muted/50"
                             autoFocus
                         />
@@ -139,13 +139,13 @@ export function CommandCenter() {
                                 onClick={() => fileInputRef.current?.click()}
                             >
                                 <div className="text-center pointer-events-none">
-                                    <p className="text-sm font-medium mb-2">Drop files or paste content</p>
+                                    <div className="text-sm font-medium mb-2">Drop files or paste content</div>
                                     <div className="flex gap-2 justify-center text-xs opacity-60 mb-2">
                                         <kbd className="bg-surface/50 px-2 py-1 rounded">⌘ V</kbd>
                                         <span>or</span>
                                         <kbd className="bg-surface/50 px-2 py-1 rounded">Ctrl V</kbd>
                                     </div>
-                                    <p className="text-xs opacity-50">(or click to browse)</p>
+                                    <div className="text-xs opacity-50">(or click to browse)</div>
                                 </div>
                             </div>
                         )}
@@ -213,7 +213,7 @@ export function CommandCenter() {
                         {state === 'uploading' ? (
                             <div className="flex flex-col items-center">
                                 <div className="w-12 h-12 border-4 border-accent/30 border-t-accent rounded-full animate-spin mb-6"></div>
-                                <p className="text-foreground font-medium animate-pulse">Encrypting & Uploading...</p>
+                                <div className="text-foreground font-medium animate-pulse">Encrypting & Uploading...</div>
                             </div>
                         ) : (
                             <div className="w-full max-w-md animate-slide-up">

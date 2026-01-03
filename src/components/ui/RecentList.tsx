@@ -45,7 +45,10 @@ export function RecentList() {
         }
     };
 
+    const [mounted, setMounted] = useState(false);
+
     useEffect(() => {
+        setMounted(true);
         loadUploads();
         window.addEventListener('storage-update', loadUploads);
         const interval = setInterval(loadUploads, 30000); // Check expiry every 30s
@@ -61,12 +64,14 @@ export function RecentList() {
         localStorage.setItem('recent_uploads', JSON.stringify(updated));
     };
 
+    if (!mounted) return null;
+
     if (uploads.length === 0) {
         return (
             <div className="w-full max-w-5xl mx-auto space-y-6 animate-fade-in opacity-50 text-center py-12">
                 <h2 className="text-xs font-bold text-foreground-muted uppercase tracking-wider">Recent Activity</h2>
                 <div className="border border-dashed border-border-color rounded-lg p-8">
-                    <p className="text-sm text-foreground-muted">No recent uploads found.</p>
+                    <div className="text-sm text-foreground-muted">No recent uploads found.</div>
                 </div>
             </div>
         );
