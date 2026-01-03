@@ -76,11 +76,20 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         return data;
     };
 
-    const joinSession = async (otp: string) => {
-        const res = await fetch('/api/sync/join', {
+    const joinSession = async (otpOrKey: string) => {
+        let url = '/api/sync/join';
+        let body = { otp: otpOrKey };
+
+        // Check if it's a permanent key
+        if (otpOrKey.startsWith('pk_')) {
+            url = '/api/sync/perma/connect';
+            body = { key: otpOrKey } as any;
+        }
+
+        const res = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ otp })
+            body: JSON.stringify(body)
         });
 
         if (res.ok) {

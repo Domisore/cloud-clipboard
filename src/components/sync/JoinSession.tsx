@@ -17,20 +17,30 @@ export function JoinSession() {
         setLoading(true);
         setError('');
 
-        const cleanOtp = otp.replace(/\s/g, '');
-        if (cleanOtp.length !== 6) {
-            setError('Enter 6-digit code');
-            setLoading(false);
-            return;
+        const cleanOtp = otp.trim(); // Don't strip spaces aggressively, but trim
+
+        // Permanent Key Validation
+        if (cleanOtp.startsWith('pk_')) {
+            if (cleanOtp.length < 10) { // arbitrary min length check
+                setError('Invalid Permanent Key');
+                setLoading(false);
+                return;
+            }
+        } else {
+            // Standard OTP Validation
+            if (cleanOtp.replace(/\s/g, '').length !== 6) {
+                setError('Enter 6-digit code');
+                setLoading(false);
+                return;
+            }
         }
 
         const success = await joinSession(cleanOtp);
         if (success) {
             setOtp('');
-            // Maybe redirect or show success
-            // For now, the parent context will update 'isConnected'
+
         } else {
-            setError('Invalid or expired code');
+            setError('Invalid code or key');
         }
         setLoading(false);
     };
@@ -41,9 +51,9 @@ export function JoinSession() {
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                placeholder="ENTER 6-DIGIT CODE"
+                placeholder="ENTER 6-DIGIT CODE OR KEY"
                 className="w-full bg-background border border-border-color px-4 py-3 pr-12 text-sm focus:outline-none focus:border-accent font-mono tracking-widest"
-                maxLength={7}
+                maxLength={60}
             />
             <button
                 type="submit"

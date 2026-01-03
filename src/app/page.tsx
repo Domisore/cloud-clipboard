@@ -28,6 +28,41 @@ export default function Home() {
 
           <RecentList />
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 pb-4 border-t border-border-color/50">
+            {/* Feature 1: Code */}
+            <div className="p-6 rounded-2xl bg-surface/30 border border-border-color/50 hover:border-accent/30 transition-colors">
+              <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 16 4-4-4-4" /><path d="m6 8-4 4 4 4" /><path d="m14.5 4-5 16" /></svg>
+              </div>
+              <h3 className="text-foreground font-semibold mb-2">Better than PasteBin</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed">
+                Share code snippets with proper formatting. No Captchas, no ads, no clutter. Just pure, encrypted text sharing.
+              </p>
+            </div>
+
+            {/* Feature 2: Files */}
+            <div className="p-6 rounded-2xl bg-surface/30 border border-border-color/50 hover:border-accent/30 transition-colors">
+              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /><path d="M12 18v-6" /><path d="m9 15 3 3 3-3" /></svg>
+              </div>
+              <h3 className="text-foreground font-semibold mb-2">Simpler than FileBin</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed">
+                Drag & drop generic files, images, or archives. Get a direct download link instantly. No account needed.
+              </p>
+            </div>
+
+            {/* Feature 3: Privacy */}
+            <div className="p-6 rounded-2xl bg-surface/30 border border-border-color/50 hover:border-accent/30 transition-colors">
+              <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" /></svg>
+              </div>
+              <h3 className="text-foreground font-semibold mb-2">Secure & Ephemeral</h3>
+              <p className="text-sm text-foreground-muted leading-relaxed">
+                Your data is encrypted in transit and at rest. Set files to "Burn on Read" for ultimate temporary sharing.
+              </p>
+            </div>
+          </div>
+
           <div className="flex justify-center opacity-80 hover:opacity-100 transition-opacity">
             <CarbonAd />
           </div>

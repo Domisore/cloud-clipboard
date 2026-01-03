@@ -1,6 +1,13 @@
 import { Redis } from '@upstash/redis';
 
+const url = process.env.UPSTASH_REDIS_REST_URL;
+const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+if (!url || !token) {
+    console.error("Redis credentials missing. UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN must be set.");
+}
+
 export const redis = new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL || 'https://unexpected-missing-url.upstash.io',
-    token: process.env.UPSTASH_REDIS_REST_TOKEN || 'missing-token',
+    url: url || 'https://example.upstash.io',
+    token: token || 'missing_token',
 });
