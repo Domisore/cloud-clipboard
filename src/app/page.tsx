@@ -18,7 +18,7 @@ export default function Home() {
           </h1>
           <p className="text-foreground-muted text-sm sm:text-base leading-relaxed">
             Instantly move text, images, and files between your devices.<br className="hidden sm:block" />
-            Create secure, ephemeral links to share with anyone. No account required.
+            Create secure, ephemeral links to share with anyone. <span className="mx-1 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-yellow-400 before:opacity-80 relative inline-block"><span className="relative text-black font-bold px-1">No account required.</span></span>
           </p>
         </div>
 
