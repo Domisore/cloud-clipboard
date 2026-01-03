@@ -20,11 +20,11 @@ export async function POST(request: Request) {
         // Generate 6-digit OTP
         const otp = generateOTP();
 
-        // Store OTP -> SessionID mapping with 120s TTL
-        await redis.set(`pair_token:${otp}`, sessionId, { ex: 120 });
+        // Store OTP -> SessionID mapping with 24h TTL (86400s)
+        await redis.set(`pair_token:${otp}`, sessionId, { ex: 86400 });
 
         // Mark Session as Active (Revocable)
-        await redis.set(`session_meta:${sessionId}`, 'active', { ex: 86400 });
+        await redis.set(`session_meta:${sessionId}`, 'active', { ex: 86400 * 7 }); // Keep meta a bit longer
 
         // If it was a new session, ensure we set the cookie on the generator too (optional, but good practice)
         // actually, mostly we just return the OTP. The generator already "knows" its session or will adopt this one?
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json({
             otp,
-            expiresAt: Date.now() + 120 * 1000,
+            expiresAt: Date.now() + 86400 * 1000,
             magicLink: `${new URL(request.url).origin}/sync/${otp}` // Construct magic link
         });
 

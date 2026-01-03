@@ -36,7 +36,7 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
             setOtp(data.otp);
             setExpiresAt(data.expiresAt);
             setMagicLink(data.magicLink);
-            setTimeLeft(120);
+            setTimeLeft(86400); // Reset to 24h
         } catch (e) {
             console.error(e);
         }
@@ -59,6 +59,13 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
         return () => clearInterval(interval);
     }, [expiresAt, refreshCode]);
 
+    const formatTimeLeft = (seconds: number) => {
+        if (seconds > 3600) {
+            return Math.floor(seconds / 3600) + ' HOURS';
+        }
+        return Math.floor(seconds / 60) + ' MINS';
+    };
+
     const handleCopyLink = () => {
         navigator.clipboard.writeText(magicLink);
         setCopied(true);
@@ -70,8 +77,6 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
             await burnSession();
         }
     };
-
-
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
@@ -113,13 +118,15 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
                             )}
                             <Monitor className="w-8 h-8 text-gray-500 mb-4" />
                             <h3 className="text-sm font-bold text-gray-400 mb-2">PAIR WITH DESKTOP</h3>
-                            <p className="text-[10px] text-gray-500 mb-6 uppercase tracking-wider">Use this code for any device</p>
+                            <p className="text-[10px] text-gray-500 mb-6 uppercase tracking-wider max-w-[200px]">
+                                Temporary code (24h). Ideal for sharing with others.
+                            </p>
 
                             <div className="font-mono text-6xl md:text-7xl font-bold text-white tracking-widest mb-2 font-numeric select-all">
                                 {otp.slice(0, 3)} {otp.slice(3)}
                             </div>
                             <div className="text-xs text-accent animate-pulse mt-4">
-                                EXPIRES IN {timeLeft}s
+                                EXPIRES IN {formatTimeLeft(timeLeft)}
                             </div>
                         </div>
 
@@ -149,9 +156,16 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
                     /* Permanent Mode */
                     <div className="w-full p-8 flex flex-col items-center justify-center min-h-[400px] text-center pt-16">
                         <h3 className="text-xl font-bold mb-4">Permanent Connection Key</h3>
-                        <p className="text-sm text-foreground-muted max-w-md mb-8">
-                            Generate a long-lived key to connect devices permanently. Treating this like a password - anyone with this key can access your clipboard.
-                        </p>
+                        <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-lg max-w-md mb-6 text-left">
+                            <p className="text-xs text-red-200 font-bold mb-2">⚠️ CAUTION: FOR YOUR EYES ONLY</p>
+                            <p className="text-xs text-red-200/80 leading-relaxed mb-2">
+                                This key grants <strong>permanent access</strong> to this account. Do NOT share it with anyone.
+                                Use the "Standard" 24h code for temporary sharing.
+                            </p>
+                            <p className="text-xs text-red-200/80 leading-relaxed">
+                                <strong>Recommendation:</strong> Save this key in a secure place like Google Keep, or email it to yourself to connect your other devices.
+                            </p>
+                        </div>
 
                         {!permaKey ? (
                             <button
