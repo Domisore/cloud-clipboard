@@ -174,7 +174,7 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
                                 )}
                             </div>
                             <div className="text-[10px] text-yellow-500/80 bg-yellow-500/10 border border-yellow-500/20 px-3 py-2 rounded-lg w-full text-left">
-                                <strong>Note:</strong> Save this key. It grants permanent access to this session.
+                                <strong>Note:</strong> Save this key in a secure location like Google Keep or in a private DM    yourself in a messaging app. It grants permanent access to this session.
                             </div>
                         </div>
                     )}
