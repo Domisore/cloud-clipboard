@@ -134,11 +134,11 @@ export function CommandCenter() {
 
                         {/* Empty State Hint (only visible when empty) */}
                         {!text && (
-                            <div
-                                className="absolute inset-0 flex items-center justify-center text-foreground-muted/30 cursor-pointer hover:text-accent/50 transition-colors bg-transparent"
-                                onClick={() => fileInputRef.current?.click()}
-                            >
-                                <div className="text-center pointer-events-none">
+                            <div className="absolute inset-0 flex items-center justify-center text-foreground-muted/30 pointer-events-none bg-transparent">
+                                <div
+                                    className="text-center pointer-events-auto cursor-pointer hover:text-accent/50 transition-colors p-4 rounded-lg"
+                                    onClick={() => fileInputRef.current?.click()}
+                                >
                                     <div className="text-sm font-medium mb-2">Drop files or paste content</div>
                                     <div className="flex gap-2 justify-center text-xs opacity-60 mb-2">
                                         <kbd className="bg-surface/50 px-2 py-1 rounded">⌘ V</kbd>
