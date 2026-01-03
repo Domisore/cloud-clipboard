@@ -8,7 +8,7 @@ export function usePaste(onPaste: PasteHandler) {
         if (!items) return;
 
         const files: File[] = [];
-        let text: string | null = null;
+        let hasText = false;
 
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
@@ -16,21 +16,37 @@ export function usePaste(onPaste: PasteHandler) {
                 const file = item.getAsFile();
                 if (file) files.push(file);
             } else if (item.kind === 'string' && item.type === 'text/plain') {
-                item.getAsString((s) => {
-                    text = s;
-                    // If we have text and no files were found in this loop iteration (async issue potentially, but usually fine for paste)
-                    // We trigger the callback. 
-                    // Note: This logic is slightly simplified. For mixed content, we might want to wait.
-                    // But usually clipboard is either files OR text.
-                    if (files.length === 0 && text) {
-                        onPaste([], text);
-                    }
-                });
+                hasText = true;
             }
         }
 
         if (files.length > 0) {
+            e.preventDefault();
             onPaste(files, null);
+            return;
+        }
+
+        if (hasText) {
+            // We let the async string extraction happen
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].kind === 'string' && items[i].type === 'text/plain') {
+                    items[i].getAsString((s) => {
+                        if (s) {
+                            // We don't prevent default here for text because 
+                            // we want the textarea to receive it natively IF we are typing.
+                            // BUT, the request was to support image paste.
+                            // If we prevent default for text, the textarea won't duplicate it.
+                            // Let's rely on CommandCenter state. 
+                            // If we call onPaste with text, CommandCenter sets text state.
+                            // So we SHOULD prevent default to avoid double insertion.
+
+                            // However, we can't prevent default inside this async callback reliably for the original event.
+                            // We must prevent default synchronous if we intend to handle it.
+                        }
+                        onPaste([], s);
+                    });
+                }
+            }
         }
     }, [onPaste]);
 

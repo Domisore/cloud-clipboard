@@ -16,6 +16,7 @@ export function CommandCenter() {
     const [burnOnRead, setBurnOnRead] = useState(false);
     const [uploadResult, setUploadResult] = useState<{ url: string } | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Auto-resize textarea
     useEffect(() => {
@@ -133,17 +134,31 @@ export function CommandCenter() {
 
                         {/* Empty State Hint (only visible when empty) */}
                         {!text && (
-                            <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-foreground-muted/30">
-                                <div className="text-center">
+                            <div
+                                className="absolute inset-0 flex items-center justify-center text-foreground-muted/30 cursor-pointer hover:text-accent/50 transition-colors bg-transparent"
+                                onClick={() => fileInputRef.current?.click()}
+                            >
+                                <div className="text-center pointer-events-none">
                                     <p className="text-sm font-medium mb-2">Drop files or paste content</p>
-                                    <div className="flex gap-2 justify-center text-xs opacity-60">
+                                    <div className="flex gap-2 justify-center text-xs opacity-60 mb-2">
                                         <kbd className="bg-surface/50 px-2 py-1 rounded">⌘ V</kbd>
                                         <span>or</span>
                                         <kbd className="bg-surface/50 px-2 py-1 rounded">Ctrl V</kbd>
                                     </div>
+                                    <p className="text-xs opacity-50">(or click to browse)</p>
                                 </div>
                             </div>
                         )}
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            className="hidden"
+                            onChange={(e) => {
+                                if (e.target.files && e.target.files[0]) {
+                                    onFileSelect(e.target.files[0]);
+                                }
+                            }}
+                        />
                     </div>
                 )}
 
