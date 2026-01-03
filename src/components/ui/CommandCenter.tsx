@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { usePaste } from '@/hooks/usePaste';
+import { useSession } from '@/context/SessionContext';
 import { uploadFile } from '@/services/upload';
 import { FileText, Image as ImageIcon, Link as LinkIcon, X, Flame, UploadCloud, CheckCircle } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -9,6 +10,10 @@ import { Tooltip } from '@/components/ui/Tooltip';
 type UploadState = 'idle' | 'has-content' | 'uploading' | 'success';
 
 export function CommandCenter() {
+    const { wallet, sessionId, renameSession } = useSession();
+    // Find current session data in wallet
+    const currentSession = wallet.find(s => s.sessionId === sessionId);
+
     const [state, setState] = useState<UploadState>('idle');
     const [text, setText] = useState('');
     const [file, setFile] = useState<File | null>(null);
@@ -17,6 +22,23 @@ export function CommandCenter() {
     const [uploadResult, setUploadResult] = useState<{ url: string } | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Session Name Edit State
+    const [isEditingName, setIsEditingName] = useState(false);
+    const [tempName, setTempName] = useState('');
+
+    useEffect(() => {
+        if (currentSession) {
+            setTempName(currentSession.name);
+        }
+    }, [currentSession]);
+
+    const handleNameSave = () => {
+        if (currentSession && tempName.trim()) {
+            renameSession(currentSession.key, tempName);
+        }
+        setIsEditingName(false);
+    };
 
     // Auto-resize textarea
     useEffect(() => {
@@ -40,6 +62,15 @@ export function CommandCenter() {
             if (fileToUpload) {
                 const result = await uploadFile(fileToUpload, burnOnRead);
                 setUploadResult(result);
+
+                // If this was a new session launch (no current session), 
+                // the upload might have triggered a session creation implicitly via cookies?
+                // Actually the upload service doesn't create sessions explicitly, 
+                // but the API middleware might. 
+                // We should check status after upload to ensure wallet sync.
+                // The upload result doesn't return session info usually.
+
+                // For now, standard behavior.
 
                 // Save to local storage for RecentList
                 const existing = JSON.parse(localStorage.getItem('recent_uploads') || '[]');
@@ -117,6 +148,36 @@ export function CommandCenter() {
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
             >
+                {/* Session Header */}
+                {currentSession && (state === 'idle' || state === 'has-content') && (
+                    <div className="absolute top-0 left-0 right-0 p-4 flex justify-center z-10 pointer-events-none">
+                        <div className="pointer-events-auto bg-surface/80 backdrop-blur-sm rounded-full border border-border-color px-4 py-1.5 flex items-center gap-2 shadow-sm">
+                            <span className="text-[10px] uppercase font-bold text-foreground-muted tracking-wider">Session:</span>
+                            {isEditingName ? (
+                                <input
+                                    value={tempName}
+                                    onChange={(e) => setTempName(e.target.value)}
+                                    onBlur={handleNameSave}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleNameSave()}
+                                    className="bg-transparent border-b border-accent text-xs font-bold text-foreground focus:outline-none w-32"
+                                    autoFocus
+                                />
+                            ) : (
+                                <button
+                                    onClick={() => {
+                                        setTempName(currentSession.name);
+                                        setIsEditingName(true);
+                                    }}
+                                    className="text-xs font-bold text-foreground hover:text-accent transition-colors flex items-center gap-1.5"
+                                >
+                                    {currentSession.name}
+                                    <div className="i-lucide-edit-2 w-3 h-3 opacity-50" />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                )}
+
                 {/* STATE: IDLE or TYPING */}
                 {(state === 'idle' || state === 'has-content') && !file && (
                     <div className="relative min-h-[300px] flex flex-col">

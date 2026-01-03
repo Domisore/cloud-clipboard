@@ -23,15 +23,27 @@ export async function POST(request: Request) {
         // Generate 32-char generic token, prefixed with pk_
         const rawToken = nanoid(32);
         const permKey = `pk_${rawToken}`;
+        const defaultName = `Session ${rawToken.substring(0, 6)}`;
+        const createdAt = Date.now();
 
         // Store Key -> SessionID mapping (Permanent)
         await redis.set(`perma_key:${permKey}`, sessionId);
 
-        // Mark Session as Active (Revocable)
-        await redis.set(`session_meta:${sessionId}`, 'active'); // No expiry for perma sessions? Or just long?
+        // Store Session Metadata
+        // We use a hash to store metadata about the session
+        await redis.hset(`session_meta:${sessionId}`, {
+            status: 'active',
+            name: defaultName,
+            createdAt: createdAt,
+            type: 'permanent'
+        });
 
         return NextResponse.json({
-            key: permKey
+            key: permKey,
+            sessionId: sessionId,
+            name: defaultName,
+            createdAt: createdAt,
+            expiresAt: null // Permanent
         });
 
     } catch (error) {

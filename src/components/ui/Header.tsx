@@ -7,9 +7,12 @@ import { useSession } from '@/context/SessionContext';
 import { Zap, Check, Command } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
 
+import { SessionList } from './SessionList';
+
 export function Header() {
     const [isSyncOpen, setIsSyncOpen] = useState(false);
-    const { isConnected } = useSession();
+    const [showSessions, setShowSessions] = useState(false);
+    const { isConnected, wallet } = useSession();
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
@@ -26,6 +29,20 @@ export function Header() {
 
                 {/* Right Actions */}
                 <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => setShowSessions(true)}
+                        className="hidden sm:flex text-xs font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
+                    >
+                        <div className="flex items-center gap-1">
+                            <span>Sessions</span>
+                            {wallet.length > 0 && (
+                                <span className="bg-surface border border-border-color text-[10px] px-1.5 rounded-full h-4 flex items-center justify-center">
+                                    {wallet.length}
+                                </span>
+                            )}
+                        </div>
+                    </button>
+
                     <Link
                         href="/how-it-works"
                         className="hidden sm:block text-xs font-medium text-foreground-muted hover:text-foreground transition-colors"
@@ -52,6 +69,7 @@ export function Header() {
             </div>
 
             {isSyncOpen && <SyncHub onClose={() => setIsSyncOpen(false)} />}
+            {showSessions && <SessionList onClose={() => setShowSessions(false)} />}
         </header>
     );
 }
