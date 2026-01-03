@@ -14,11 +14,11 @@ export default function Home() {
         {/* Hero Text (Moved from Header) */}
         <div className="text-center max-w-2xl mx-auto mb-12 animate-fade-in">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">
-            Drop. Paste. <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">Share.</span>
+            Your Universal <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">Cloud Clipboard.</span>
           </h1>
           <p className="text-foreground-muted text-sm sm:text-base leading-relaxed">
-            The fastest way to move text and files between devices.<br className="hidden sm:block" />
-            No accounts. No history. Just ephemeral storage.
+            Instantly move text, images, and files between your devices.<br className="hidden sm:block" />
+            Create secure, ephemeral links to share with anyone. No account required.
           </p>
         </div>
 
