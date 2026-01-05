@@ -33,6 +33,33 @@ export function CommandCenter() {
         }
     }, [currentSession]);
 
+    // PWA Share Target Handler
+    useEffect(() => {
+        try {
+            const pendingShare = localStorage.getItem('drive_pending_share');
+            if (pendingShare) {
+                const data = JSON.parse(pendingShare);
+                localStorage.removeItem('drive_pending_share'); // Clear immediately
+
+                if (data.file) {
+                    // Reconstruct file
+                    fetch(`data:${data.file.type};base64,${data.file.data}`)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            const file = new File([blob], data.file.name, { type: data.file.type });
+                            onFileSelect(file);
+                        });
+                } else if (data.text || data.url) {
+                    const content = [data.title, data.text, data.url].filter(Boolean).join('\n');
+                    setText(content);
+                    setState('has-content');
+                }
+            }
+        } catch (e) {
+            console.error('Failed to parse share data', e);
+        }
+    }, []);
+
     const handleNameSave = () => {
         if (currentSession && tempName.trim()) {
             renameSession(currentSession.key, tempName);
