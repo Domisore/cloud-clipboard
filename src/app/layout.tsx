@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description: "Secure, anonymous file sharing with burn-on-read protection. No accounts, no logs, instant sync across devices using QR codes.",
   applicationName: "Drive.io",
   authors: [{ name: "Brane Technologies", url: "https://bigbrane.com" }],
-  keywords: ["file sharing", "anonymous upload", "cloud clipboard", "burn on read", "secure storage", "p2p transfer", "ephemeral storage"],
+  keywords: ["file sharing", "web clipboard", "anonymous upload", "cloud clipboard", "burn on read", "secure storage", "p2p transfer", "ephemeral storage"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://drive.io'),
   openGraph: {
     title: "Drive.io | Drop. Toss. Store.",

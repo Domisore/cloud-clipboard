@@ -9,6 +9,7 @@ export function InstallPrompt() {
 
     useEffect(() => {
         const handler = (e: any) => {
+            console.log('PWA: beforeinstallprompt fired');
             // Prevent the mini-infobar from appearing on mobile
             e.preventDefault();
             // Stash the event so it can be triggered later.
@@ -18,6 +19,7 @@ export function InstallPrompt() {
         };
 
         window.addEventListener('beforeinstallprompt', handler);
+        console.log('PWA: Listener added');
 
         return () => {
             window.removeEventListener('beforeinstallprompt', handler);
