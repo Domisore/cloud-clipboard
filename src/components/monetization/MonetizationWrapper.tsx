@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 
 export const MONETIZATION = {
     AADS: {
-        ENABLED: process.env.NEXT_PUBLIC_AADS_ENABLED === 'true',
+        ENABLED: false, // process.env.NEXT_PUBLIC_AADS_ENABLED === 'true',
         UNIT_ID: process.env.NEXT_PUBLIC_AADS_UNIT_ID || ''
     },
     BMC: {
