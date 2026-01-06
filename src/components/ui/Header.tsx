@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from 'react';
 import { SyncHub } from '@/components/sync/SyncHub';
 import { useSession } from '@/context/SessionContext';
-import { Zap, Check, Command } from 'lucide-react';
+import { Zap, Check, Command, Menu, X } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
 
 import { SessionList } from './SessionList';
@@ -12,6 +12,7 @@ import { SessionList } from './SessionList';
 export function Header() {
     const [isSyncOpen, setIsSyncOpen] = useState(false);
     const [showSessions, setShowSessions] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { isConnected, wallet } = useSession();
 
     return (
@@ -28,10 +29,11 @@ export function Header() {
                 </Link>
 
                 {/* Right Actions */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4">
+                    {/* Desktop Links */}
                     <button
                         onClick={() => setShowSessions(true)}
-                        className="hidden sm:flex text-xs font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
+                        className="hidden md:flex text-xs font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
                     >
                         <div className="flex items-center gap-1">
                             <span>Sessions</span>
@@ -45,10 +47,44 @@ export function Header() {
 
                     <Link
                         href="/how-it-works"
-                        className="hidden sm:block text-xs font-medium text-foreground-muted hover:text-foreground transition-colors"
+                        className="hidden md:block text-xs font-medium text-foreground-muted hover:text-foreground transition-colors"
                     >
                         How it works
                     </Link>
+
+                    {/* Mobile Menu Toggle */}
+                    <div className="md:hidden relative">
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="p-1.5 text-foreground-muted hover:text-foreground transition-colors"
+                        >
+                            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                        </button>
+
+                        {/* Mobile Dropdown */}
+                        {isMobileMenuOpen && (
+                            <div className="absolute top-full right-0 mt-2 w-48 bg-surface border border-border-color rounded-lg shadow-xl py-2 flex flex-col gap-1 animate-in fade-in zoom-in-95 duration-200">
+                                <button
+                                    onClick={() => { setShowSessions(true); setIsMobileMenuOpen(false); }}
+                                    className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-white/5 transition-colors flex items-center justify-between"
+                                >
+                                    <span>Sessions</span>
+                                    {wallet.length > 0 && (
+                                        <span className="bg-background border border-border-color text-[10px] px-1.5 rounded-full h-4 flex items-center justify-center">
+                                            {wallet.length}
+                                        </span>
+                                    )}
+                                </button>
+                                <Link
+                                    href="/how-it-works"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-white/5 transition-colors"
+                                >
+                                    How it works
+                                </Link>
+                            </div>
+                        )}
+                    </div>
 
                     <Tooltip content="Sync devices instanty">
                         <button

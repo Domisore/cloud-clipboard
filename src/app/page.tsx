@@ -29,25 +29,25 @@ export default function Home() {
           <RecentList />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 pb-4 border-t border-border-color/50">
-            {/* Feature 1: Code */}
+            {/* Feature 1: Simpler than Competitors */}
             <div className="p-6 rounded-2xl bg-surface/30 border border-border-color/50 hover:border-accent/30 transition-colors">
               <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 16 4-4-4-4" /><path d="m6 8-4 4 4 4" /><path d="m14.5 4-5 16" /></svg>
               </div>
-              <h3 className="text-foreground font-semibold mb-2">Better than PasteBin</h3>
+              <h3 className="text-foreground font-semibold mb-2">Better than Pastebin & Filebin</h3>
               <p className="text-sm text-foreground-muted leading-relaxed">
-                Share code snippets with proper formatting. No Captchas, no ads, no clutter. Just pure, encrypted text sharing.
+                Share code snippets with correct formatting or drag & drop generic files. No Captchas, no ads, no clutter.
               </p>
             </div>
 
-            {/* Feature 2: Files */}
+            {/* Feature 2: Native Sharing */}
             <div className="p-6 rounded-2xl bg-surface/30 border border-border-color/50 hover:border-accent/30 transition-colors">
               <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /><path d="M12 18v-6" /><path d="m9 15 3 3 3-3" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" /></svg>
               </div>
-              <h3 className="text-foreground font-semibold mb-2">Simpler than FileBin</h3>
+              <h3 className="text-foreground font-semibold mb-2">Native Mobile Sharing</h3>
               <p className="text-sm text-foreground-muted leading-relaxed">
-                Drag & drop generic files, images, or archives. Get a direct download link instantly. No account needed.
+                Install as an app to share text, images, and files directly from your system share sheet without opening a browser.
               </p>
             </div>
 
