@@ -33,20 +33,6 @@
             "purpose": "maskable"
         }
     ],
-    "screenshots": [
-        {
-            "src": "/demo.webp",
-            "sizes": "1899x1092",
-            "type": "image/webp",
-            "form_factor": "wide"
-        },
-        {
-            "src": "/demo.webp",
-            "sizes": "1899x1092",
-            "type": "image/webp",
-            "form_factor": "narrow"
-        }
-    ],
     "share_target": {
         "action": "/share-target",
         "method": "POST",

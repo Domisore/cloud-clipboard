@@ -47,6 +47,10 @@ export const metadata: Metadata = {
     images: ["/icon.png"], // Using the new favicon/icon as a basic twitter image
   },
   manifest: "/manifest.json",
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon-192x192.png", // Explicit Apple Touch Icon
+  },
 };
 
 import { Analytics } from "@vercel/analytics/next";
