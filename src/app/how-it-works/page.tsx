@@ -1,7 +1,7 @@
 import { Header } from "@/components/ui/Header";
 import { Footer } from "@/components/ui/Footer";
 import Link from "next/link";
-import { ArrowLeft, Smartphone, Monitor, Share2, ScanLine } from "lucide-react";
+import { ArrowLeft, Smartphone, Monitor, Share2, ScanLine, ArrowUpFromLine } from "lucide-react";
 
 export default function HowItWorks() {
     return (
@@ -14,7 +14,7 @@ export default function HowItWorks() {
                         href="/"
                         className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-foreground mb-8 transition-colors group"
                     >
-                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                        <ArrowLeft className="w-4 h-6 group-hover:-translate-x-1 transition-transform" />
                         RETURN TO HOMEPAGE
                     </Link>
 
@@ -72,7 +72,7 @@ export default function HowItWorks() {
                             </ol>
                         </div>
 
-                        {/* 4. Share with Someone Else */}
+                        {/* 4. Share Link */}
                         <div className="bg-surface/30 border border-border-color rounded-2xl p-6 sm:p-8 hover:border-accent/30 transition-colors">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="p-3 bg-orange-500/10 rounded-lg text-orange-400">
@@ -86,6 +86,29 @@ export default function HowItWorks() {
                                 <li>Click <span className="text-accent font-bold">Copy Link</span> next to any file.</li>
                                 <li>Send this link to anyone. They can download the file immediately without an account.</li>
                             </ol>
+                        </div>
+
+                        {/* 5. Native Share Sheet (Spans 2 cols on PC) */}
+                        <div className="bg-gradient-to-br from-surface/50 to-accent/5 border border-accent/20 rounded-2xl p-6 sm:p-8 hover:border-accent/40 transition-colors md:col-span-2">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="p-3 bg-accent/10 rounded-lg text-accent">
+                                    <ArrowUpFromLine className="w-6 h-6" />
+                                </div>
+                                <h3 className="text-xl font-bold text-foreground">Native Mobile Share Sheet</h3>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <ol className="list-decimal list-inside space-y-4 text-sm sm:text-base text-foreground-muted font-medium">
+                                    <li>Install Drive.io as an app (Add to Home Screen).</li>
+                                    <li>Open any app on your phone (Photos, Notes, Files).</li>
+                                    <li>Tap standard <span className="text-foreground font-bold">Share</span> button.</li>
+                                    <li>Select <span className="text-accent font-bold">Drive.io</span> from the list.</li>
+                                </ol>
+                                <div className="flex flex-col justify-center gap-2 text-sm text-foreground-muted bg-surface/50 p-4 rounded-xl border border-border-color/50">
+                                    <p className="font-semibold text-foreground mb-2">⚡️ Pro Tip:</p>
+                                    <p>Your shared text or file will instantly upload to Drive.io and appear on your synced devices.</p>
+                                    <p>No need to open the browser or the app first.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

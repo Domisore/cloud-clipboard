@@ -3,7 +3,7 @@ const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  disable: false, // process.env.NODE_ENV === 'development', // DISABLED: User needs to test PWA in dev
+  disable: false, // process.env.NODE_ENV === 'development', // Always enable PWA for now
 });
 
 const nextConfig = {
