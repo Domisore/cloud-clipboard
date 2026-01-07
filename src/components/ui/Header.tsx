@@ -33,12 +33,12 @@ export function Header() {
                     {/* Desktop Links */}
                     <button
                         onClick={() => setShowSessions(true)}
-                        className="hidden md:flex text-xs font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
+                        className="hidden md:flex text-sm font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
                     >
                         <div className="flex items-center gap-1">
                             <span>Sessions</span>
                             {wallet.length > 0 && (
-                                <span className="bg-surface border border-border-color text-[10px] px-1.5 rounded-full h-4 flex items-center justify-center">
+                                <span className="bg-surface border border-border-color text-xs px-1.5 rounded-full h-4 flex items-center justify-center">
                                     {wallet.length}
                                 </span>
                             )}
@@ -47,7 +47,7 @@ export function Header() {
 
                     <Link
                         href="/how-it-works"
-                        className="hidden md:block text-xs font-medium text-foreground-muted hover:text-foreground transition-colors"
+                        className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
                     >
                         How it works
                     </Link>
@@ -58,7 +58,7 @@ export function Header() {
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             className="p-1.5 text-foreground-muted hover:text-foreground transition-colors"
                         >
-                            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                         </button>
 
                         {/* Mobile Dropdown */}
@@ -66,11 +66,11 @@ export function Header() {
                             <div className="absolute top-full right-0 mt-2 w-48 bg-surface border border-border-color rounded-lg shadow-xl py-2 flex flex-col gap-1 animate-in fade-in zoom-in-95 duration-200">
                                 <button
                                     onClick={() => { setShowSessions(true); setIsMobileMenuOpen(false); }}
-                                    className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-white/5 transition-colors flex items-center justify-between"
+                                    className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors flex items-center justify-between"
                                 >
                                     <span>Sessions</span>
                                     {wallet.length > 0 && (
-                                        <span className="bg-background border border-border-color text-[10px] px-1.5 rounded-full h-4 flex items-center justify-center">
+                                        <span className="bg-background border border-border-color text-xs px-1.5 rounded-full h-4 flex items-center justify-center">
                                             {wallet.length}
                                         </span>
                                     )}
@@ -78,7 +78,7 @@ export function Header() {
                                 <Link
                                     href="/how-it-works"
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-white/5 transition-colors"
+                                    className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
                                 >
                                     How it works
                                 </Link>
@@ -90,14 +90,14 @@ export function Header() {
                         <button
                             onClick={() => setIsSyncOpen(true)}
                             className={`
-                                h-8 px-3 rounded-md text-xs font-medium flex items-center gap-2 transition-all border
+                                h-9 px-4 rounded-md text-sm font-medium flex items-center gap-2 transition-all border
                                 ${isConnected
                                     ? 'bg-accent/10 border-accent/20 text-accent hover:bg-accent/20'
                                     : 'bg-surface border-border-color text-foreground hover:border-foreground-muted'
                                 }
                             `}
                         >
-                            {isConnected ? <Check className="w-3.5 h-3.5" /> : <Zap className="w-3.5 h-3.5" />}
+                            {isConnected ? <Check className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
                             <span>{isConnected ? 'Synced' : 'Connect'}</span>
                         </button>
                     </Tooltip>
