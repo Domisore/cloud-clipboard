@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "@/context/SessionContext";
 import { MonetizationWrapper } from "@/components/monetization/MonetizationWrapper";
@@ -8,6 +8,11 @@ import { BMCWidget } from "@/components/monetization/BMCWidget";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -64,7 +69,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${jetbrainsMono.variable} antialiased bg-background text-foreground font-mono`}
+        className={`${jetbrainsMono.variable} ${inter.variable} antialiased bg-background text-foreground font-sans`}
         suppressHydrationWarning
       >
         <MonetizationWrapper>
