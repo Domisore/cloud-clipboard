@@ -37,18 +37,23 @@ export async function POST(request: Request) {
 
             if (sessionId) {
                 // Check if session is still active/exists
-                // We stored metadata in a hash now
-                const metaRaw = await redis.hgetall(`session_meta:${sessionId}`);
+                let meta: any = null;
 
-                // If meta is empty, check if it was the old string format
-                let meta: any = metaRaw;
+                try {
+                    // Try to read as a Hash (New Format)
+                    meta = await redis.hgetall(`session_meta:${sessionId}`);
+                } catch (e) {
+                    // Ignore WRONGTYPE error -> Proceed to check if it's a string
+                }
+
+                // If meta is empty or failed, check if it was the old string format
                 if (!meta || Object.keys(meta).length === 0) {
-                    const oldStatus = await redis.get(`session_meta:${sessionId}`);
+                    // Fallback: Check if it's a legacy string key
+                    const oldStatus = await redis.get<string>(`session_meta:${sessionId}`);
                     if (oldStatus === 'active') {
                         meta = { status: 'active', type: 'unknown' };
+                        // Optional: We could upgrade it here, but read-only is safer for now
                     } else {
-                        // Session might not have metadata but still have files? 
-                        // Or it's just gone.
                         meta = null;
                     }
                 }

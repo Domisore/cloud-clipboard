@@ -29,6 +29,11 @@ export async function POST(request: Request) {
         // Store Key -> SessionID mapping (Permanent)
         await redis.set(`perma_key:${permKey}`, sessionId);
 
+        // SAFELY HANDLE MIGRATION: 
+        // If session_meta was previously a string (old code), hset will fail with WRONGTYPE.
+        // We delete it first to ensure we can create a clean Hash.
+        await redis.del(`session_meta:${sessionId}`);
+
         // Store Session Metadata
         // We use a hash to store metadata about the session
         await redis.hset(`session_meta:${sessionId}`, {
@@ -46,19 +51,8 @@ export async function POST(request: Request) {
             expiresAt: null // Permanent
         });
 
-    } catch (error: any) {
-        console.error('Perma-key generation error DETAILS:', {
-            message: error.message,
-            stack: error.stack,
-            env_vars_check: {
-                has_upstash_url: !!process.env.UPSTASH_REDIS_REST_URL,
-                has_kv_url: !!process.env.KV_REST_API_URL,
-                has_redis_url: !!process.env.REDIS_URL
-            }
-        });
-        return NextResponse.json({
-            error: 'Failed to generate permanent key',
-            details: error.message
-        }, { status: 500 });
+    } catch (error) {
+        console.error('Perma-key generation error:', error);
+        return NextResponse.json({ error: 'Failed to generate permanent key' }, { status: 500 });
     }
 }
