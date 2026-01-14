@@ -33,7 +33,7 @@ export function Header() {
                     {/* Desktop Links */}
                     <button
                         onClick={() => setShowSessions(true)}
-                        className="hidden md:flex text-sm font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
+                            className="hidden md:flex text-sm font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
                     >
                         <div className="flex items-center gap-1">
                             <span>Sessions</span>
