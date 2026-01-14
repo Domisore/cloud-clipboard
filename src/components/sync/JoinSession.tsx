@@ -17,7 +17,7 @@ export function JoinSession() {
         setLoading(true);
         setError('');
 
-        const cleanOtp = otp.trim(); // Don't strip spaces aggressively, but trim
+        const cleanOtp = otp.trim().replace(/\s/g, ''); // Remove all whitespace (e.g. "123 456" -> "123456")
 
         // Permanent Key Validation
         if (cleanOtp.startsWith('pk_')) {
