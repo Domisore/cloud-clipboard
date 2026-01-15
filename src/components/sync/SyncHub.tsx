@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useSession } from '@/context/SessionContext';
-import { Copy, RefreshCw, Check, Zap, X } from 'lucide-react';
+import { Copy, RefreshCw, Check, Zap, X, QrCode } from 'lucide-react';
 import { JoinSession } from './JoinSession';
 
 export function SyncHub({ onClose }: { onClose: () => void }) {
@@ -13,6 +13,7 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
     const [magicLink, setMagicLink] = useState<string>('');
     const [timeLeft, setTimeLeft] = useState<number>(120);
     const [copied, setCopied] = useState(false);
+    const [showQr, setShowQr] = useState(false);
 
     // Perma-Connect State
     const [mode, setMode] = useState<'standard' | 'perma'>('standard');
@@ -117,10 +118,27 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
 
                     {mode === 'standard' ? (
                         <div className="w-full flex flex-col items-center animate-in fade-in duration-300">
-                            <div className="bg-surface p-6 rounded-xl border border-border-color mb-4 w-full text-center">
-                                <div className="text-4xl font-mono font-bold text-accent tracking-[0.2em] mb-2 select-all">
-                                    {otp}
-                                </div>
+                            <div className="bg-surface p-6 rounded-xl border border-border-color mb-4 w-full text-center relative group">
+                                <button
+                                    onClick={() => setShowQr(!showQr)}
+                                    className="absolute top-2 right-2 p-1.5 text-foreground-muted hover:text-accent hover:bg-background rounded-md transition-colors"
+                                    title={showQr ? "Show Code" : "Show QR Code"}
+                                >
+                                    {showQr ? <span className="text-[10px] font-bold">123</span> : <QrCode className="w-4 h-4" />}
+                                </button>
+
+                                {showQr ? (
+                                    <div className="flex justify-center mb-2 animate-in zoom-in duration-200">
+                                        <div className="p-2 bg-white rounded-lg">
+                                            <QRCodeSVG value={magicLink} size={160} />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="text-4xl font-mono font-bold text-accent tracking-[0.2em] mb-2 select-all">
+                                        {otp}
+                                    </div>
+                                )}
+
                                 <p className="text-[10px] text-foreground-muted uppercase tracking-wider">
                                     Expires in {formatTimeLeft(timeLeft)}
                                 </p>
@@ -198,4 +216,3 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
         </div>
     );
 }
-
