@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { FileText, Image as ImageIcon, Link as LinkIcon, Clock, Trash2 } from 'lucide-react';
+import { FileText, Image as ImageIcon, Link as LinkIcon, Clock, Trash2, Check } from 'lucide-react';
 
 type Upload = {
     url: string;
@@ -26,6 +26,14 @@ function formatTimeAgo(timestamp: number): string {
 
 export function RecentList() {
     const [uploads, setUploads] = useState<Upload[]>([]);
+    const [showToast, setShowToast] = useState(false);
+
+    useEffect(() => {
+        if (showToast) {
+            const timer = setTimeout(() => setShowToast(false), 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [showToast]);
 
     const loadUploads = () => {
         const stored = localStorage.getItem('recent_uploads');
@@ -118,7 +126,10 @@ export function RecentList() {
                             </div>
 
                             <button
-                                onClick={() => navigator.clipboard.writeText(upload.url)}
+                                onClick={() => {
+                                    navigator.clipboard.writeText(upload.url);
+                                    setShowToast(true);
+                                }}
                                 className="flex items-center gap-1.5 text-xs font-bold text-accent hover:underline opacity-80 hover:opacity-100"
                             >
                                 <LinkIcon size={12} />
@@ -128,6 +139,13 @@ export function RecentList() {
                     </div>
                 ))}
             </div>
+
+            {showToast && (
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-foreground text-background px-4 py-2 rounded-full text-xs font-bold shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-200 flex items-center gap-2 z-50">
+                    <Check size={14} />
+                    Copied
+                </div>
+            )}
         </div>
     );
 }
