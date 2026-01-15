@@ -87,7 +87,7 @@ export function RecentList() {
 
     return (
         <div className="w-full max-w-5xl mx-auto space-y-6 animate-fade-in">
-            <h2 className="text-xs font-bold text-foreground-muted uppercase tracking-wider pl-1">Recent Activity</h2>
+            <h2 className="text-xs font-bold text-foreground-muted uppercase tracking-wider text-center mb-4">Recent Activity</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {uploads.map((upload) => (

@@ -3,6 +3,7 @@ import { Footer } from "@/components/ui/Footer";
 import { CommandCenter } from "@/components/ui/CommandCenter";
 import { RecentList } from "@/components/ui/RecentList";
 import { CarbonAd } from "@/components/ui/CarbonAd";
+import { HowItWorks } from "@/components/ui/HowItWorks";
 
 export default function Home() {
   return (
@@ -22,6 +23,9 @@ export default function Home() {
             Create secure, ephemeral links to share with anyone. <span className="mx-1 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-yellow-400 before:opacity-80 relative inline-block"><span className="relative text-black font-bold px-1">No account required.</span></span>
           </p>
         </div>
+
+        {/* How It Works Steps */}
+        <HowItWorks />
 
         {/* Main Interaction Area */}
         <div className="w-full max-w-5xl mx-auto flex flex-col gap-16">
