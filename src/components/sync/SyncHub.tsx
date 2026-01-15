@@ -128,9 +128,9 @@ export function SyncHub({ onClose }: { onClose: () => void }) {
                                 </button>
 
                                 {showQr ? (
-                                    <div className="flex justify-center mb-2 animate-in zoom-in duration-200">
-                                        <div className="p-2 bg-white rounded-lg">
-                                            <QRCodeSVG value={magicLink} size={160} />
+                                    <div className="flex justify-center mb-4 animate-in zoom-in duration-200">
+                                        <div className="p-4 bg-white rounded-xl shadow-lg ring-4 ring-white/10">
+                                            <QRCodeSVG value={magicLink} size={220} />
                                         </div>
                                     </div>
                                 ) : (
