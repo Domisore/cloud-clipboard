@@ -4,7 +4,7 @@ import { UploadCloud, Smartphone, ArrowDownCircle } from 'lucide-react';
 
 export function HowItWorks() {
     return (
-        <section className="w-full max-w-5xl mx-auto py-8 animate-fade-in">
+        <section id="how-it-works" className="w-full max-w-5xl mx-auto py-8 animate-fade-in">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
                 {/* Connecting Line (Desktop) */}
                 <div className="hidden md:block absolute top-[24px] left-[16%] right-[16%] h-[2px] bg-gradient-to-r from-border-color via-accent/20 to-border-color -z-10" />

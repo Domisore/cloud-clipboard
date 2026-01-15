@@ -33,7 +33,7 @@ export function Header() {
                     {/* Desktop Links */}
                     <button
                         onClick={() => setShowSessions(true)}
-                            className="hidden md:flex text-sm font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
+                        className="hidden md:flex text-sm font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
                     >
                         <div className="flex items-center gap-1">
                             <span>Sessions</span>
@@ -46,10 +46,17 @@ export function Header() {
                     </button>
 
                     <Link
-                        href="/how-it-works"
+                        href="/#how-it-works"
                         className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
                     >
                         How it works
+                    </Link>
+
+                    <Link
+                        href="https://forms.fillout.com/t/vej46NKrCkus"
+                        className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+                    >
+                        Contact
                     </Link>
 
                     {/* Mobile Menu Toggle */}
@@ -76,11 +83,19 @@ export function Header() {
                                     )}
                                 </button>
                                 <Link
-                                    href="/how-it-works"
+                                    href="/#how-it-works"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
                                 >
                                     How it works
+                                </Link>
+                                <Link
+                                    href="https://forms.fillout.com/t/vej46NKrCkus"
+                                    target="_blank" rel="noopener noreferrer" 
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                >
+                                    Contact
                                 </Link>
                             </div>
                         )}

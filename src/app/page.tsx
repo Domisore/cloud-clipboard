@@ -71,6 +71,7 @@ export default function Home() {
 
           {/* Discord CTA */}
           <a
+            id="contact"
             href="https://discord.gg/PTtKGCmg"
             target="_blank"
             rel="noopener noreferrer"

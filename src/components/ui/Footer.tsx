@@ -10,7 +10,7 @@ export function Footer() {
                 <span>•</span>
                 <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
                 <span>•</span>
-                <a href="https://github.com/Domisore/cloud-clipboard" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
+                <a href="https://forms.fillout.com/t/vej46NKrCkus" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Contact</a>
             </div>
             <p>End-to-end encrypted · Serverless · No Logs</p>
         </footer>
