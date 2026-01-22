@@ -207,7 +207,7 @@ export function CommandCenter() {
 
                 {/* STATE: IDLE or TYPING */}
                 {(state === 'idle' || state === 'has-content') && !file && (
-                    <div className="relative min-h-[300px] flex flex-col">
+                    <div className="relative min-h-[160px] flex flex-col">
                         <textarea
                             ref={textareaRef}
                             value={text}
@@ -216,7 +216,7 @@ export function CommandCenter() {
                                 setState(e.target.value ? 'has-content' : 'idle');
                             }}
                             placeholder="Type plain text, code, or paste an image..."
-                            className="w-full h-full min-h-[300px] bg-transparent p-6 sm:p-8 text-foreground font-mono resize-none focus:outline-none placeholder:text-foreground-muted/50"
+                            className="w-full h-full min-h-[160px] bg-transparent p-4 sm:p-6 text-foreground font-mono resize-none focus:outline-none placeholder:text-foreground-muted/50"
                             autoFocus
                         />
 
@@ -252,7 +252,7 @@ export function CommandCenter() {
 
                 {/* STATE: FILE PREVIEW */}
                 {file && state !== 'success' && (
-                    <div className="min-h-[300px] flex flex-col items-center justify-center p-8 text-center bg-surface/30">
+                    <div className="min-h-[160px] flex flex-col items-center justify-center p-6 text-center bg-surface/30">
                         <div className="w-20 h-20 rounded-2xl bg-surface border border-border-color flex items-center justify-center mb-6 shadow-lg">
                             {file.type.startsWith('image/') ? <ImageIcon className="w-10 h-10 text-accent" /> : <FileText className="w-10 h-10 text-accent" />}
                         </div>

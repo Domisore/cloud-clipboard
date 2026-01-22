@@ -8,7 +8,7 @@ export default function HowItWorks() {
         <div className="min-h-screen flex flex-col font-sans selection:bg-accent/30 selection:text-foreground">
             <Header />
 
-            <main className="flex-1 flex flex-col items-center justify-start p-4 sm:p-8 gap-8 relative z-10 w-full max-w-5xl mx-auto">
+            <main className="flex-1 flex flex-col items-center justify-start pt-24 p-4 sm:p-8 gap-8 relative z-10 w-full max-w-5xl mx-auto">
                 <div className="w-full">
                     <Link
                         href="/"

@@ -46,7 +46,7 @@ export function Header() {
                     </button>
 
                     <Link
-                        href="/#how-it-works"
+                        href="/how-it-works"
                         className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
                     >
                         How it works
@@ -83,7 +83,7 @@ export function Header() {
                                     )}
                                 </button>
                                 <Link
-                                    href="/#how-it-works"
+                                    href="/how-it-works"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
                                 >
@@ -91,7 +91,7 @@ export function Header() {
                                 </Link>
                                 <Link
                                     href="https://forms.fillout.com/t/vej46NKrCkus"
-                                    target="_blank" rel="noopener noreferrer" 
+                                    target="_blank" rel="noopener noreferrer"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
                                 >
