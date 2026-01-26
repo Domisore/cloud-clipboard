@@ -28,12 +28,12 @@ export default function Home() {
         <HowItWorks />
 
         {/* Main Interaction Area */}
-        <div className="w-full max-w-5xl mx-auto flex flex-col gap-16">
+        <div className="w-full max-w-5xl mx-auto flex flex-col gap-12">
           <CommandCenter />
 
           <RecentList />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 pb-4 border-t border-border-color/50">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-6 pb-4 border-t border-border-color/50">
             {/* Feature 1: Simpler than Competitors */}
             <div className="p-6 rounded-2xl bg-surface/30 border border-border-color/50 hover:border-accent/30 transition-colors">
               <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 mb-4">
