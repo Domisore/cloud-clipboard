@@ -22,20 +22,6 @@ export function RecommendedTools() {
                 </svg>
             ),
         },
-        // {
-        //     name: "Sync.com",
-        //     description: "Zero-knowledge encryption for your files. Guaranteed privacy that even they can't access.",
-        //     url: "https://www.sync.com/?_yap_id=YOUR_REF_ID", // TODO: Replace with real affiliate link
-        //     colorClass: "text-red-400 bg-red-500/10",
-        //     buttonText: "Get 5GB Free",
-        //     icon: (
-        //         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-        //             <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-        //             <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-        //             <ellipse cx="12" cy="5" rx="9" ry="3" />
-        //         </svg>
-        //     ),
-        // },
         {
             name: "NordVPN",
             description: "Protect your connection while sharing. Fast, secure, and keeps no logs of your activity.",
@@ -48,18 +34,30 @@ export function RecommendedTools() {
                 </svg>
             ),
         },
-        // {
-        //    name: "Proton",
-        //    description: "Complete privacy ecosystem: Email, Calendar, Drive, and VPN from CERN scientists.",
-        //    url: "https://proton.me/mail/pricing?ref=YOUR_REF_ID",
-        //    colorClass: "text-purple-400 bg-purple-500/10",
-        //    icon: (
-        //      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-        //        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-        //        <circle cx="12" cy="12" r="3" />
-        //      </svg>
-        //    )
-        // }
+        {
+            name: "Proton Pass",
+            description: "Securely manage your passwords and identity with end-to-end encryption.",
+            url: "https://go.getproton.me/aff_c?offer_id=38&aff_id=16028",
+            colorClass: "text-purple-400 bg-purple-500/10",
+            icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+            ),
+        },
+        {
+            name: "Proton VPN",
+            description: "High-speed Swiss VPN that protects your privacy and unblocks content.",
+            url: "https://go.getproton.me/aff_c?offer_id=26&aff_id=16028",
+            colorClass: "text-purple-400 bg-purple-500/10",
+            icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+                    <path d="m9 12 2 2 4-4" />
+                </svg>
+            ),
+        }
     ];
 
     return (
