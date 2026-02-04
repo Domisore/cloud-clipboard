@@ -59,7 +59,6 @@ export const metadata: Metadata = {
 };
 
 import { Analytics } from "@vercel/analytics/next";
-import { InstallPrompt } from "@/components/ui/InstallPrompt";
 
 export default function RootLayout({
   children,
@@ -78,7 +77,6 @@ export default function RootLayout({
             <AdUnit />
             <BMCWidget />
             <Analytics />
-            <InstallPrompt />
           </SessionProvider>
         </MonetizationWrapper>
       </body>

@@ -5,6 +5,7 @@ import { RecentList } from "@/components/ui/RecentList";
 import { CarbonAd } from "@/components/ui/CarbonAd";
 import { HowItWorks } from "@/components/ui/HowItWorks";
 import { RecommendedTools } from "@/components/monetization/RecommendedTools";
+import { HeaderUsageTip } from "@/components/ui/HeaderUsageTip";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <main className="flex-1 flex flex-col relative pt-24 pb-12 px-4 sm:px-6">
 
         {/* Hero Text (Moved from Header) */}
+        <HeaderUsageTip />
         {/* Hero Text (Moved from Header) */}
         <div className="text-center max-w-2xl mx-auto mb-12 animate-fade-in">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">
