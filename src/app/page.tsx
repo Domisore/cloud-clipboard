@@ -1,11 +1,13 @@
 import { Header } from "@/components/ui/Header";
 import { Footer } from "@/components/ui/Footer";
 import { CommandCenter } from "@/components/ui/CommandCenter";
+import Link from "next/link";
 import { RecentList } from "@/components/ui/RecentList";
 import { CarbonAd } from "@/components/ui/CarbonAd";
 import { HowItWorks } from "@/components/ui/HowItWorks";
 import { RecommendedTools } from "@/components/monetization/RecommendedTools";
 import { HeaderUsageTip } from "@/components/ui/HeaderUsageTip";
+import { AgentSplash } from "@/components/moltbot/AgentSplash";
 
 export default function Home() {
   return (
@@ -18,6 +20,12 @@ export default function Home() {
         <HeaderUsageTip />
         {/* Hero Text (Moved from Header) */}
         <div className="text-center max-w-2xl mx-auto mb-12 animate-fade-in">
+          <Link href="/agents" className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300 text-base font-medium mb-8 hover:bg-purple-500/20 transition-colors">
+            <span className="flex items-center justify-center p-0.5 rounded-full bg-purple-500/20">
+              <img src="/moltbot-2.png" alt="Moltbot" className="w-8 h-8 rounded-full" />
+            </span>
+            NEW: Share files from Moltbot via your chat interface or with other Agents!
+          </Link>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">
             Your Universal <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">Cloud Clipboard.</span>
           </h1>
@@ -97,6 +105,9 @@ export default function Home() {
           <div className="flex justify-center opacity-80 hover:opacity-100 transition-opacity">
             <CarbonAd />
           </div>
+
+          <AgentSplash />
+
         </div>
       </main>
 

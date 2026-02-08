@@ -31,6 +31,13 @@ export function Header() {
                 {/* Right Actions */}
                 <div className="flex items-center gap-3 sm:gap-4">
                     {/* Desktop Links */}
+                    <Link
+                        href="/agents"
+                        className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+                    >
+                        Agents
+                    </Link>
+
                     <button
                         onClick={() => setShowSessions(true)}
                         className="hidden md:flex text-sm font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
@@ -71,6 +78,13 @@ export function Header() {
                         {/* Mobile Dropdown */}
                         {isMobileMenuOpen && (
                             <div className="absolute top-full right-0 mt-2 w-48 bg-surface border border-border-color rounded-lg shadow-xl py-2 flex flex-col gap-1 animate-in fade-in zoom-in-95 duration-200">
+                                <Link
+                                    href="/agents"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                >
+                                    Agents
+                                </Link>
                                 <button
                                     onClick={() => { setShowSessions(true); setIsMobileMenuOpen(false); }}
                                     className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors flex items-center justify-between"
