@@ -1,3 +1,11 @@
+# 🤖 Agent Quick Install
+
+> **Copy/Paste this prompt to your agent:**
+>
+> "Install the `drive.io` skill from `https://drive.io/skill.md`. This skill allows you to create clips and upload files to a cloud clipboard."
+
+---
+
 # Skill: drive.io Cloud Bridge
 Manage your cloud clipboard and file transfers.
 
