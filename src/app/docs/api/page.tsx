@@ -111,7 +111,7 @@ export default function ApiDocsPage() {
                         Download the standardized skill definition to drop into your OpenClaw or Moltbot agent configuration.
                     </p>
                     <a
-                        href="https://github.com/your-repo/drive-io-skills"
+                        href="/skill.md"
                         target="_blank"
                         className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-foreground text-background font-bold rounded-lg hover:opacity-90 transition-opacity"
                     >

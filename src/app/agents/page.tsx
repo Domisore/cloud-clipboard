@@ -46,7 +46,7 @@ export default function AgentsPage() {
                                 <span>Read Documentation</span>
                                 <ArrowRight className="w-5 h-5" />
                             </Link>
-                            <a href="https://github.com/your-repo/drive-io-skills" target="_blank" className="flex items-center justify-between px-6 py-4 bg-zinc-900 border border-zinc-800 text-zinc-300 font-bold uppercase tracking-wider hover:bg-zinc-800 transition-colors">
+                            <a href="/skill.md" target="_blank" className="flex items-center justify-between px-6 py-4 bg-zinc-900 border border-zinc-800 text-zinc-300 font-bold uppercase tracking-wider hover:bg-zinc-800 transition-colors">
                                 <span>Get SKILL.md</span>
                                 <Code className="w-5 h-5" />
                             </a>
