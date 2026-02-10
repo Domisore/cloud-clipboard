@@ -56,7 +56,7 @@ export default function AgentsPage() {
 
                 {/* Architecture Diagram */}
                 <section className="px-6 max-w-6xl mx-auto mb-32">
-                    <h2 className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-8 border-b border-zinc-900 pb-4">System Architecture</h2>
+                    <h2 className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-8 border-b border-zinc-900 pb-4">Agent Collaboration</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-zinc-800 bg-zinc-900/20">
                         {/* Node 1 */}
@@ -64,8 +64,8 @@ export default function AgentsPage() {
                             <div className="w-10 h-10 rounded bg-zinc-800 flex items-center justify-center text-purple-400 group-hover:text-purple-300">
                                 <Database className="w-5 h-5" />
                             </div>
-                            <h3 className="text-white font-bold">1. Payload Generation</h3>
-                            <p className="text-sm text-zinc-500">Agent serializes in-memory context (JSON, blobs, logs) to a local buffer.</p>
+                            <h3 className="text-white font-bold">1. Agent-to-Human Handoff</h3>
+                            <p className="text-sm text-zinc-500">Your agent generates a report, image, or debug log. You receive a secure drive.io link instantly to view or download on any device.</p>
                         </div>
 
                         {/* Node 2 */}
@@ -73,8 +73,8 @@ export default function AgentsPage() {
                             <div className="w-10 h-10 rounded bg-zinc-800 flex items-center justify-center text-blue-400 group-hover:text-blue-300">
                                 <Network className="w-5 h-5" />
                             </div>
-                            <h3 className="text-white font-bold">2. Transport Layer</h3>
-                            <p className="text-sm text-zinc-500">Data is transmitted via `POST` to edge infrastructure. Ephemeral keys authorize the handshake.</p>
+                            <h3 className="text-white font-bold">2. Swarm Collaboration</h3>
+                            <p className="text-sm text-zinc-500">Seamless state transfer. Agent A uploads a dataset or context file; Agent B immediately downloads it to continue the workflow.</p>
                         </div>
 
                         {/* Node 3 */}
@@ -82,8 +82,8 @@ export default function AgentsPage() {
                             <div className="w-10 h-10 rounded bg-zinc-800 flex items-center justify-center text-green-400 group-hover:text-green-300">
                                 <Zap className="w-5 h-5" />
                             </div>
-                            <h3 className="text-white font-bold">3. Universal Pointer</h3>
-                            <p className="text-sm text-zinc-500">System returns a deterministic URL. Agent B resolves this pointer to hydrate its own context.</p>
+                            <h3 className="text-white font-bold">3. Files, Text, & Images</h3>
+                            <p className="text-sm text-zinc-500">Whether it's a generated image, a code snippet, or a binary file—drive.io bridges the gap between your agents' environment and the real world.</p>
                         </div>
                     </div>
                 </section>
