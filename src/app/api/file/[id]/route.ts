@@ -16,11 +16,32 @@ export async function GET(
             return NextResponse.json({ error: 'Missing file ID' }, { status: 400 });
         }
 
-        // 1. Get metadata from Redis
-        const metadata: any = await redis.get(`file:${id}`);
+        // 1. Get metadata from Redis (Try FILE first)
+        let metadata: any = await redis.get(`file:${id}`);
+        let isClip = false;
 
         if (!metadata) {
-            return NextResponse.json({ error: 'File not found or expired' }, { status: 404 });
+            // 2. Try CLIP
+            metadata = await redis.get(`clip:${id}`);
+            if (metadata) {
+                isClip = true;
+            } else {
+                return NextResponse.json({ error: 'File not found or expired' }, { status: 404 });
+            }
+        }
+
+        if (isClip) {
+            // It's a text clip, allow valid response without R2
+            return NextResponse.json({
+                id: metadata.id,
+                filename: metadata.title || 'snippet.txt',
+                size: new Blob([metadata.content]).size,
+                mimeType: 'text/plain',
+                uploadedAt: metadata.createdAt,
+                expiresAt: null, // Clips might use Redis TTL, here we can just say null or calc
+                url: `data:text/plain;charset=utf-8,${encodeURIComponent(metadata.content)}`,
+                rawUrl: null
+            });
         }
 
         // 2. Generate Presigned URL for Download (GET)

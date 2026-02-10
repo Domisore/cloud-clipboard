@@ -297,7 +297,7 @@ export function CommandCenter() {
 
                 {/* STATE: UPLOADING / SUCCESS */}
                 {(state === 'uploading' || state === 'success') && (
-                    <div className="absolute inset-0 bg-surface/95 backdrop-blur-md flex flex-col items-center justify-center z-10 p-8">
+                    <div className="relative w-full min-h-[300px] bg-surface/95 backdrop-blur-md flex flex-col items-center justify-center z-10 p-8">
                         {state === 'uploading' ? (
                             <div className="flex flex-col items-center">
                                 <div className="w-12 h-12 border-4 border-accent/30 border-t-accent rounded-full animate-spin mb-6"></div>

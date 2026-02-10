@@ -38,7 +38,7 @@ export async function POST(request: Request) {
         // Assuming the app is hosted at the origin of the request or a configured base URL
         // For now, we'll return a relative path or use the origin from headers if available
         const origin = request.headers.get('origin') || 'https://drive.io';
-        const url = `${origin}/c/${id}`;
+        const url = `${origin}/${id}`;
 
         return NextResponse.json({
             success: true,
