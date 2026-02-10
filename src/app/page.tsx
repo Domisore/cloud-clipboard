@@ -8,6 +8,7 @@ import { HowItWorks } from "@/components/ui/HowItWorks";
 import { RecommendedTools } from "@/components/monetization/RecommendedTools";
 import { HeaderUsageTip } from "@/components/ui/HeaderUsageTip";
 import { AgentSplash } from "@/components/moltbot/AgentSplash";
+import { VisitorBadge } from "@/components/ui/VisitorBadge";
 
 export default function Home() {
   return (
@@ -107,6 +108,8 @@ export default function Home() {
           </div>
 
           <AgentSplash />
+
+          <VisitorBadge />
 
         </div>
       </main>
