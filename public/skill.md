@@ -17,10 +17,11 @@ Manage your cloud clipboard and file transfers.
   - `content`: (string) The text to save.
   - `title`: (string) Optional name for the clip.
   - `isPrivate`: (boolean) Whether the clip should be private.
+  - `burnAfterReading`: (boolean) If true, the clip is deleted after 1 view. Default: false.
 - **Returns:** A drive.io URL.
 - **API Call:**
   - `POST /api/v1/clips`
-  - Body: `{ "content": "...", "title": "...", "isPrivate": true }`
+  - Body: `{ "content": "...", "title": "...", "isPrivate": true, "burnAfterReading": false }`
 
   **Example Response:**
   ```json

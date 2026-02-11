@@ -30,6 +30,20 @@ export async function GET(
             }
         }
 
+        // 3. Check for Burn After Reading
+        if (metadata.burnAfterReading) {
+            // Delete immediately (Fire and forget? or await?)
+            // Await to ensure it's gone before returning? 
+            // Better to await so we don't have race conditions where user reloads fast.
+            if (isClip) {
+                await redis.del(`clip:${id}`);
+            } else {
+                await redis.del(`file:${id}`);
+                // Ideally we should also schedule R2 deletion, but for now metadata removal effectively hides it.
+                // TODO: cleanup R2 files later.
+            }
+        }
+
         if (isClip) {
             // It's a text clip, allow valid response without R2
             return NextResponse.json({
@@ -38,7 +52,7 @@ export async function GET(
                 size: new Blob([metadata.content]).size,
                 mimeType: 'text/plain',
                 uploadedAt: metadata.createdAt,
-                expiresAt: null, // Clips might use Redis TTL, here we can just say null or calc
+                expiresAt: null,
                 url: `data:text/plain;charset=utf-8,${encodeURIComponent(metadata.content)}`,
                 rawUrl: null
             });

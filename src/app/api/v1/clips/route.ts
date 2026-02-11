@@ -9,7 +9,7 @@ export async function POST(request: Request) {
         // if (!authHeader || !authHeader.startsWith('Bearer ')) { ... }
 
         const body = await request.json();
-        const { content, title, isPrivate } = body;
+        const { content, title, isPrivate, burnAfterReading } = body;
 
         if (!content) {
             return NextResponse.json(
@@ -26,6 +26,7 @@ export async function POST(request: Request) {
             content,
             title: title || 'Untitled Clip',
             isPrivate: !!isPrivate,
+            burnAfterReading: !!burnAfterReading,
             createdAt,
             type: 'text', // Distinguish from files if needed later
         };

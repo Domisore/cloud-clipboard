@@ -38,7 +38,7 @@ export async function uploadFile(file: File, burnOnRead: boolean = false): Promi
             filename: file.name,
             size: file.size,
             contentType: file.type,
-            burnOnRead,
+            burnAfterReading: burnOnRead,
             uploadedAt,
         }),
     });

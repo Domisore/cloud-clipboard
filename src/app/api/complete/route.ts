@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
     try {
-        const { id, key, filename, size, contentType } = await request.json();
+        const { id, key, filename, size, contentType, burnAfterReading } = await request.json();
 
         if (!id || !key || !filename || !size) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -17,6 +17,7 @@ export async function POST(request: Request) {
             filename,
             size,
             contentType,
+            burnAfterReading: !!burnAfterReading,
             uploadedAt: Date.now(),
         };
 

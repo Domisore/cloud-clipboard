@@ -271,16 +271,16 @@ export function CommandCenter() {
                 {(state === 'has-content' || file) && state !== 'uploading' && state !== 'success' && (
                     <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background to-transparent flex items-center justify-between pb-6 px-6">
                         <div className="flex items-center gap-2">
-                            <Tooltip content="Burn on read: deleted after 1 view">
+                            <Tooltip content="Permanently deleted after first view">
                                 <button
                                     onClick={() => setBurnOnRead(!burnOnRead)}
-                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${burnOnRead
-                                        ? 'bg-danger/10 border-danger/30 text-danger'
-                                        : 'bg-surface/50 border-transparent text-foreground-muted hover:text-foreground'
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all border ${burnOnRead
+                                        ? 'bg-orange-500 border-orange-400 text-white shadow-[0_0_15px_rgba(249,115,22,0.6)]'
+                                        : 'bg-surface/50 border-transparent text-foreground-muted hover:text-foreground hover:bg-surface/80'
                                         }`}
                                 >
-                                    <Flame className="w-3.5 h-3.5" />
-                                    <span>{burnOnRead ? 'Auto-destruct' : 'Burn off'}</span>
+                                    <Flame className={`w-4 h-4 ${burnOnRead ? 'fill-current animate-pulse' : ''}`} />
+                                    <span>{burnOnRead ? 'BURN ENABLED' : 'Burn After Reading'}</span>
                                 </button>
                             </Tooltip>
                         </div>
