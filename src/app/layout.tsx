@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { JetBrains_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "@/context/SessionContext";
@@ -67,6 +68,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-LN27GX1JSV"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-LN27GX1JSV');
+        `}
+      </Script>
       <body
         className={`${jetbrainsMono.variable} ${inter.variable} antialiased bg-background text-foreground font-sans`}
         suppressHydrationWarning
