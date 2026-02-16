@@ -178,8 +178,16 @@ export default function FilePage() {
                             onClick={() => {
                                 if (fileData.url.includes('drive.io')) {
                                     alert(`In production, this would download:\n${fileData.filename}\n\nFor now, this is just a mock preview.`);
+                                } else if (fileData.url.startsWith('data:')) {
+                                    // Handle Text Clips (Data URLs) - Force Download
+                                    const link = document.createElement('a');
+                                    link.href = fileData.url;
+                                    link.download = fileData.filename; // Force filename
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
                                 } else {
-                                    // Browser native behavior - open in new tab
+                                    // Browser native behavior - open in new tab (for R2 / S3 URLs)
                                     window.open(fileData.url, '_blank');
                                 }
                             }}
