@@ -45,6 +45,8 @@ export default function Home() {
 
           <RecentList />
 
+          <AgentSplash />
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-6 pb-4 border-t border-border-color/50">
             {/* Feature 1: Simpler than Competitors */}
             <div className="p-6 rounded-2xl bg-surface/30 border border-border-color/50 hover:border-accent/30 transition-colors">
@@ -107,7 +109,7 @@ export default function Home() {
             <CarbonAd />
           </div>
 
-          <AgentSplash />
+
 
           <VisitorBadge />
 

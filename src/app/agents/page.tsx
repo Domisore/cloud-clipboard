@@ -2,6 +2,7 @@ import { Header } from "@/components/ui/Header";
 import { Footer } from "@/components/ui/Footer";
 import Link from "next/link";
 import { Terminal, Database, Network, Code, ArrowRight, Zap } from "lucide-react";
+import { ChatSimulationSection } from "@/components/ui/ChatSimulation";
 
 export default function AgentsPage() {
     return (
@@ -53,6 +54,8 @@ export default function AgentsPage() {
                         </div>
                     </div>
                 </section>
+
+                <ChatSimulationSection />
 
                 {/* Architecture Diagram */}
                 <section className="px-6 max-w-6xl mx-auto mb-32">

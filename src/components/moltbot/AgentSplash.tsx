@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Bot, Zap, ArrowRight, Terminal } from 'lucide-react';
+import { ChatCard } from '@/components/ui/ChatSimulation';
 
 export function AgentSplash() {
     return (
@@ -43,32 +44,16 @@ export function AgentSplash() {
                 </div>
 
                 {/* Visual Graphic */}
-                <div className="hidden md:flex flex-1 items-center justify-center relative z-10 w-full max-w-sm mt-8 md:mt-0">
-                    <div className="relative w-full aspect-video bg-zinc-900/90 rounded-xl border border-zinc-800 p-4 font-mono text-xs text-green-400 shadow-2xl flex flex-col gap-2">
-                        <div className="flex items-center gap-2 border-b border-zinc-800 pb-2 mb-2">
-                            <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                            <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-                            <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                            <span className="text-zinc-500 ml-2">moltbot --v1</span>
-                        </div>
-                        <div className="typing-effect opacity-80">
-                            <span className="text-purple-400">❯</span> searching for memory...<br />
-                            <span className="text-purple-400">❯</span> <span className="text-white">found file:</span> analysis.pdf<br />
-                            <span className="text-purple-400">❯</span> uploading to drive.io...<br />
-                            <span className="text-green-500">✔ success:</span> drive.io/c/k8j29s
-                        </div>
-
-                        {/* Floating "Card" representing the user receiving it */}
-                        <div className="absolute -bottom-6 -right-6 bg-zinc-800 p-3 rounded-lg border border-zinc-700 shadow-xl flex items-center gap-3 animate-bounce-slow">
-                            <div className="w-8 h-8 rounded bg-blue-500/20 flex items-center justify-center text-blue-400">
-                                <Zap className="w-4 h-4" />
-                            </div>
-                            <div>
-                                <div className="text-zinc-400 text-[10px]">Just now</div>
-                                <div className="text-white font-bold">Received File</div>
-                            </div>
-                        </div>
-                    </div>
+                <div className="hidden md:flex flex-1 items-center justify-center relative z-10 w-full max-w-md mt-8 md:mt-0 transform scale-90 sm:scale-100 transition-transform">
+                    <ChatCard
+                        userRequest="Find the latest security audit logs and upload them."
+                        agentResponse="I've compiled the security logs from the last 24h. Secure link generated."
+                        attachment={{
+                            type: "data",
+                            name: "security-audit-logs.json",
+                            size: "1.4 MB"
+                        }}
+                    />
                 </div>
             </div>
         </div>
