@@ -6,8 +6,8 @@
 
 ---
 
-# Skill: drive.io Cloud Bridge
-Manage your cloud clipboard and file transfers.
+# Agentic Protocol V1: drive.io
+Connect your AI assistants to the drive.io cloud clipboard. Create clips and upload files in one step.
 
 ## Tools
 

@@ -10,12 +10,13 @@ interface ChatProps {
         imageUrl?: string;
     };
     delay?: number;
+    customLink?: string;
 }
 
 const generateMockId = () => Math.random().toString(36).substring(2, 8);
 
-export function ChatCard({ userRequest, agentResponse, attachment, delay = 0 }: ChatProps) {
-    const mockLink = `https://drive.io/c/${generateMockId()}`;
+export function ChatCard({ userRequest, agentResponse, attachment, delay = 0, customLink }: ChatProps) {
+    const mockLink = customLink || `https://drive.io/c/${generateMockId()}`;
     const getIcon = () => {
         switch (attachment.type) {
             case "code": return <FileCode className="w-5 h-5 text-blue-400" />;

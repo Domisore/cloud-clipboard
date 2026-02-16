@@ -48,6 +48,7 @@ export function AgentSplash() {
                     <ChatCard
                         userRequest="Find the latest security audit logs and upload them."
                         agentResponse="I've compiled the security logs from the last 24h. Secure link generated."
+                        customLink="https://drive.io/c/N37X6P9R2Z"
                         attachment={{
                             type: "data",
                             name: "security-audit-logs.json",
