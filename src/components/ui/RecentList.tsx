@@ -2,14 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import { FileText, Image as ImageIcon, Link as LinkIcon, Clock, Trash2, Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { useSession } from '@/context/SessionContext'; // Import context
+import { UploadResult } from '@/services/mockUpload';
 
 type Upload = {
     url: string;
     key: string;
+    id?: string; // Add optional id
     expiresAt: number;
     filename?: string;
     textSnippet?: string;
     type?: string;
+    mimeType?: string; // Add mimeType from UploadResult
 };
 
 function formatTimeAgo(timestamp: number): string {
@@ -22,6 +26,7 @@ function formatTimeAgo(timestamp: number): string {
 }
 
 export function RecentList() {
+    const { userFiles } = useSession(); // Get user files
     const [uploads, setUploads] = useState<Upload[]>([]);
     const [showToast, setShowToast] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -35,21 +40,71 @@ export function RecentList() {
     }, [showToast]);
 
     const loadUploads = () => {
+        let merged: Upload[] = [];
+
+        // 1. Add User Files (Remote)
+        if (userFiles && userFiles.length > 0) {
+            const remoteUploads = userFiles.map((f: UploadResult) => ({
+                url: f.url || (typeof window !== 'undefined' ? `${window.location.origin}/${f.id}` : ''),
+                key: f.id, // Map ID to key
+                id: f.id,
+                expiresAt: f.expiresAt,
+                filename: f.filename,
+                textSnippet: f.textSnippet,
+                type: f.mimeType,
+                mimeType: f.mimeType
+            }));
+            merged = [...remoteUploads];
+        }
+
+        // 2. Add Local Files (deduplicate)
         const stored = localStorage.getItem('recent_uploads');
         if (stored) {
             try {
                 const parsed = JSON.parse(stored);
-                // Filter out expired stuff
                 const now = Date.now();
-                const active = parsed.filter((u: Upload) => u.expiresAt > now);
-                if (active.length !== parsed.length) {
-                    localStorage.setItem('recent_uploads', JSON.stringify(active));
+                const activeLocal = parsed.filter((u: any) => {
+                    // Filter expired
+                    if (u.expiresAt <= now) return false;
+                    // Filter if already present in remote (by id)
+                    const id = u.id || u.key;
+                    if (merged.some(m => m.key === id || m.id === id)) return false;
+                    return true;
+                });
+
+                // Map local format to Upload type if needed
+                const mappedLocal = activeLocal.map((u: any) => ({
+                    ...u,
+                    key: u.id || u.key, // Ensure key exists
+                    type: u.mimeType || u.type // Ensure type exists
+                }));
+
+                merged = [...merged, ...mappedLocal];
+
+                // Cleanup expired local storage
+                if (activeLocal.length !== parsed.length) {
+                    // We don't save merged back to local, we only prune expired local items
+                    // But we can't easily prune *just* expired without losing the ones we filtered out for duplication?
+                    // Actually, we should just prune expired from the source list.
+                    // For simplicity, let's just trigger a cleanup of strictly expired items.
+                    const strictlyActive = parsed.filter((u: any) => u.expiresAt > now);
+                    if (strictlyActive.length !== parsed.length) {
+                        localStorage.setItem('recent_uploads', JSON.stringify(strictlyActive));
+                    }
                 }
-                setUploads(active);
             } catch (e) {
                 console.error("Failed to parse recent uploads", e);
             }
         }
+
+        // Sort by recency (newest first)? 
+        // userFiles are usually sorted by DB, local by append. 
+        // Let's rely on append order or sort? 
+        // Let's sort by uploadedAt if available, otherwise fallback.
+        // But Upload type above doesn't have uploadedAt.
+        // userFiles has it. Local might.
+        // Let's just set the state for now.
+        setUploads(merged);
     };
 
     useEffect(() => {
@@ -61,7 +116,7 @@ export function RecentList() {
             window.removeEventListener('storage-update', loadUploads);
             clearInterval(interval);
         };
-    }, []);
+    }, [userFiles]); // Re-run when userFiles changes
 
     const deleteUpload = (key: string) => {
         const updated = uploads.filter(u => u.key !== key);

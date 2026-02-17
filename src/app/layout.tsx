@@ -6,6 +6,7 @@ import { SessionProvider } from "@/context/SessionContext";
 import { MonetizationWrapper } from "@/components/monetization/MonetizationWrapper";
 import { AdUnit } from "@/components/monetization/AdUnit";
 import { BMCWidget } from "@/components/monetization/BMCWidget";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -85,14 +86,16 @@ export default function RootLayout({
         className={`${jetbrainsMono.variable} ${inter.variable} antialiased bg-background text-foreground font-sans`}
         suppressHydrationWarning
       >
-        <MonetizationWrapper>
-          <SessionProvider>
-            {children}
-            <AdUnit />
-            <BMCWidget />
-            <Analytics />
-          </SessionProvider>
-        </MonetizationWrapper>
+        <ClerkProvider>
+          <MonetizationWrapper>
+            <SessionProvider>
+              {children}
+              <AdUnit />
+              <BMCWidget />
+              <Analytics />
+            </SessionProvider>
+          </MonetizationWrapper>
+        </ClerkProvider>
       </body>
     </html>
   );

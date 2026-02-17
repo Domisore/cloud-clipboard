@@ -2,11 +2,13 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { UploadResult } from '@/services/mockUpload';
+import { useUser } from '@clerk/nextjs';
 
 interface SessionContextType {
     sessionId: string | null;
     isConnected: boolean;
     files: UploadResult[];
+    userFiles: UploadResult[]; // Files owned by the authenticated user
     wallet: SessionData[];
     generateSyncCode: () => Promise<{ otp: string; expiresAt: number; magicLink: string }>;
     joinSession: (otp: string) => Promise<boolean>;
@@ -33,9 +35,11 @@ export interface SessionData {
 
 
 export function SessionProvider({ children }: { children: ReactNode }) {
+    const { user, isLoaded, isSignedIn } = useUser();
     const [sessionId, setSessionId] = useState<string | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [files, setFiles] = useState<UploadResult[]>([]);
+    const [userFiles, setUserFiles] = useState<UploadResult[]>([]);
     const [wallet, setWallet] = useState<SessionData[]>([]);
 
     // check status on mount
@@ -55,6 +59,27 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             setFiles([]);
         }
     }, [isConnected]);
+
+    // Fetch User Files when signed in
+    useEffect(() => {
+        if (isLoaded && isSignedIn) {
+            fetchUserFiles();
+        } else {
+            setUserFiles([]);
+        }
+    }, [isLoaded, isSignedIn]);
+
+    const fetchUserFiles = async () => {
+        try {
+            const res = await fetch('/api/user/files');
+            if (res.ok) {
+                const data = await res.json();
+                setUserFiles(data.files || []);
+            }
+        } catch (e) {
+            console.error('Failed to fetch user files:', e);
+        }
+    };
 
     const checkStatus = async () => {
         try {
@@ -128,6 +153,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     };
 
     const refreshFiles = async () => {
+        if (isSignedIn) {
+            fetchUserFiles();
+        }
+
         if (!sessionId && !isConnected) return;
         try {
             const res = await fetch('/api/session/files');
@@ -210,6 +239,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             sessionId,
             isConnected,
             files,
+            userFiles,
             wallet,
             generateSyncCode,
             joinSession,
