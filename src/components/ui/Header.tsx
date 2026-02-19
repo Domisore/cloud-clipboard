@@ -6,6 +6,7 @@ import { SyncHub } from '@/components/sync/SyncHub';
 import { useSession } from '@/context/SessionContext';
 import { Zap, Check, Command, Menu, X } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 import { SessionList } from './SessionList';
 
@@ -111,6 +112,21 @@ export function Header() {
                                 >
                                     Contact
                                 </Link>
+                                <div className="px-4 py-3 border-t border-border-color mt-2">
+                                    <SignedOut>
+                                        <SignInButton mode="modal">
+                                            <button className="w-full h-10 rounded-md text-sm font-bold bg-foreground text-background hover:bg-white/90 transition-colors">
+                                                Sign In
+                                            </button>
+                                        </SignInButton>
+                                    </SignedOut>
+                                    <SignedIn>
+                                        <div className="flex items-center gap-2">
+                                            <UserButton />
+                                            <span className="text-sm font-medium">Account</span>
+                                        </div>
+                                    </SignedIn>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -130,6 +146,23 @@ export function Header() {
                             <span>{isConnected ? 'Synced' : 'Connect'}</span>
                         </button>
                     </Tooltip>
+
+                    <SignedOut>
+                        <SignInButton mode="modal">
+                            <button className="h-9 px-4 rounded-md text-sm font-bold bg-foreground text-background hover:bg-white/90 transition-colors">
+                                Sign In
+                            </button>
+                        </SignInButton>
+                    </SignedOut>
+                    <SignedIn>
+                        <UserButton
+                            appearance={{
+                                elements: {
+                                    avatarBox: "w-9 h-9 border border-border-color"
+                                }
+                            }}
+                        />
+                    </SignedIn>
                 </div>
             </div>
 

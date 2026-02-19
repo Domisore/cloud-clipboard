@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 
 export function SessionList({ onClose }: { onClose: () => void }) {
-    const { wallet, sessionId, switchSession, removeFromWallet, renameSession } = useSession();
+    const { wallet, sessionId, userFiles, switchSession, removeFromWallet, renameSession } = useSession();
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editName, setEditName] = useState('');
 
@@ -36,8 +36,43 @@ export function SessionList({ onClose }: { onClose: () => void }) {
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    {/* User Files Section */}
+                    {userFiles.length > 0 && (
+                        <div className="mb-6">
+                            <h3 className="text-xs font-bold text-foreground-muted uppercase tracking-wider mb-3 px-1">
+                                Recent Activity
+                            </h3>
+                            <div className="space-y-2">
+                                {userFiles.map(file => (
+                                    <div key={file.id} className="p-3 bg-surface/30 rounded-lg border border-border-color flex items-center gap-3">
+                                        <div className="w-8 h-8 flex items-center justify-center bg-background rounded border border-border-color text-xs font-bold">
+                                            {file.mimeType?.includes('image') ? 'IMG' : 'DOC'}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="text-sm font-medium truncate">{file.filename}</div>
+                                            <div className="text-[10px] text-foreground-muted">
+                                                {formatDistanceToNow(file.uploadedAt, { addSuffix: true })}
+                                            </div>
+                                        </div>
+                                        <a
+                                            href={`/${file.id}`}
+                                            target="_blank"
+                                            className="p-1.5 hover:bg-accent hover:text-background rounded transition-colors"
+                                        >
+                                            <Play className="w-3 h-3" />
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    <h3 className="text-xs font-bold text-foreground-muted uppercase tracking-wider mb-3 px-1">
+                        Active Sessions
+                    </h3>
+
                     {wallet.length === 0 ? (
-                        <div className="text-center text-foreground-muted py-12">
+                        <div className="text-center text-foreground-muted py-6">
                             <p>No active sessions found.</p>
                             <p className="text-sm mt-2">Create a new upload or sync a device to get started.</p>
                         </div>
