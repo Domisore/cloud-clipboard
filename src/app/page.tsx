@@ -13,6 +13,10 @@ import { VisitorBadge } from "@/components/ui/VisitorBadge";
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col font-sans selection:bg-accent/30 selection:text-foreground">
+      {/* YC Podcast Banner */}
+      <div className="w-full bg-accent/10 border-b border-accent/20 text-center py-2 px-4 text-sm text-accent relative z-50">
+        Inspired by Y Combinator's &quot;X for Agents&quot;. <a href="https://youtu.be/Q8wVMdwhlh4?si=wrsp3yVH30gJ-o4b" target="_blank" rel="noopener noreferrer" className="underline font-medium hover:text-white transition-colors">Watch the podcast &rarr;</a>
+      </div>
       <Header />
 
       <main className="flex-1 flex flex-col relative pt-24 pb-12 px-4 sm:px-6">
@@ -34,6 +38,17 @@ export default function Home() {
             Programmatically move datasets, context windows, and files between autonomous agents.<br className="hidden sm:block" />
             Create secure, ephemeral storage buckets instantly. <span className="mx-1 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-yellow-400 before:opacity-80 relative inline-block"><span className="relative text-black font-bold px-1">Zero human authentication required.</span></span>
           </p>
+        </div>
+
+        {/* YC Social Proof Quote */}
+        <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in delay-200">
+          <p className="text-xl md:text-2xl font-medium text-foreground-muted mb-4 italic leading-relaxed">
+            &quot;We are moving towards swarm intelligence where agents interact without human intervention.&quot;
+          </p>
+          <div className="flex items-center justify-center gap-2 text-sm text-foreground-muted/80">
+            <span className="font-semibold px-2 py-1 rounded bg-surface border border-border-color text-foreground shadow-sm">Gary Tan</span>
+            <span>— Y Combinator</span>
+          </div>
         </div>
 
         {/* How It Works Steps */}
