@@ -32,6 +32,23 @@ export function Header() {
                 {/* Right Actions */}
                 <div className="flex items-center gap-3 sm:gap-4">
                     {/* Desktop Links */}
+                    <div className="hidden lg:flex items-center gap-2 pr-4 mr-2 border-r border-border-color/50">
+                        <Link
+                            href="/clipboard"
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-purple-400 bg-purple-500/10 hover:bg-purple-500/20 rounded-md transition-colors border border-purple-500/20"
+                        >
+                            <img src="/pclip-192x192.png" className="w-4 h-4 rounded-sm" alt="Pclip" />
+                            Pclip Web
+                        </Link>
+                        <a
+                            href="/pclip-extension.zip"
+                            download
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-foreground-muted hover:text-foreground hover:bg-surface rounded-md transition-colors"
+                        >
+                            Extension
+                        </a>
+                    </div>
+
                     <Link
                         href="/agents"
                         className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
