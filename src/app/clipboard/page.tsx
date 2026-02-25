@@ -3,6 +3,7 @@ import { Footer } from "@/components/ui/Footer";
 import { CommandCenter } from "@/components/ui/CommandCenter";
 import { RecentList } from "@/components/ui/RecentList";
 import { CarbonAd } from "@/components/ui/CarbonAd";
+import { InstallPWAButton } from "@/components/ui/InstallPWAButton";
 
 export default function ClipboardPage() {
     return (
@@ -19,6 +20,7 @@ export default function ClipboardPage() {
                         Instantly move text, images, and files between your devices.<br className="hidden sm:block" />
                         Create secure, ephemeral links to share with anyone. <span className="mx-1 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-yellow-400 before:opacity-80 relative inline-block"><span className="relative text-black font-bold px-1">No account required.</span></span>
                     </p>
+                    <InstallPWAButton />
                 </div>
 
                 {/* Main Interaction Area */}

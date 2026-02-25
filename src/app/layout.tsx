@@ -28,7 +28,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "drive.io | The Data Persistence Layer for AI Agents",
   description: "Programmatically move datasets, context windows, and files between autonomous agents. Secure, ephemeral storage built for the Agent Swarm.",
-  applicationName: "drive.io",
+  applicationName: "Pclip",
   authors: [{ name: "Brane Technologies", url: "https://bigbrane.com" }],
   keywords: ["AI Agents", "Agent Swarm", "LLM Storage", "Agentic Workflow", "Programmatic File Sharing", "Data Persistence Layer", "Y Combinator", "Autonomous Agents", "Moltbot", "OpenClaw"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://drive.io'),
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   icons: {
     icon: "/icon.png",
-    apple: "/icon-192x192.png", // Explicit Apple Touch Icon
+    apple: "/pclip-192x192.png", // Explicit Apple Touch Icon for iOS PWA defaults
   },
 };
 

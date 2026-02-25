@@ -207,9 +207,12 @@ export function CommandCenter() {
 
                 {/* STATE: IDLE or TYPING */}
                 {(state === 'idle' || state === 'has-content') && !file && (
-                    <div className="relative min-h-[160px] flex flex-col">
+                    <div className="relative min-h-[160px] flex flex-col" suppressHydrationWarning>
                         <textarea
                             ref={textareaRef}
+                            data-gramm="false"
+                            data-gramm_editor="false"
+                            data-enable-grammarly="false"
                             value={text}
                             onChange={(e) => {
                                 setText(e.target.value);

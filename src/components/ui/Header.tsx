@@ -20,7 +20,7 @@ export function Header() {
         <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 group">
+                <Link href="/" className="flex items-center gap-2 group" suppressHydrationWarning>
                     <div className="w-8 h-8 rounded-lg bg-surface border border-border-color flex items-center justify-center group-hover:border-accent/50 transition-colors shadow-sm overflow-hidden">
                         <img src="/icon-192x192.png" alt="Drive.io Logo" className="w-full h-full object-cover" />
                     </div>
