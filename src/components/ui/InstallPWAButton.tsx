@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export function InstallPWAButton() {
+export function InstallPWAButton({ className = "flex justify-center mt-6 mb-2" }: { className?: string }) {
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const [isInstalled, setIsInstalled] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
@@ -60,7 +60,7 @@ export function InstallPWAButton() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="flex justify-center mt-6 mb-2"
+                className={className}
             >
                 {deferredPrompt ? (
                     <button
