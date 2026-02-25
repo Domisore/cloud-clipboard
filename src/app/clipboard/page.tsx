@@ -4,6 +4,31 @@ import { CommandCenter } from "@/components/ui/CommandCenter";
 import { RecentList } from "@/components/ui/RecentList";
 import { CarbonAd } from "@/components/ui/CarbonAd";
 import { InstallPWAButton } from "@/components/ui/InstallPWAButton";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Pclip | Instant cross-device cloud clipboard",
+    description: "Instantly move text, images, and files between your devices. Create secure, ephemeral links to share with anyone. No account required.",
+    openGraph: {
+        title: "Pclip | Instant cross-device cloud clipboard",
+        description: "Instantly move text, images, and files between your devices. No account required.",
+        siteName: "Pclip",
+        images: [
+            {
+                url: "/pclip-512x512.png",
+                width: 512,
+                height: 512,
+            },
+        ],
+    },
+    twitter: {
+        card: "summary",
+        title: "Pclip | Cloud Clipboard",
+        description: "Instantly move text, images, and files between your devices.",
+        images: ["/pclip-512x512.png"],
+    },
+    applicationName: "Pclip"
+};
 
 export default function ClipboardPage() {
     return (
