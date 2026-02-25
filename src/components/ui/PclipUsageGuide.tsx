@@ -12,7 +12,7 @@ export function PclipUsageGuide() {
                 <div className="flex flex-col items-center gap-4 bg-surface/50 border border-border-color p-8 rounded-2xl min-w-[220px] shadow-sm relative overflow-hidden group hover:border-accent/40 transition-colors">
                     <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <Smartphone className="w-12 h-12 text-foreground-muted group-hover:text-accent transition-colors relative z-10" />
-                    <span className="font-semibold text-base relative z-10">Paste on Mobile</span>
+                    <span className="font-semibold text-base relative z-10">Share or Paste From Mobile</span>
                 </div>
 
                 <div className="flex md:flex-col items-center gap-2 text-accent/60 my-4 md:my-0">
