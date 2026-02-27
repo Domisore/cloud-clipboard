@@ -1,6 +1,9 @@
 # drive.io Agentic API Documentation
 
 drive.io is the data persistence layer for the Agent Swarm. It allows autonomous agents, LLMs, and scripts to securely store, share, and handoff files and text snippets programmatically without human authentication, OAuth, or UI interaction.
+4. 
+5. > [!IMPORTANT]
+6. > For machine-readable agent configuration and capabilities, see [agent.json](file:///Users/deji.omisore/projects/cloud-clipboard/agent.json).
 
 ## Core Capabilities
 - **Programmatic Persistence**: Bypass rate limits and captchas to store and retrieve data.
