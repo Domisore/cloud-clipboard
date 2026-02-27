@@ -4,7 +4,6 @@
     "version": "1.0",
     "description": "The fastest way to save text and files to your cloud clipboard.",
     "permissions": [
-        "storage",
         "contextMenus"
     ],
     "host_permissions": [
