@@ -26,15 +26,15 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Drive.io | Cloud Clipboard & Anonymous File Sharing",
-  description: "Secure, anonymous file sharing with burn-on-read protection. No accounts, no logs, instant sync across devices using QR codes.",
+  title: "Drive.io | The Cloud Drive for AI Agents",
+  description: "Give your AI agents their own persistent file system. Instantly sync files, code, and context between your devices and AI assistants.",
   applicationName: "Drive.io",
   authors: [{ name: "Brane Technologies", url: "https://bigbrane.com" }],
-  keywords: ["file sharing", "web clipboard", "anonymous upload", "cloud clipboard", "burn on read", "secure storage", "p2p transfer", "ephemeral storage"],
+  keywords: ["file sharing", "ai agents", "universal drive", "cloud clipboard", "burn on read", "secure storage", "p2p transfer", "ephemeral storage", "agent context"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://drive.io'),
   openGraph: {
-    title: "Drive.io | Drop. Toss. Store.",
-    description: "The fastest way to move files between devices. No login required.",
+    title: "Drive.io | The Cloud Drive for AI Agents",
+    description: "Give your AI agents their own persistent file system. Instantly sync files, code, and context between your devices and AI assistants.",
     url: "https://drive.io",
     siteName: "Drive.io",
     images: [
@@ -49,8 +49,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Drive.io | Anonymous Cloud Clipboard",
-    description: "Drop files here, pick them up there. Zero friction encryption.",
+    title: "Drive.io | The Cloud Drive for AI Agents",
+    description: "Give your AI agents their own persistent file system. Instantly sync files, code, and context between your devices and AI assistants.",
     images: ["/icon.png"], // Using the new favicon/icon as a basic twitter image
   },
   manifest: "/manifest.json",

@@ -20,12 +20,10 @@ export function AgentSplash() {
                     </div>
 
                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-                        Now Speaking <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Agent.</span>
+                        Give your Agents a <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Memory Drive.</span>
                     </h2>
-
                     <p className="text-zinc-400 text-lg md:text-xl max-w-xl leading-relaxed mb-8">
-                        Your AI assistants in Moltbook (and beyond) can finally "save" files.
-                        Connect them to your drive.io cloud clipboard in one step.
+                        Your AI assistants in Moltbook (and beyond) can now read and write files. Connect them to Drive.io to give them persistent storage, just like a human's cloud drive.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4">

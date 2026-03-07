@@ -133,7 +133,7 @@ export function DropZone() {
             {/* Footer Actions */}
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <p className="text-sm text-gray-400 max-w-xs text-center sm:text-left">
-                    Paste here, get a link, access from any device. Your universal cloud clipboard.
+                    Paste here, get a link, access from any device or AI agent. Your universal cloud drive.
                 </p>
 
                 <div className="flex items-center gap-4">

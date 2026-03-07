@@ -68,7 +68,7 @@ export default function HowItWorks() {
                                 <li>Click <span className="text-accent font-bold">Connect</span> on PC #1 to get a 6-digit code.</li>
                                 <li>On PC #2, click <span className="text-accent font-bold">Connect</span> and switch to the "Join" tab.</li>
                                 <li>Enter the 6-digit code from PC #1.</li>
-                                <li>Both computers are now fused. Clipboard and files sync bidirectionally.</li>
+                                <li>Both computers are now fused. Your workspace and files sync bidirectionally.</li>
                             </ol>
                         </div>
 

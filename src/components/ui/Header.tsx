@@ -39,6 +39,15 @@ export function Header() {
                         Agents
                     </Link>
 
+                    <Link
+                        href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
+                        className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Extension
+                    </Link>
+
                     <button
                         onClick={() => setShowSessions(true)}
                         className="hidden md:flex text-sm font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
@@ -85,6 +94,14 @@ export function Header() {
                                     className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
                                 >
                                     Agents
+                                </Link>
+                                <Link
+                                    href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
+                                    target="_blank" rel="noopener noreferrer"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                >
+                                    Extension
                                 </Link>
                                 <button
                                     onClick={() => { setShowSessions(true); setIsMobileMenuOpen(false); }}

@@ -41,7 +41,7 @@ export function HowItWorks() {
                     </div>
                     <h3 className="text-[10px] md:text-sm font-bold text-foreground mb-1 md:mb-2 leading-tight">Grab <br className="md:hidden" />& Download</h3>
                     <p className="hidden md:block text-xs text-foreground-muted px-4 leading-relaxed">
-                        Access your clipboard history and download files instantly on the new device.
+                        Access your cloud drive and download files instantly to your device or AI agent context.
                     </p>
                 </div>
             </div>
