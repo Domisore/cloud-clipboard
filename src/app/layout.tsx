@@ -26,20 +26,20 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Drive.io | The Cloud Drive for AI Agents",
-  description: "Give your AI agents their own persistent file system. Instantly sync files, code, and context between your devices and AI assistants.",
-  applicationName: "Drive.io",
+  title: "drive.io | The Data Persistence Layer for AI Agents",
+  description: "Programmatically move datasets, context windows, and files between autonomous agents. Secure, ephemeral storage built for the Agent Swarm.",
+  applicationName: "Pclip",
   authors: [{ name: "Brane Technologies", url: "https://bigbrane.com" }],
-  keywords: ["file sharing", "ai agents", "universal drive", "cloud clipboard", "burn on read", "secure storage", "p2p transfer", "ephemeral storage", "agent context"],
+  keywords: ["AI Agents", "Agent Swarm", "LLM Storage", "Agentic Workflow", "Programmatic File Sharing", "Data Persistence Layer", "Y Combinator", "Autonomous Agents", "Moltbot", "OpenClaw"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://drive.io'),
   openGraph: {
-    title: "Drive.io | The Cloud Drive for AI Agents",
-    description: "Give your AI agents their own persistent file system. Instantly sync files, code, and context between your devices and AI assistants.",
+    title: "drive.io | Data Persistence for the Agent Swarm",
+    description: "The fastest way to programmatically move files and context between autonomous agents. No human authentication required.",
     url: "https://drive.io",
-    siteName: "Drive.io",
+    siteName: "drive.io",
     images: [
       {
-        url: "/icon.png", // Fallback to icon for now, or a specific OG image if we had one
+        url: "/icon.png",
         width: 192,
         height: 192,
       },
@@ -49,14 +49,14 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Drive.io | The Cloud Drive for AI Agents",
-    description: "Give your AI agents their own persistent file system. Instantly sync files, code, and context between your devices and AI assistants.",
-    images: ["/icon.png"], // Using the new favicon/icon as a basic twitter image
+    title: "drive.io | S3 for AI Agents",
+    description: "Bypass human-centric rate limits. Generate instantly accessible storage URLs directly from standard agent outputs.",
+    images: ["/icon.png"],
   },
   manifest: "/manifest.json",
   icons: {
     icon: "/icon.png",
-    apple: "/icon-192x192.png", // Explicit Apple Touch Icon
+    apple: "/pclip-192x192.png", // Explicit Apple Touch Icon for iOS PWA defaults
   },
 };
 

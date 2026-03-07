@@ -20,7 +20,7 @@ export function Header() {
         <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 group">
+                <Link href="/" className="flex items-center gap-2 group" suppressHydrationWarning>
                     <div className="w-8 h-8 rounded-lg bg-surface border border-border-color flex items-center justify-center group-hover:border-accent/50 transition-colors shadow-sm overflow-hidden">
                         <img src="/icon-192x192.png" alt="Drive.io Logo" className="w-full h-full object-cover" />
                     </div>
@@ -32,6 +32,24 @@ export function Header() {
                 {/* Right Actions */}
                 <div className="flex items-center gap-3 sm:gap-4">
                     {/* Desktop Links */}
+                    <div className="hidden lg:flex items-center gap-2 pr-4 mr-2 border-r border-border-color/50">
+                        <Link
+                            href="/clipboard"
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-purple-400 bg-purple-500/10 hover:bg-purple-500/20 rounded-md transition-colors border border-purple-500/20"
+                        >
+                            <img src="/pclip-192x192.png" className="w-4 h-4 rounded-sm" alt="Pclip" />
+                            Pclip Web
+                        </Link>
+                        <a
+                            href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-foreground-muted hover:text-foreground hover:bg-surface rounded-md transition-colors"
+                        >
+                            Extension
+                        </a>
+                    </div>
+
                     <Link
                         href="/agents"
                         className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"

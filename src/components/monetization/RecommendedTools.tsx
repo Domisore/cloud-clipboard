@@ -61,51 +61,31 @@ export function RecommendedTools() {
     ];
 
     return (
-        <section className="w-full max-w-5xl mx-auto py-8">
-            <div className="flex flex-col items-center mb-8">
-                <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-                    Recommended Privacy Tools
+        <section className="w-full max-w-5xl mx-auto py-12 mt-12 border-t border-border-color/30">
+            <div className="flex flex-col items-center mb-8 opacity-60">
+                <h2 className="text-xs font-semibold tracking-widest text-foreground-muted uppercase">
+                    Ecosystem Partners
                 </h2>
-                <p className="text-foreground-muted mt-2 text-center max-w-xl">
-                    We love privacy as much as you do. Here are trusted tools we recommend for long-term storage and security.
-                </p>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-3">
                 {tools.map((tool) => (
                     <a
                         key={tool.name}
                         href={tool.url}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
-                        className="group flex flex-col p-5 rounded-2xl bg-surface/30 border border-border-color/50 hover:border-accent/30 hover:bg-surface/50 transition-all duration-300 relative overflow-hidden w-full sm:max-w-[16rem]"
+                        className="group flex items-center gap-3 px-4 py-2 rounded-lg bg-surface/20 border border-border-color/30 hover:bg-surface/40 transition-colors duration-200 grayscale hover:grayscale-0 opacity-60 hover:opacity-100"
                     >
-                        {/* Hover Glow Effect */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110 ${tool.colorClass}`}>
+                        <div className={`w-5 h-5 flex items-center justify-center ${tool.colorClass.split(' ')[0]}`}>
                             {tool.icon}
                         </div>
 
-                        <h3 className="text-foreground font-semibold mb-2 flex items-center gap-2">
+                        <span className="text-sm text-foreground-muted group-hover:text-foreground transition-colors font-medium">
                             {tool.name}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="opacity-0 group-hover:opacity-50 transition-opacity"><path d="M7 17l9.2-9.2M17 17V7H7" /></svg>
-                        </h3>
-
-                        <p className="text-sm text-foreground-muted leading-relaxed mb-4 flex-grow">
-                            {tool.description}
-                        </p>
-
-                        <div className="text-xs font-medium text-accent opacity-80 group-hover:opacity-100 transition-opacity mt-auto uppercase tracking-wider">
-                            {tool.buttonText || "Check it out"}
-                        </div>
+                        </span>
                     </a>
                 ))}
-            </div>
-            <div className="mt-4 text-center">
-                <p className="text-[10px] text-foreground-muted/40 uppercase tracking-widest">
-                    Affiliate Disclosure: We may earn a commission from these links at no extra cost to you.
-                </p>
             </div>
         </section>
     );

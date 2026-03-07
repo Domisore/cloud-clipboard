@@ -10,6 +10,8 @@ export function Footer() {
                 <span>•</span>
                 <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
                 <span>•</span>
+                <a href="https://discord.gg/PTtKGCmg" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Discord</a>
+                <span>•</span>
                 <a href="https://forms.fillout.com/t/vej46NKrCkus" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Contact</a>
                 <span>•</span>
                 <a href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Chrome Extension</a>

@@ -7,6 +7,33 @@ const withPWA = require('next-pwa')({
 });
 
 const nextConfig = {
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/',
+          has: [
+            {
+              type: 'host',
+              value: 'pclip.me',
+            },
+          ],
+          destination: '/clipboard',
+        },
+        // Also support www.pclip.me just in case
+        {
+          source: '/',
+          has: [
+            {
+              type: 'host',
+              value: 'www.pclip.me',
+            },
+          ],
+          destination: '/clipboard',
+        },
+      ]
+    };
+  },
   webpack: (config: any, { dev }: { dev: boolean }) => {
     if (dev) {
       config.watchOptions = {

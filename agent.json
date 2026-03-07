@@ -1,0 +1,27 @@
+{
+    "manifest_version": "1.0.0",
+    "name": "Cloud Clipboard Agent",
+    "version": "1.0.0",
+    "description": "An autonomous developer agent specializing in cloud-based clipboard management and agentic workflow remediation.",
+    "author": "Antigravity",
+    "capabilities": [
+        "clipboard_management",
+        "file_transfer",
+        "vibe_coding_remediation",
+        "skill_integration"
+    ],
+    "skills": [
+        {
+            "name": "drive.io",
+            "path": "./skills/drive-io/SKILL.md",
+            "description": "Core cloud bridge for clipboard and file operations."
+        }
+    ],
+    "metadata": {
+        "supported_platforms": [
+            "mac",
+            "chrome"
+        ],
+        "repository": "https://github.com/Domisore/cloud-clipboard"
+    }
+}

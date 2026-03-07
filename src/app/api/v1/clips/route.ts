@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { nanoid } from 'nanoid';
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function POST(request: Request) {
     try {
@@ -34,6 +35,13 @@ export async function POST(request: Request) {
         // Store in Redis with a TTL (e.g., 30 days) or persistent
         // Using 30 days (2592000 seconds) for now to mimic temporary clipboard behavior
         await redis.set(`clip:${id}`, JSON.stringify(clipData), { ex: 2592000 });
+
+        // Add to User History (if active)
+        const user = await currentUser();
+        if (user) {
+            await redis.lpush(`user:${user.id}:files`, id);
+            await redis.expire(`user:${user.id}:files`, 2592000); // 30 days
+        }
 
         // Construct the public URL
         // Assuming the app is hosted at the origin of the request or a configured base URL
