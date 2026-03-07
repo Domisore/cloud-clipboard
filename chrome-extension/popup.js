@@ -10,6 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Auth Check ---
     async function checkAuth() {
+        // 1. Immediately show cached state if available
+        chrome.storage.local.get(['pclipAuthState'], (result) => {
+            if (result.pclipAuthState) {
+                authStatusDiv.innerHTML = `<span style="color: #4ade80;">Signed in as ${result.pclipAuthState.identifier}</span>`;
+            }
+        });
+
+        // 2. Refresh state silently in the background
         try {
             const res = await fetch('https://drive.io/api/v1/auth/status', {
                 credentials: 'include' // This pushes the Clerk session cookie
@@ -17,12 +25,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (data.authenticated) {
-                authStatusDiv.innerHTML = `<span style="color: #4ade80;">Signed in as ${data.user.identifier}</span>`;
+                const userInfo = { identifier: data.user.identifier };
+                chrome.storage.local.set({ pclipAuthState: userInfo });
+                authStatusDiv.innerHTML = `<span style="color: #4ade80;">Signed in as ${userInfo.identifier}</span>`;
             } else {
+                chrome.storage.local.remove('pclipAuthState');
                 authStatusDiv.innerHTML = `<a href="https://drive.io/sign-in" target="_blank" style="color: #3b82f6; text-decoration: none;">Sign in &rarr;</a>`;
             }
         } catch (e) {
-            authStatusDiv.textContent = 'Auth error';
+            // Keep cached state on network error, or show error if no cache
+            chrome.storage.local.get(['pclipAuthState'], (result) => {
+                if (!result.pclipAuthState) {
+                    authStatusDiv.textContent = 'Auth error';
+                }
+            });
         }
     }
 

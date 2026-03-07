@@ -4,7 +4,8 @@
     "version": "1.0",
     "description": "The fastest way to save text and files to your cloud clipboard.",
     "permissions": [
-        "contextMenus"
+        "contextMenus",
+        "storage"
     ],
     "host_permissions": [
         "https://drive.io/*"
