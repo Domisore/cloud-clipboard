@@ -3,12 +3,34 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { currentUser } from "@clerk/nextjs/server";
 
+// CORS headers Helper
+function corsHeaders(origin: string | null) {
+    const allowedOrigin = origin || '*';
+    return {
+        'Access-Control-Allow-Origin': allowedOrigin,
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Credentials': 'true',
+    };
+}
+
+export async function OPTIONS(request: Request) {
+    const origin = request.headers.get('origin');
+    return new NextResponse(null, {
+        status: 200,
+        headers: corsHeaders(origin),
+    });
+}
+
 export async function POST(request: Request) {
+    const origin = request.headers.get('origin');
+    const headers = corsHeaders(origin);
+
     try {
         const { id, key, filename, size, contentType, burnAfterReading } = await request.json();
 
         if (!id || !key || !filename || !size) {
-            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+            return NextResponse.json({ error: "Missing required fields" }, { status: 400, headers });
         }
 
         // Save metadata to Redis with 24h expiry
@@ -40,17 +62,12 @@ export async function POST(request: Request) {
         const user = await currentUser();
         if (user) {
             await redis.lpush(`user:${user.id}:files`, id);
-            // No expiration for user history? Or maybe 30 days?
-            // Let's keep it 30 days for now to avoid indefinite growth of old file refs
-            // Note: The metadata itself expires in 24h, so we might have dead links if we don't clean up
-            // BUT, user might want to see history of what they uploaded even if it's expired?
-            // For now, let's just push. API will handle missing metadata.
             await redis.expire(`user:${user.id}:files`, 2592000); // 30 days
         }
 
-        return NextResponse.json({ success: true, id });
+        return NextResponse.json({ success: true, id }, { headers });
     } catch (error) {
         console.error("Metadata save error:", error);
-        return NextResponse.json({ error: "Failed to save metadata" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to save metadata" }, { status: 500, headers });
     }
 }
