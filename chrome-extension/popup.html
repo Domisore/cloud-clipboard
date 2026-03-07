@@ -119,16 +119,27 @@
       Checking...
     </div>
   </div>
-  <textarea id="clipText" placeholder="Paste text or code here to save to your cloud clipboard..."></textarea>
-
-  <div id="dropZone">
-    Drag & drop a file here<br>or click to browse
-    <input type="file" id="fileInput">
+  <div id="signedOutView" style="display: none; text-align: center; padding: 20px 0;">
+    <p style="margin-bottom: 20px; color: #888; font-size: 14px; line-height: 1.5;">
+      Your cloud clipboard is just one click away. Sign in to start saving snippets and files instantly.
+    </p>
+    <a href="https://drive.io/sign-in" target="_blank" style="display: inline-block; width: 100%; padding: 10px; background-color: #3b82f6; color: #ffffff; border-radius: 6px; font-weight: bold; text-decoration: none; box-sizing: border-box;">
+      Sign In to Pclip
+    </a>
   </div>
 
-  <button id="saveBtn">Save to Pclip</button>
-  <div id="status"></div>
-  <a href="https://drive.io/clipboard" target="_blank" class="link-out">Open My Clipboard &rarr;</a>
+  <div id="authenticatedView" style="display: none;">
+    <textarea id="clipText" placeholder="Paste text or code here to save to your cloud clipboard..."></textarea>
+
+    <div id="dropZone">
+      Drag & drop a file here<br>or click to browse
+      <input type="file" id="fileInput">
+    </div>
+
+    <button id="saveBtn">Save to Pclip</button>
+    <div id="status"></div>
+    <a href="https://drive.io/clipboard" target="_blank" class="link-out">Open My Clipboard &rarr;</a>
+  </div>
 
   <script src="popup.js"></script>
 </body>

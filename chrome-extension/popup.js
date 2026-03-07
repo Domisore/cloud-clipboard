@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const authStatusDiv = document.getElementById('authStatus');
+    const authenticatedView = document.getElementById('authenticatedView');
+    const signedOutView = document.getElementById('signedOutView');
 
     let selectedFile = null;
 
@@ -13,7 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Immediately show cached state if available
         chrome.storage.local.get(['pclipAuthState'], (result) => {
             if (result.pclipAuthState) {
+                authenticatedView.style.display = 'block';
+                signedOutView.style.display = 'none';
                 authStatusDiv.innerHTML = `<span style="color: #4ade80;">Signed in as ${result.pclipAuthState.identifier}</span>`;
+            } else {
+                authenticatedView.style.display = 'none';
+                signedOutView.style.display = 'block';
+                authStatusDiv.textContent = 'Signed Out';
             }
         });
 
@@ -27,15 +35,21 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.authenticated) {
                 const userInfo = { identifier: data.user.identifier };
                 chrome.storage.local.set({ pclipAuthState: userInfo });
+                authenticatedView.style.display = 'block';
+                signedOutView.style.display = 'none';
                 authStatusDiv.innerHTML = `<span style="color: #4ade80;">Signed in as ${userInfo.identifier}</span>`;
             } else {
                 chrome.storage.local.remove('pclipAuthState');
-                authStatusDiv.innerHTML = `<a href="https://drive.io/sign-in" target="_blank" style="color: #3b82f6; text-decoration: none;">Sign in &rarr;</a>`;
+                authenticatedView.style.display = 'none';
+                signedOutView.style.display = 'block';
+                authStatusDiv.textContent = 'Signed Out';
             }
         } catch (e) {
             // Keep cached state on network error, or show error if no cache
             chrome.storage.local.get(['pclipAuthState'], (result) => {
                 if (!result.pclipAuthState) {
+                    authenticatedView.style.display = 'none';
+                    signedOutView.style.display = 'block';
                     authStatusDiv.textContent = 'Auth error';
                 }
             });
