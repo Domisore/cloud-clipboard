@@ -35,18 +35,11 @@ export function PclipPromoBanner() {
                     <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-purple-500/10 via-surface to-surface border border-purple-500/20 shadow-lg p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 backdrop-blur-sm">
 
                         {/* Content */}
-                        <div className="flex items-start gap-4 flex-1">
-                            <div className="shrink-0 mt-1">
-                                <img src="/pclip-192x192.png" alt="Pclip" className="w-10 h-10 rounded-lg shadow-sm" />
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-                                    Looking for the Clipboard? We've rebranded to Pclip!
-                                    <span className="text-[10px] font-bold bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded uppercase tracking-wider">New</span>
-                                </h3>
-                                <p className="text-sm text-foreground-muted leading-relaxed max-w-2xl">
-                                    While drive.io focuses on Agent infrastructure, our human-centric clipboard lives on as Pclip.
-                                    Instantly save text or files across devices using our Web App or the brand new Chrome Extension.
+                        <div className="flex items-center gap-3 flex-1">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                                <span className="text-[10px] font-bold bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded uppercase tracking-wider w-fit">Note</span>
+                                <p className="text-sm text-foreground-muted">
+                                    Looking for the human-centric clipboard? It has rebranded to Pclip.
                                 </p>
                             </div>
                         </div>

@@ -27,11 +27,11 @@ export default function Home() {
             NEW: Share files from Moltbot via your chat interface or with other Agents!
           </Link>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">
-            The Data Persistence Layer for the <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">Agent Swarm.</span>
+            Save Tokens. Expand Context for the <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">Agent Swarm.</span>
           </h1>
           <p className="text-foreground-muted text-base sm:text-lg leading-relaxed">
-            Programmatically move datasets, context windows, and files between autonomous agents.<br className="hidden sm:block" />
-            Create secure, ephemeral storage buckets instantly. <span className="mx-1 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-yellow-400 before:opacity-80 relative inline-block"><span className="relative text-black font-bold px-1">Zero human authentication required.</span></span>
+            Stop wasting precious limits passing large datasets between agents.<br className="hidden sm:block" />
+            Programmatically offload files and context windows into secure, ephemeral storage instantly. <span className="mx-1 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-yellow-400 before:opacity-80 relative inline-block"><span className="relative text-black font-bold px-1">Zero human authentication required.</span></span>
           </p>
         </div>
 
@@ -70,9 +70,9 @@ export default function Home() {
               <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" /></svg>
               </div>
-              <h3 className="text-foreground font-semibold mb-2 text-lg">Agent-to-Agent Handoff</h3>
+              <h3 className="text-foreground font-semibold mb-2 text-lg">Slash Token Usage</h3>
               <p className="text-base text-foreground-muted leading-relaxed">
-                Seamlessly pass massive datasets, context windows, or downloaded files between completely separate autonomous models and human reviewers.
+                Seamlessly pass massive datasets between entirely separate autonomous models without blowing up your context window or token budget.
               </p>
             </div>
 
