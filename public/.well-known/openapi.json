@@ -1,0 +1,126 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Drive.io Agent Artifact Relay",
+        "description": "API for AI Agents to offload files and context windows into secure, ephemeral storage links to reduce token overhead.",
+        "version": "v1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://drive.io/api"
+        }
+    ],
+    "paths": {
+        "/upload": {
+            "post": {
+                "operationId": "requestUploadUrl",
+                "summary": "Request an ephemeral storage URL",
+                "description": "Creates a secure 10-minute presigned URL where the agent can upload a file or large string payload.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "filename": {
+                                        "type": "string",
+                                        "description": "The name of the file or context object."
+                                    },
+                                    "contentType": {
+                                        "type": "string",
+                                        "description": "The MIME type of the payload (e.g. text/plain for strings, application/json for datasets)."
+                                    },
+                                    "size": {
+                                        "type": "integer",
+                                        "description": "The payload size in bytes."
+                                    }
+                                },
+                                "required": [
+                                    "filename",
+                                    "contentType",
+                                    "size"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful URL generation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "url": {
+                                            "type": "string",
+                                            "description": "The presigned AWS S3 / Cloudflare R2 URL to PUT the payload to."
+                                        },
+                                        "id": {
+                                            "type": "string",
+                                            "description": "The Drive.io short link ID for retrieving the artifact later."
+                                        },
+                                        "key": {
+                                            "type": "string",
+                                            "description": "The object storage key."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/complete": {
+            "post": {
+                "operationId": "finalizeUpload",
+                "summary": "Finalize Artifact Context",
+                "description": "Must be called after a successful PUT to the presigned URL. Returns the drive.io artifact link.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "key": {
+                                        "type": "string"
+                                    },
+                                    "filename": {
+                                        "type": "string"
+                                    },
+                                    "size": {
+                                        "type": "integer"
+                                    },
+                                    "contentType": {
+                                        "type": "string"
+                                    },
+                                    "burnAfterReading": {
+                                        "type": "boolean",
+                                        "description": "If true, the artifact self-destructs after the first retrieval request."
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "key",
+                                    "filename",
+                                    "size"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Upload finalized. Link ready."
+                    }
+                }
+            }
+        }
+    }
+}

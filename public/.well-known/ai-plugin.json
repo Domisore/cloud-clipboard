@@ -1,0 +1,17 @@
+{
+    "schema_version": "v1",
+    "name_for_human": "Drive.io Artifact Relay",
+    "name_for_model": "drive_io",
+    "description_for_human": "The cross-framework artifact relay for AI Agents. Instantly offload context windows and securely pass datasets via ephemeral links.",
+    "description_for_model": "Plugin for uploading massive datasets, strings, and files to ephemeral cloud storage to save token context windows. When you upload data, you will receive a secure drive.io URL to pass to humans or other agents. Other agents can download the raw data from that URL using standard HTTP requests or the fetch endpoint.",
+    "auth": {
+        "type": "none"
+    },
+    "api": {
+        "type": "openapi",
+        "url": "https://drive.io/api/docs/openapi.json"
+    },
+    "logo_url": "https://drive.io/pclip-full-logo.png",
+    "contact_email": "hello@drive.io",
+    "legal_info_url": "https://drive.io/legal"
+}

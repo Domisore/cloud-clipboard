@@ -26,23 +26,34 @@ export default function Home() {
             </span>
             NEW: Share files from Moltbot via your chat interface or with other Agents!
           </Link>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">
-            Save Tokens. Expand Context for the <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">Agent Swarm.</span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4 text-foreground">
+            Share Files Between <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">AI Agents.</span>
           </h1>
-          <p className="text-foreground-muted text-base sm:text-lg leading-relaxed">
-            Stop wasting precious limits passing large datasets between agents.<br className="hidden sm:block" />
-            Programmatically offload files and context windows into secure, ephemeral storage instantly. <span className="mx-1 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-yellow-400 before:opacity-80 relative inline-block"><span className="relative text-black font-bold px-1">Zero human authentication required.</span></span>
+          <h2 className="text-lg sm:text-xl font-medium text-foreground mb-6 uppercase tracking-wider text-accent/90">
+            The Neutral, Cross-Framework Artifact Relay
+          </h2>
+          <p className="text-foreground-muted text-base sm:text-lg leading-relaxed max-w-3xl mx-auto mb-8">
+            Stop wasting precious token limits passing large datasets between models.<br className="hidden sm:block" />
+            Programmatically offload files and context windows into secure, ephemeral storage instantly. Reduce token overhead by up to <span className="text-foreground font-semibold">7x per handoff</span>. <span className="mx-1 mt-2 sm:mt-0 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-yellow-400 before:opacity-80"><span className="relative text-black font-bold px-1">Zero human auth required.</span></span>
           </p>
+          <div className="flex items-center justify-center gap-4">
+            <Link
+              href="#how-it-works"
+              className="px-6 py-3 rounded-md bg-accent text-background font-semibold hover:bg-accent/90 transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.1)] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[2px_2px_0px_0px_rgba(255,255,255,0.1)] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none"
+            >
+              See How It Works
+            </Link>
+          </div>
         </div>
 
-        {/* YC Social Proof Quote */}
+        {/* Framing the Problem */}
         <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in delay-200">
           <p className="text-xl md:text-2xl font-medium text-foreground-muted mb-4 italic leading-relaxed">
-            &quot;We are moving towards swarm intelligence where agents interact without human intervention.&quot;
+            &quot;Passing raw data between agents consumes an average of 6,411 tokens per run versus 841 tokens with a pointer-based relay.&quot;
           </p>
           <div className="flex items-center justify-center gap-2 text-sm text-foreground-muted/80">
-            <span className="font-semibold px-2 py-1 rounded bg-surface border border-border-color text-foreground shadow-sm">Gary Tan</span>
-            <span>— Y Combinator</span>
+            <span className="font-semibold px-2 py-1 rounded bg-surface border border-border-color text-foreground shadow-sm">Research</span>
+            <span>— Arxiv (Nov 2024)</span>
           </div>
         </div>
 

@@ -3,6 +3,8 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextResponse } from "next/server";
 import { nanoid } from "nanoid";
+import { redis } from "@/lib/redis";
+import { auth } from "@clerk/nextjs/server";
 
 // CORS headers Helper
 function corsHeaders(origin: string | null) {
@@ -32,6 +34,36 @@ export async function POST(request: Request) {
 
         if (!filename || !contentType || !size) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400, headers });
+        }
+
+        // Authentication Check
+        let userId = null;
+        let apiKeyId = null;
+
+        // 1. Check Bearer Token (Agent API Key)
+        const authHeader = request.headers.get("Authorization");
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+            const token = authHeader.substring(7);
+            const keyData = await redis.get(`apikey:${token}`);
+            if (!keyData) {
+                return NextResponse.json({ error: "Invalid API Key" }, { status: 401, headers });
+            }
+            // @ts-ignore - KV response structure
+            userId = keyData.userId;
+            apiKeyId = `apikey:${token}`;
+        } else {
+            // 2. Fallback to Clerk Session (Human Web App)
+            const clerkAuth = await auth();
+            userId = clerkAuth.userId;
+        }
+
+        if (!userId) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers });
+        }
+
+        // Tracking usage if API Key
+        if (apiKeyId) {
+            const currentUsage = await redis.hincrby(apiKeyId, "usage", 1);
         }
 
         // Generate a short ID

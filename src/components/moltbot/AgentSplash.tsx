@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Bot, Zap, ArrowRight, Terminal } from 'lucide-react';
-import { ChatCard } from '@/components/ui/ChatSimulation';
+import { AgentHUD } from '@/components/ui/AgentHUD';
 
 export function AgentSplash() {
     return (
@@ -20,22 +20,15 @@ export function AgentSplash() {
                     </div>
 
                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-                        Give your Agents a <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Memory Drive.</span>
+                        Give your Agents an <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Artifact Relay.</span>
                     </h2>
                     <p className="text-zinc-400 text-lg md:text-xl max-w-xl leading-relaxed mb-8">
-                        Your AI assistants in Moltbook (and beyond) can now read and write files. Connect them to Drive.io to give them persistent storage, just like a human's cloud drive.
+                        Stop passing massive datasets directly in context. Equip your AI assistants across LangGraph, CrewAI, AutoGen, and Moltbook with a framework-agnostic handoff layer. Save up to 7x on token costs.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4">
-                        <Link
-                            href="/agents"
-                            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-black font-bold rounded-lg hover:bg-zinc-200 transition-all transform hover:scale-105"
-                        >
-                            See How It Works
-                            <ArrowRight className="w-4 h-4" />
-                        </Link>
-                        <div className="flex items-center gap-4 px-4 py-2 text-zinc-500 text-sm font-mono">
-                            <Bot className="w-4 h-4" />
+                        <div className="flex items-center gap-4 px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-400 text-sm font-mono">
+                            <Bot className="w-4 h-4 text-purple-400" />
                             <span>Moltbot Ready</span>
                         </div>
                     </div>
@@ -43,16 +36,7 @@ export function AgentSplash() {
 
                 {/* Visual Graphic */}
                 <div className="hidden md:flex flex-1 items-center justify-center relative z-10 w-full max-w-md mt-8 md:mt-0 transform scale-90 sm:scale-100 transition-transform">
-                    <ChatCard
-                        userRequest="Find the latest security audit logs and upload them."
-                        agentResponse="I've compiled the security logs from the last 24h. Secure link generated."
-                        customLink="https://drive.io/c/N37X6P9R2Z"
-                        attachment={{
-                            type: "data",
-                            name: "security-audit-logs.json",
-                            size: "1.4 MB"
-                        }}
-                    />
+                    <AgentHUD />
                 </div>
             </div>
         </div>

@@ -33,14 +33,18 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400, headers });
         }
 
+        // Safe-List Metadata Scrubbing (as per PRD)
+        // Ensure no local paths or EXIF hooks are passed into the DB explicitly
+        const scrubbedFilename = filename.split(/[\\/]/).pop() || "unknown"; // remove local path leakage
+
         // Save metadata to Redis with 24h expiry
         const metadata = {
             id,
             key,
-            filename,
+            filename: scrubbedFilename,
             size,
             contentType,
-            burnAfterReading: !!burnAfterReading,
+            burnAfterReading: !!burnAfterReading, // Enforce boolean
             uploadedAt: Date.now(),
         };
 
@@ -58,11 +62,25 @@ export async function POST(request: Request) {
             await redis.expire(`session:${sessionId}`, 86400);
         }
 
-        // Add to User History (if active)
+        // Add to User History (if active human session)
         const user = await currentUser();
         if (user) {
             await redis.lpush(`user:${user.id}:files`, id);
             await redis.expire(`user:${user.id}:files`, 2592000); // 30 days
+        } else {
+            // Check for Agent API Key
+            const authHeader = request.headers.get("Authorization");
+            if (authHeader && authHeader.startsWith("Bearer ")) {
+                const token = authHeader.substring(7);
+                const keyData = await redis.get(`apikey:${token}`);
+                if (keyData) {
+                    // @ts-ignore
+                    const agentOwnerId = keyData.userId;
+                    // Log upload under the agent owner account
+                    await redis.lpush(`user:${agentOwnerId}:files`, id);
+                    await redis.expire(`user:${agentOwnerId}:files`, 2592000); // 30 days
+                }
+            }
         }
 
         return NextResponse.json({ success: true, id }, { headers });
