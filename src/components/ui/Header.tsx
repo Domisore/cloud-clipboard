@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from 'react';
 import { SyncHub } from '@/components/sync/SyncHub';
+import { usePathname } from 'next/navigation';
 import { useSession } from '@/context/SessionContext';
 import { Zap, Check, Command, Menu, X } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -15,6 +16,8 @@ export function Header() {
     const [showSessions, setShowSessions] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { isConnected, wallet } = useSession();
+    const pathname = usePathname();
+    const isPclipPage = pathname?.startsWith('/clipboard');
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
@@ -32,23 +35,25 @@ export function Header() {
                 {/* Right Actions */}
                 <div className="flex items-center gap-3 sm:gap-4">
                     {/* Desktop Links */}
-                    <div className="hidden lg:flex items-center gap-2 pr-4 mr-2 border-r border-border-color/50">
-                        <Link
-                            href="/clipboard"
-                            className="flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-purple-400 bg-purple-500/10 hover:bg-purple-500/20 rounded-md transition-colors border border-purple-500/20"
-                        >
-                            <img src="/pclip-192x192.png" className="w-4 h-4 rounded-sm" alt="Pclip" />
-                            Pclip Web
-                        </Link>
-                        <a
-                            href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-foreground-muted hover:text-foreground hover:bg-surface rounded-md transition-colors"
-                        >
-                            Extension
-                        </a>
-                    </div>
+                    {isPclipPage && (
+                        <div className="hidden lg:flex items-center gap-2 pr-4 mr-2 border-r border-border-color/50">
+                            <Link
+                                href="/clipboard"
+                                className="flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-purple-400 bg-purple-500/10 hover:bg-purple-500/20 rounded-md transition-colors border border-purple-500/20"
+                            >
+                                <img src="/pclip-192x192.png" className="w-4 h-4 rounded-sm" alt="Pclip" />
+                                Pclip Web
+                            </Link>
+                            <a
+                                href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-foreground-muted hover:text-foreground hover:bg-surface rounded-md transition-colors"
+                            >
+                                Extension
+                            </a>
+                        </div>
+                    )}
 
                     <Link
                         href="/agents"
@@ -57,35 +62,41 @@ export function Header() {
                         Agents
                     </Link>
 
-                    <Link
-                        href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
-                        className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Extension
-                    </Link>
+                    {isPclipPage && (
+                        <Link
+                            href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
+                            className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Extension
+                        </Link>
+                    )}
 
-                    <button
-                        onClick={() => setShowSessions(true)}
-                        className="hidden md:flex text-sm font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
-                    >
-                        <div className="flex items-center gap-1">
-                            <span>Sessions</span>
-                            {wallet.length > 0 && (
-                                <span className="bg-surface border border-border-color text-xs px-1.5 rounded-full h-4 flex items-center justify-center">
-                                    {wallet.length}
-                                </span>
-                            )}
-                        </div>
-                    </button>
+                    {isPclipPage && (
+                        <>
+                            <button
+                                onClick={() => setShowSessions(true)}
+                                className="hidden md:flex text-sm font-medium text-foreground-muted hover:text-foreground transition-colors items-center gap-2"
+                            >
+                                <div className="flex items-center gap-1">
+                                    <span>Sessions</span>
+                                    {wallet.length > 0 && (
+                                        <span className="bg-surface border border-border-color text-xs px-1.5 rounded-full h-4 flex items-center justify-center">
+                                            {wallet.length}
+                                        </span>
+                                    )}
+                                </div>
+                            </button>
 
-                    <Link
-                        href="/how-it-works"
-                        className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
-                    >
-                        How it works
-                    </Link>
+                            <Link
+                                href="/how-it-works"
+                                className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+                            >
+                                How it works
+                            </Link>
+                        </>
+                    )}
 
                     <Link
                         href="https://forms.fillout.com/t/vej46NKrCkus"
@@ -113,32 +124,38 @@ export function Header() {
                                 >
                                     Agents
                                 </Link>
-                                <Link
-                                    href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
-                                    target="_blank" rel="noopener noreferrer"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
-                                >
-                                    Extension
-                                </Link>
-                                <button
-                                    onClick={() => { setShowSessions(true); setIsMobileMenuOpen(false); }}
-                                    className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors flex items-center justify-between"
-                                >
-                                    <span>Sessions</span>
-                                    {wallet.length > 0 && (
-                                        <span className="bg-background border border-border-color text-xs px-1.5 rounded-full h-4 flex items-center justify-center">
-                                            {wallet.length}
-                                        </span>
-                                    )}
-                                </button>
-                                <Link
-                                    href="/how-it-works"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
-                                >
-                                    How it works
-                                </Link>
+                                {isPclipPage && (
+                                    <Link
+                                        href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
+                                        target="_blank" rel="noopener noreferrer"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                    >
+                                        Extension
+                                    </Link>
+                                )}
+                                {isPclipPage && (
+                                    <>
+                                        <button
+                                            onClick={() => { setShowSessions(true); setIsMobileMenuOpen(false); }}
+                                            className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors flex items-center justify-between"
+                                        >
+                                            <span>Sessions</span>
+                                            {wallet.length > 0 && (
+                                                <span className="bg-background border border-border-color text-xs px-1.5 rounded-full h-4 flex items-center justify-center">
+                                                    {wallet.length}
+                                                </span>
+                                            )}
+                                        </button>
+                                        <Link
+                                            href="/how-it-works"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                        >
+                                            How it works
+                                        </Link>
+                                    </>
+                                )}
                                 <Link
                                     href="https://forms.fillout.com/t/vej46NKrCkus"
                                     target="_blank" rel="noopener noreferrer"
@@ -166,21 +183,23 @@ export function Header() {
                         )}
                     </div>
 
-                    <Tooltip content="Sync devices instanty">
-                        <button
-                            onClick={() => setIsSyncOpen(true)}
-                            className={`
-                                h-9 px-4 rounded-md text-sm font-medium flex items-center gap-2 transition-all border
-                                ${isConnected
-                                    ? 'bg-accent/10 border-accent/20 text-accent hover:bg-accent/20'
-                                    : 'bg-surface border-border-color text-foreground hover:border-foreground-muted'
-                                }
-                            `}
-                        >
-                            {isConnected ? <Check className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
-                            <span>{isConnected ? 'Synced' : 'Connect'}</span>
-                        </button>
-                    </Tooltip>
+                    {isPclipPage && (
+                        <Tooltip content="Sync devices instanty">
+                            <button
+                                onClick={() => setIsSyncOpen(true)}
+                                className={`
+                                    h-9 px-4 rounded-md text-sm font-medium flex items-center gap-2 transition-all border
+                                    ${isConnected
+                                        ? 'bg-accent/10 border-accent/20 text-accent hover:bg-accent/20'
+                                        : 'bg-surface border-border-color text-foreground hover:border-foreground-muted'
+                                    }
+                                `}
+                            >
+                                {isConnected ? <Check className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
+                                <span>{isConnected ? 'Synced' : 'Connect'}</span>
+                            </button>
+                        </Tooltip>
+                    )}
 
                     <SignedOut>
                         <SignInButton mode="modal">
