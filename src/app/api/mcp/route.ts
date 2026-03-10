@@ -1,10 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { z } from "zod";
-import { NextResponse } from "next/server";
-
-// We store the transport instance matching a specific session ID
-const transports = new Map<string, SSEServerTransport>();
 
 // Initialize the shared server instance
 const server = new McpServer({
@@ -23,11 +19,8 @@ server.tool(
     },
     async ({ content, filename, burnAfterReading }) => {
         try {
-            // Note: In an actual production scenario, the server would call its own `/api/upload` 
-            // and `api/complete` flow here, or abstract the R2 logic to a shared service.
-            // For MVP demonstration, we mock the response to show tool execution success.
+            // MVP demonstration
             const size = new Blob([content]).size;
-
             return {
                 content: [{
                     type: "text",
@@ -48,7 +41,6 @@ server.tool(
         url: z.string().describe("The drive.io URL (e.g. https://drive.io/abcXYZ)")
     },
     async ({ url }) => {
-        // Mock retrieval for demonstration
         return {
             content: [{
                 type: "text",
@@ -58,46 +50,27 @@ server.tool(
     }
 );
 
+// We create a stateful transport for the MCP server using Web Standards
+// It automatically handles session management via crypto.randomUUID()
+const transport = new WebStandardStreamableHTTPServerTransport({
+    sessionIdGenerator: () => crypto.randomUUID(),
+});
+
+// We only need to connect the transport to the server once
+let isConnected = false;
+async function ensureConnected() {
+    if (!isConnected) {
+        await server.connect(transport);
+        isConnected = true;
+    }
+}
 
 export async function GET(req: Request) {
-    // Determine a unique ID for this SSE stream (usually passed from the client)
-    const url = new URL(req.url);
-    const sessionId = url.searchParams.get("sessionId") || crypto.randomUUID();
-
-    // Create new SSE Transport for this client connection
-    const transport = new SSEServerTransport(`/api/mcp/message?sessionId=${sessionId}`, new Response());
-
-    // Connect the transport to the singleton server
-    await server.connect(transport);
-
-    // Store it so we can route POST messages to it
-    transports.set(sessionId, transport);
-
-    // Clean up when the connection drops
-    req.signal.addEventListener('abort', () => {
-        transports.delete(sessionId);
-    });
-
-    return transport.res;
+    await ensureConnected();
+    return transport.handleRequest(req);
 }
 
 export async function POST(req: Request) {
-    const url = new URL(req.url);
-    const sessionId = url.searchParams.get("sessionId");
-
-    if (!sessionId) {
-        return new NextResponse("Missing sessionId", { status: 400 });
-    }
-
-    const transport = transports.get(sessionId);
-    if (!transport) {
-        return new NextResponse("Session not found", { status: 404 });
-    }
-
-    try {
-        await transport.handlePostMessage(req as any, new Response() as any);
-        return new NextResponse("Ok", { status: 200 });
-    } catch (e) {
-        return new NextResponse("Internal Error", { status: 500 });
-    }
+    await ensureConnected();
+    return transport.handleRequest(req);
 }

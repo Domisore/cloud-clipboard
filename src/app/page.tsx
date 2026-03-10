@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CarbonAd } from "@/components/ui/CarbonAd";
 import { HowItWorks } from "@/components/ui/HowItWorks";
 import { RecommendedTools } from "@/components/monetization/RecommendedTools";
+import { InstallationGuide } from "@/components/ui/InstallationGuide";
 import { PclipPromoBanner } from "@/components/ui/PclipPromoBanner";
 import { AgentSplash } from "@/components/moltbot/AgentSplash";
 import { VisitorBadge } from "@/components/ui/VisitorBadge";
@@ -99,6 +100,9 @@ export default function Home() {
             </div>
           </div>
 
+
+          {/* Clear API Integration Steps */}
+          <InstallationGuide />
 
           {/* Recommended Privacy Tools (Affiliate) */}
           <RecommendedTools />
