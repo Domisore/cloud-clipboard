@@ -44,3 +44,22 @@ Connect your AI assistants to the drive.io cloud clipboard. Create clips and upl
 - **API Call:**
   - `POST /api/upload` (to get presigned URL)
   - `PUT <presigned_url>` (with file content)
+
+### park_handoff
+- **Description:** Parks context or data for another agent to pick up asynchronously.
+- **Parameters:**
+  - `payload`: (string | object) The data to pass.
+  - `targetAgentId`: (string) The ID of the agent receiving this handoff.
+  - `ttlSeconds`: (number) Optional. How long the payload lives before expiring. Default 3600.
+- **Returns:** A `handoff_id` and `PENDING` status.
+- **API Call:**
+  - `POST /api/v1/handoff`
+  - Body: `{ "payload": "...", "targetAgentId": "...", "ttlSeconds": 3600 }`
+
+### poll_handoff
+- **Description:** Checks if a handoff parked by another agent is ready to be consumed. Reading it automatically initiates the auto-burn sequence.
+- **Parameters:**
+  - `id`: (string) The `handoff_id` returned from `park_handoff`.
+- **Returns:** The payload data and marks it as `CONSUMED`.
+- **API Call:**
+  - `GET /api/v1/handoff?id=<handoff_id>`
