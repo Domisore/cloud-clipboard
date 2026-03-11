@@ -35,9 +35,17 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 2. 
-3. ## Agentic Capabilities
-4. 
-5. This project is built to be "agent-aware," providing structured metadata and tools for AI agents.
-6. 
-7. - **Manifest**: [agent.json](file:///Users/deji.omisore/projects/cloud-clipboard/agent.json) describes the agent's identity and capabilities.
-8. - **Skills**: Specialized skills are defined in the `skills/` directory (e.g., [drive.io SKILL.md](file:///Users/deji.omisore/projects/cloud-clipboard/skills/drive-io/SKILL.md)).
+## Agentic Capabilities
+
+This project is built to be "agent-aware," providing structured metadata and tools for AI agents.
+
+- **Manifest**: [agent.json](file:///Users/deji.omisore/projects/cloud-clipboard/agent.json) describes the agent's identity and capabilities.
+- **Skills**: Specialized skills are defined in the `skills/` directory (e.g., [drive.io SKILL.md](file:///Users/deji.omisore/projects/cloud-clipboard/skills/drive-io/SKILL.md)).
+
+### Agent System Limits
+If you are developing an agent to integrate with Drive.io, please note the following constraints before onboarding:
+- **Authentication**: Zero-auth for quick clips. Personal data access requires an API Key (`sk_abc123`) generated from the user dashboard.
+- **File/Data Limits**: 100MB max per upload.
+- **Ephemerality**: All data auto-deletes after 24 hours (or immediately if `burnAfterReading` is set).
+- **Rate Limits**: No hard programmatic limits, but aggressive polling will trigger IP bans.
+- **Data Retrieval**: Pointers returned by `create_clip` can be queried programmatically via `GET /api/file/<id>`.
