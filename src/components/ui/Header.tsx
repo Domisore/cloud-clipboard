@@ -166,13 +166,16 @@ export function Header() {
                                 </Link>
                                 <div className="px-4 py-3 border-t border-border-color mt-2">
                                     <SignedOut>
-                                        <SignInButton mode="modal">
+                                        <SignInButton mode="modal" forceRedirectUrl="/dashboard">
                                             <button className="w-full h-10 rounded-md text-sm font-bold bg-foreground text-background hover:bg-white/90 transition-colors">
                                                 Sign In
                                             </button>
                                         </SignInButton>
                                     </SignedOut>
                                     <SignedIn>
+                                        <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-left py-2 text-base text-zinc-300 hover:text-white transition-colors block mb-3 border-b border-zinc-800/50 pb-3">
+                                            Developer Dashboard
+                                        </Link>
                                         <div className="flex items-center gap-2">
                                             <UserButton />
                                             <span className="text-sm font-medium">Account</span>
@@ -202,13 +205,16 @@ export function Header() {
                     )}
 
                     <SignedOut>
-                        <SignInButton mode="modal">
+                        <SignInButton mode="modal" forceRedirectUrl="/dashboard">
                             <button className="h-9 px-4 rounded-md text-sm font-bold bg-foreground text-background hover:bg-white/90 transition-colors">
                                 Sign In
                             </button>
                         </SignInButton>
                     </SignedOut>
                     <SignedIn>
+                        <Link href="/dashboard" className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-md text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors">
+                            Dashboard
+                        </Link>
                         <UserButton
                             appearance={{
                                 elements: {
