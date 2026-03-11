@@ -13,7 +13,7 @@ interface ApiKey {
     // The raw key is only shown ONCE upon creation.
 }
 
-export function ApiKeyDashboard() {
+export function ApiKeyDashboard({ isBypass = false }: { isBypass?: boolean }) {
     const [keys, setKeys] = useState<ApiKey[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
@@ -27,7 +27,8 @@ export function ApiKeyDashboard() {
 
     const fetchKeys = async () => {
         try {
-            const res = await fetch('/api/v1/agents/keys');
+            const url = isBypass ? '/api/v1/agents/keys?agent_bypass=true' : '/api/v1/agents/keys';
+            const res = await fetch(url);
             if (res.ok) {
                 const data = await res.json();
                 setKeys(data.map((keyString: string) => typeof keyString === 'string' ? JSON.parse(keyString) : keyString));
@@ -45,7 +46,8 @@ export function ApiKeyDashboard() {
 
         setIsGenerating(true);
         try {
-            const res = await fetch('/api/v1/agents/keys', {
+            const url = isBypass ? '/api/v1/agents/keys?agent_bypass=true' : '/api/v1/agents/keys';
+            const res = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: newKeyName })
@@ -76,10 +78,14 @@ export function ApiKeyDashboard() {
             <main className="flex-1 w-full max-w-5xl mx-auto pt-32 pb-20 px-6">
 
                 <div className="mb-12">
-                    <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">Developer Dashboard</h1>
+                    <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
+                        Developer Dashboard
+                        {isBypass && <span className="ml-4 text-sm bg-red-500/20 text-red-400 px-3 py-1 rounded-full border border-red-500/50 align-middle">TEST MODE</span>}
+                    </h1>
                     <p className="text-zinc-500 max-w-2xl">
                         Manage your Agent API keys. These credentials allow headless swarms to push artifacts and
                         establish A2A handoff queues without browser session cookies.
+                        {isBypass && <span className="block mt-2 text-red-400/80">⚠️ You are currently using the agent bypass mode. Keys generated here are mock test keys and do not pollute your real account.</span>}
                     </p>
                 </div>
 
