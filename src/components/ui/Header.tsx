@@ -18,6 +18,7 @@ export function Header() {
     const { isConnected, wallet } = useSession();
     const pathname = usePathname();
     const isPclipPage = pathname?.startsWith('/clipboard');
+    const afterSignInUrl = isPclipPage ? "/clipboard" : "/dashboard";
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
@@ -166,7 +167,7 @@ export function Header() {
                                 </Link>
                                 <div className="px-4 py-3 border-t border-border-color mt-2">
                                     <SignedOut>
-                                        <SignInButton mode="modal" forceRedirectUrl="/dashboard">
+                                        <SignInButton mode="modal" forceRedirectUrl={afterSignInUrl}>
                                             <button className="w-full h-10 rounded-md text-sm font-bold bg-foreground text-background hover:bg-white/90 transition-colors">
                                                 Sign In
                                             </button>
@@ -205,7 +206,7 @@ export function Header() {
                     )}
 
                     <SignedOut>
-                        <SignInButton mode="modal" forceRedirectUrl="/dashboard">
+                        <SignInButton mode="modal" forceRedirectUrl={afterSignInUrl}>
                             <button className="h-9 px-4 rounded-md text-sm font-bold bg-foreground text-background hover:bg-white/90 transition-colors">
                                 Sign In
                             </button>
