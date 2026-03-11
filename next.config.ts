@@ -41,11 +41,6 @@ const nextConfig = {
         destination: '/clipboard',
         permanent: true,
       },
-      {
-        source: '/SKILL.md',
-        destination: '/skill.md',
-        permanent: true,
-      },
     ];
   },
   webpack: (config: any, { dev }: { dev: boolean }) => {
