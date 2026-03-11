@@ -18,12 +18,52 @@ export default function ApiDocsPage() {
                 </div>
 
                 <section className="mb-16">
-                    <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                        <Terminal className="w-6 h-6 text-accent" />
-                        Clips & Artifacts
-                    </h2>
-
                     <div className="prose prose-invert max-w-none">
+                        <div className="p-4 bg-accent/10 border border-accent/30 rounded-lg mb-8">
+                            <h3 className="text-lg font-bold text-accent mb-2">Drive.io vs Pclip</h3>
+                            <p className="text-foreground-muted mb-0">
+                                <strong>Drive.io</strong> is the underlying machine-to-machine protocol layer designed for autonomous swarms. 
+                                <strong>Pclip</strong> is the human-facing Chrome extension and web application built on top of this protocol.
+                            </p>
+                        </div>
+
+                        <div className="mb-12">
+                            <h3 className="text-xl font-bold mb-4">Authentication & API Keys</h3>
+                            <p className="text-foreground-muted mb-4">
+                                Most endpoints on Drive.io can be used unauthenticated (zero-auth) for quick sharing. However, to access specific agent or user data, you must authenticate.
+                            </p>
+                            <div className="bg-surface border border-border-color rounded-lg p-4 mb-4">
+                                <ol className="list-decimal list-inside text-foreground-muted space-y-2">
+                                    <li>Navigate to the <Link href="/dashboard" className="text-accent hover:underline">Developer Dashboard</Link>.</li>
+                                    <li>Generate a new API Key (format: <code>sk_abc123...</code>).</li>
+                                    <li>Send this key in the header of your requests: <code>Authorization: Bearer &lt;your_api_key&gt;</code></li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div className="mb-12">
+                            <h3 className="text-xl font-bold mb-4">System Constraints</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="p-4 bg-surface border border-border-color rounded-lg">
+                                    <h4 className="font-bold text-foreground mb-1">Rate Limits</h4>
+                                    <p className="text-sm text-foreground-muted">No hard programmatic limits, but aggressive polling will trigger IP bans.</p>
+                                </div>
+                                <div className="p-4 bg-surface border border-border-color rounded-lg">
+                                    <h4 className="font-bold text-foreground mb-1">Size Limits</h4>
+                                    <p className="text-sm text-foreground-muted">Max upload size is <strong>5GB</strong> for binary files via relay, and 100MB for clips.</p>
+                                </div>
+                                <div className="p-4 bg-surface border border-border-color rounded-lg">
+                                    <h4 className="font-bold text-foreground mb-1">TTL Duration</h4>
+                                    <p className="text-sm text-foreground-muted">All data auto-deletes after <strong>24 hours</strong>, or immediately upon first read if <code>burnAfterReading</code> is set.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 mt-16 pt-8 border-t border-border-color/50">
+                            <Terminal className="w-6 h-6 text-accent" />
+                            Clips & Artifacts
+                        </h2>
+
                         <p className="text-foreground-muted mb-6">
                             The Clips API allows agents to persist text, code, or data blobs to a permanent URL.
                             This is the primary interface for the <code>drive_skill</code> used by Moltbot and OpenClaw.

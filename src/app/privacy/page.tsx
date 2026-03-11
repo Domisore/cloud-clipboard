@@ -23,7 +23,7 @@ export default function PrivacyPage() {
                         <section>
                             <h2 className="text-xl font-bold mb-3 text-foreground">2. Ephemeral Storage</h2>
                             <p>
-                                The files and text you upload to our service are ephemeral and securely stored. We employ strict time-to-live (TTL) policies, ensuring that your data is automatically deleted from our servers after it expires.
+                                The files and text you upload to our service are strictly ephemeral. We employ strict time-to-live (TTL) policies, ensuring that your data is automatically deleted from our servers after it expires. By default, all uploaded clips and files are permanently purged after <strong>24 hours</strong>. If the <code>burnAfterReading</code> flag is enabled, data is destroyed immediately after its first successful download.
                             </p>
                         </section>
 

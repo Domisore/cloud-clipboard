@@ -34,6 +34,20 @@ const nextConfig = {
       ]
     };
   },
+  async redirects() {
+    return [
+      {
+        source: '/app',
+        destination: '/clipboard',
+        permanent: true,
+      },
+      {
+        source: '/SKILL.md',
+        destination: '/skill.md',
+        permanent: true,
+      },
+    ];
+  },
   webpack: (config: any, { dev }: { dev: boolean }) => {
     if (dev) {
       config.watchOptions = {
