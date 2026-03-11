@@ -9,6 +9,9 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { searchParams } = new URL(request.url);
+        const shouldDownload = searchParams.get('download') === 'true';
+
         // In Next.js 15+, params is a Promise
         const { id } = await params;
 
@@ -45,6 +48,15 @@ export async function GET(
         }
 
         if (isClip) {
+            if (shouldDownload) {
+                return new NextResponse(metadata.content, {
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                        'Content-Disposition': `attachment; filename="${metadata.title || 'snippet.txt'}"`
+                    }
+                });
+            }
+
             // It's a text clip, allow valid response without R2
             return NextResponse.json({
                 id: metadata.id,
@@ -66,6 +78,10 @@ export async function GET(
 
         // URL valid for 1 hour
         const downloadUrl = await getSignedUrl(r2, command, { expiresIn: 3600 });
+
+        if (shouldDownload) {
+            return NextResponse.redirect(downloadUrl);
+        }
 
         // 3. Return combined data
         // We map Redis metadata to the frontend's expected UploadResult shape

