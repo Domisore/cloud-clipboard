@@ -18,6 +18,8 @@ interface SessionContextType {
     refreshFiles: () => Promise<void>;
     disconnect: () => void;
     burnSession: () => Promise<void>;
+    isRefreshing: boolean;
+    lastSyncedAt: number | null;
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
@@ -41,6 +43,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     const [files, setFiles] = useState<UploadResult[]>([]);
     const [userFiles, setUserFiles] = useState<UploadResult[]>([]);
     const [wallet, setWallet] = useState<SessionData[]>([]);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
+    const [pollingInterval, setPollingInterval] = useState(10000); // Start with 10s
 
     // check status on mount
     useEffect(() => {
@@ -50,15 +55,31 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
     // If connected, fetch files
     useEffect(() => {
-        if (isConnected) {
+        if (isConnected || isSignedIn) {
             refreshFiles();
-            // Poll for updates every 10 seconds (Pseudo-realtime until Phase 3)
-            const interval = setInterval(refreshFiles, 10000);
-            return () => clearInterval(interval);
+            
+            // Polling logic with adaptive interval
+            const interval = setInterval(() => {
+                refreshFiles();
+            }, pollingInterval);
+
+            // Visibility change handling
+            const handleVisibilityChange = () => {
+                if (document.visibilityState === 'visible') {
+                    setPollingInterval(10000); // Reset interval on focus
+                    refreshFiles();
+                }
+            };
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+
+            return () => {
+                clearInterval(interval);
+                document.removeEventListener('visibilitychange', handleVisibilityChange);
+            };
         } else {
             setFiles([]);
         }
-    }, [isConnected]);
+    }, [isConnected, isSignedIn, pollingInterval, sessionId]);
 
     // Fetch User Files when signed in
     useEffect(() => {
@@ -153,20 +174,38 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     };
 
     const refreshFiles = async () => {
-        if (isSignedIn) {
-            fetchUserFiles();
-        }
-
-        if (!sessionId && !isConnected) return;
+        if (isRefreshing) return;
+        setIsRefreshing(true);
         try {
-            const res = await fetch('/api/session/files');
-            if (res.ok) {
-                const data = await res.json();
-                // Filter out nulls from potential parse errors
-                setFiles(data.files || []);
+            if (isSignedIn) {
+                await fetchUserFiles();
             }
+
+            const prevCount = files.length + userFiles.length;
+            if (sessionId || isConnected) {
+                const res = await fetch('/api/session/files');
+                if (res.ok) {
+                    const data = await res.json();
+                    setFiles(data.files || []);
+                    
+                    // Adaptive logic: If no changes, slow down polling. 
+                    const newCount = (data.files?.length || 0) + userFiles.length;
+                    if (newCount === prevCount) {
+                        setPollingInterval(current => Math.min(current + 20000, 120000)); // Cap at 2 mins
+                    } else {
+                        setPollingInterval(10000); // Reset on activity
+                    }
+                }
+            }
+            
+            setLastSyncedAt(Date.now());
+            
+            // Adaptive logic: If no changes (compared to state), we could slow down.
+            // For now, let's just implement the focus reset and base polling.
         } catch (e) {
-            console.error('Failed to fetch session files:', e);
+            console.error('Failed to sync files:', e);
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
@@ -248,7 +287,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             removeFromWallet,
             refreshFiles,
             disconnect,
-            burnSession
+            burnSession,
+            isRefreshing,
+            lastSyncedAt
         }}>
             {children}
         </SessionContext.Provider>

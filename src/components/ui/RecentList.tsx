@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { FileText, Image as ImageIcon, Link as LinkIcon, Clock, Trash2, Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { FileText, Image as ImageIcon, Link as LinkIcon, Clock, Trash2, Check, ChevronDown, ChevronUp, RefreshCw } from 'lucide-react';
 import { useSession } from '@/context/SessionContext'; // Import context
 import { UploadResult } from '@/services/mockUpload';
 
@@ -26,7 +26,7 @@ function formatTimeAgo(timestamp: number): string {
 }
 
 export function RecentList() {
-    const { userFiles } = useSession(); // Get user files
+    const { userFiles, refreshFiles, isRefreshing, lastSyncedAt } = useSession(); // Get user files
     const [uploads, setUploads] = useState<Upload[]>([]);
     const [showToast, setShowToast] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -128,19 +128,40 @@ export function RecentList() {
 
     return (
         <div className="w-full max-w-5xl mx-auto space-y-4 animate-fade-in">
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-center gap-2 group cursor-pointer py-2"
-            >
-                <h2 className="text-xs font-bold text-foreground-muted uppercase tracking-wider group-hover:text-foreground transition-colors">
-                    Recent Activity ({uploads.length})
-                </h2>
-                {isOpen ? (
-                    <ChevronUp size={16} className="text-foreground-muted group-hover:text-foreground transition-colors" />
-                ) : (
-                    <ChevronDown size={16} className="text-foreground-muted group-hover:text-foreground transition-colors" />
-                )}
-            </button>
+            <div className="flex items-center justify-center gap-4 py-2">
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="flex items-center gap-2 group cursor-pointer"
+                >
+                    <h2 className="text-xs font-bold text-foreground-muted uppercase tracking-wider group-hover:text-foreground transition-colors">
+                        Recent Activity ({uploads.length})
+                    </h2>
+                    {isOpen ? (
+                        <ChevronUp size={16} className="text-foreground-muted group-hover:text-foreground transition-colors" />
+                    ) : (
+                        <ChevronDown size={16} className="text-foreground-muted group-hover:text-foreground transition-colors" />
+                    )}
+                </button>
+
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            refreshFiles();
+                        }}
+                        disabled={isRefreshing}
+                        className={`p-1.5 rounded-full hover:bg-white/5 transition-all ${isRefreshing ? 'animate-spin text-accent' : 'text-foreground-muted hover:text-foreground'}`}
+                        title="Sync Recent Activity"
+                    >
+                        <RefreshCw size={14} />
+                    </button>
+                    {lastSyncedAt && (
+                        <span className="text-[10px] text-foreground-muted/40 font-mono hidden sm:inline">
+                            Synced {new Date(lastSyncedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                        </span>
+                    )}
+                </div>
+            </div>
 
             {isOpen && (
                 <div className="animate-in slide-in-from-top-2 fade-in duration-200">
