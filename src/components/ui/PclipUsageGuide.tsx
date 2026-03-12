@@ -83,42 +83,6 @@ export function PclipUsageGuide() {
                 </div>
             </div>
 
-            {/* Agentic Bridge Section */}
-            <div className="mt-16 bg-accent/5 border border-accent/20 rounded-2xl p-8 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <Bot className="w-32 h-32 text-accent" />
-                </div>
-                <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-                    <div className="flex-1 text-center md:text-left">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-bold mb-4">
-                            <Zap className="w-3 h-3" />
-                            AGENT-AWARE ARCHITECTURE
-                        </div>
-                        <h2 className="text-2xl font-bold text-foreground mb-4">Agentic Bridge</h2>
-                        <p className="text-foreground-muted leading-relaxed max-w-2xl">
-                            Pclip is designed for more than just humans. Our structured manifest allows autonomous agents to discover capabilities, manage handoffs, and interact with your cloud clipboard programmatically.
-                        </p>
-                    </div>
-                    <div className="flex gap-4">
-                        <a
-                            href="/agent.json"
-                            target="_blank"
-                            className="px-6 py-3 bg-accent text-background font-bold rounded-xl hover:scale-105 transition-transform shadow-lg shadow-accent/20 flex items-center gap-2"
-                        >
-                            <Bot className="w-4 h-4" />
-                            View Manifest
-                        </a>
-                        <a
-                            href="/llms.txt"
-                            target="_blank"
-                            className="px-6 py-3 bg-surface border border-border-color text-foreground font-bold rounded-xl hover:bg-white/5 transition-colors flex items-center gap-2"
-                        >
-                            Developer Docs
-                        </a>
-                    </div>
-                </div>
-            </div>
-
         </div>
     );
 }

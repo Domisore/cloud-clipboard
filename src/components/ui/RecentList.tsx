@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { FileText, Image as ImageIcon, Link as LinkIcon, Clock, Trash2, Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { FileText, Image as ImageIcon, Link as LinkIcon, Clock, Trash2, Check, ChevronDown, ChevronUp, Download } from 'lucide-react';
 import { useSession } from '@/context/SessionContext'; // Import context
 import { UploadResult } from '@/services/mockUpload';
 
@@ -185,16 +185,33 @@ export function RecentList() {
                                             <span suppressHydrationWarning>{formatTimeAgo(upload.expiresAt)} left</span>
                                         </div>
 
-                                        <button
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(upload.url);
-                                                setShowToast(true);
-                                            }}
-                                            className="flex items-center gap-1.5 text-xs font-bold text-accent hover:underline opacity-80 hover:opacity-100"
-                                        >
-                                            <LinkIcon size={12} />
-                                            Copy Link
-                                        </button>
+                                        <div className="flex items-center gap-3">
+                                            <button
+                                                onClick={() => {
+                                                    const link = document.createElement('a');
+                                                    link.href = upload.url;
+                                                    link.download = upload.filename || 'download';
+                                                    document.body.appendChild(link);
+                                                    link.click();
+                                                    document.body.removeChild(link);
+                                                }}
+                                                className="flex items-center gap-1.5 text-xs font-bold text-foreground-muted hover:text-accent transition-colors"
+                                                title="Download"
+                                            >
+                                                <Download size={12} />
+                                                DL
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(upload.url);
+                                                    setShowToast(true);
+                                                }}
+                                                className="flex items-center gap-1.5 text-xs font-bold text-accent hover:underline opacity-80 hover:opacity-100"
+                                            >
+                                                <LinkIcon size={12} />
+                                                Copy Link
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             ))}

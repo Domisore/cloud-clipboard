@@ -5,11 +5,12 @@ import { useState } from 'react';
 import { SyncHub } from '@/components/sync/SyncHub';
 import { usePathname } from 'next/navigation';
 import { useSession } from '@/context/SessionContext';
-import { Zap, Check, Command, Menu, X } from 'lucide-react';
+import { Zap, Check, Command, Menu, X, Download } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 import { SessionList } from './SessionList';
+import { InstallPWAButton } from './InstallPWAButton';
 
 export function Header() {
     const [isSyncOpen, setIsSyncOpen] = useState(false);
@@ -24,12 +25,16 @@ export function Header() {
         <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 group" suppressHydrationWarning>
+                <Link href={isPclipPage ? "/clipboard" : "/"} className="flex items-center gap-2 group" suppressHydrationWarning>
                     <div className="w-8 h-8 rounded-lg bg-surface border border-border-color flex items-center justify-center group-hover:border-accent/50 transition-colors shadow-sm overflow-hidden">
-                        <img src="/icon-192x192.png" alt="Drive.io Logo" className="w-full h-full object-cover" />
+                        <img 
+                            src={isPclipPage ? "/pclip-192x192.png" : "/icon-192x192.png"} 
+                            alt={isPclipPage ? "Pclip Logo" : "Drive.io Logo"} 
+                            className="w-full h-full object-cover" 
+                        />
                     </div>
                     <span className="font-sans font-semibold text-sm tracking-tight text-foreground group-hover:text-white transition-colors">
-                        Drive.io
+                        {isPclipPage ? "Pclip" : "Drive.io"}
                     </span>
                 </Link>
 
@@ -38,13 +43,7 @@ export function Header() {
                     {/* Desktop Links */}
                     {isPclipPage && (
                         <div className="hidden lg:flex items-center gap-2 pr-4 mr-2 border-r border-border-color/50">
-                            <Link
-                                href="/clipboard"
-                                className="flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-purple-400 bg-purple-500/10 hover:bg-purple-500/20 rounded-md transition-colors border border-purple-500/20"
-                            >
-                                <img src="/pclip-192x192.png" className="w-4 h-4 rounded-sm" alt="Pclip" />
-                                Pclip Web
-                            </Link>
+                            <InstallPWAButton className="flex items-center" />
                             <a
                                 href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
                                 target="_blank"
@@ -56,12 +55,6 @@ export function Header() {
                         </div>
                     )}
 
-                    <Link
-                        href="/agents"
-                        className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
-                    >
-                        Agents
-                    </Link>
 
                     {isPclipPage && (
                         <Link
@@ -118,13 +111,6 @@ export function Header() {
                         {/* Mobile Dropdown */}
                         {isMobileMenuOpen && (
                             <div className="absolute top-full right-0 mt-2 w-48 bg-surface border border-border-color rounded-lg shadow-xl py-2 flex flex-col gap-1 animate-in fade-in zoom-in-95 duration-200">
-                                <Link
-                                    href="/agents"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
-                                >
-                                    Agents
-                                </Link>
                                 {isPclipPage && (
                                     <Link
                                         href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"

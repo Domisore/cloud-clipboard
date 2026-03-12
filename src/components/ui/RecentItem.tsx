@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { UploadResult } from '@/services/mockUpload';
-import { Trash2, Copy, FileText, Image as ImageIcon, File, Clock } from 'lucide-react';
+import { Trash2, Copy, FileText, Image as ImageIcon, File, Clock, Download } from 'lucide-react';
 
 interface RecentItemProps {
     upload: UploadResult;
@@ -141,6 +141,22 @@ export function RecentItem({ upload, isCopied, onCopy, onDelete }: RecentItemPro
 
                     {/* Actions */}
                     <div className="flex items-center gap-2 flex-shrink-0">
+                        <button
+                            onClick={() => {
+                                // Simple download logic for URLs
+                                const link = document.createElement('a');
+                                link.href = upload.url;
+                                link.download = upload.filename;
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            }}
+                            className="text-xs bg-accent/10 text-accent border border-accent/20 px-3 py-1.5 font-bold hover:bg-accent/20 transition-colors flex items-center gap-1.5"
+                            title="Download File"
+                        >
+                            <Download className="w-3 h-3" />
+                            DL
+                        </button>
                         <button
                             onClick={() => onCopy(upload.url, upload.id)}
                             className="text-xs bg-white text-black px-3 py-1.5 font-bold hover:bg-accent transition-colors flex items-center gap-1.5"

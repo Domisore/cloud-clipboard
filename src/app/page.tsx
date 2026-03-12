@@ -107,23 +107,35 @@ export default function Home() {
           {/* Recommended Privacy Tools (Affiliate) */}
           <RecommendedTools />
 
-          {/* Chrome Extension CTA */}
-          <a
-            href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex flex-col items-center justify-center p-5 rounded-xl bg-surface/50 border border-border-color hover:border-accent hover:bg-surface transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg group max-w-2xl mx-auto w-full"
-          >
-            <div className="flex items-center gap-2 mb-1">
-              <svg className="w-6 h-6 text-foreground group-hover:text-accent transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
-              <span className="text-lg font-bold tracking-tight text-foreground group-hover:text-accent transition-colors">Install the Chrome Extension</span>
+          {/* Pclip Chrome Extension CTA */}
+          <div className="max-w-2xl mx-auto w-full">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="h-px flex-1 bg-border-color/50"></span>
+              <span className="text-[10px] font-bold text-foreground-muted uppercase tracking-[0.2em] whitespace-nowrap">Also by the Drive.io Team</span>
+              <span className="h-px flex-1 bg-border-color/50"></span>
             </div>
-            <p className="text-foreground-muted text-xs font-medium group-hover:text-foreground transition-colors">
-              Right-click to send text and images instantly to your cloud drive.
-            </p>
-          </a>
+            <a
+              href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center justify-center p-6 rounded-2xl bg-gradient-to-br from-purple-500/5 to-surface/50 border border-purple-500/20 hover:border-purple-500/40 hover:bg-surface transition-all transform hover:scale-[1.01] active:scale-[0.99] shadow-xl group w-full"
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                  </svg>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xl font-bold tracking-tight text-white group-hover:text-purple-400 transition-colors">Install Pclip Extension</span>
+                  <span className="text-[10px] font-bold text-purple-500/60 uppercase tracking-widest">Web Clipper for Pclip.me</span>
+                </div>
+              </div>
+              <p className="text-foreground-muted text-sm text-center leading-relaxed max-w-md group-hover:text-foreground transition-colors">
+                The independent, human-centric way to send text and images instantly to your Pclip cloud clipboard.
+              </p>
+            </a>
+          </div>
 
           <div className="flex justify-center opacity-80 hover:opacity-100 transition-opacity">
             <CarbonAd />

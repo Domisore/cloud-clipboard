@@ -37,9 +37,9 @@ export function PclipPromoBanner() {
                         {/* Content */}
                         <div className="flex items-center gap-3 flex-1">
                             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                                <span className="text-[10px] font-bold bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded uppercase tracking-wider w-fit">Note</span>
+                                <span className="text-[10px] font-bold bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded uppercase tracking-wider w-fit">News</span>
                                 <p className="text-sm text-foreground-muted">
-                                    Looking for the human-centric clipboard? It has rebranded to Pclip.
+                                    Meet <span className="text-white font-bold">Pclip</span> — the independent, human-centric cloud clipboard companion by the Drive.io team.
                                 </p>
                             </div>
                         </div>
