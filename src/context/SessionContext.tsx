@@ -47,15 +47,28 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
     const [pollingInterval, setPollingInterval] = useState(10000); // Start with 10s
 
+    const [isTabVisible, setIsTabVisible] = useState(true);
+
     // check status on mount
     useEffect(() => {
         checkStatus();
         loadWallet();
+
+        const handleVisibilityChange = () => {
+            const visible = document.visibilityState === 'visible';
+            setIsTabVisible(visible);
+            if (visible) {
+                setPollingInterval(10000); // Reset interval on focus
+                refreshFiles();
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, []);
 
     // If connected, fetch files
     useEffect(() => {
-        if (isConnected || isSignedIn) {
+        if ((isConnected || isSignedIn) && isTabVisible) {
             refreshFiles();
             
             // Polling logic with adaptive interval
@@ -63,23 +76,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
                 refreshFiles();
             }, pollingInterval);
 
-            // Visibility change handling
-            const handleVisibilityChange = () => {
-                if (document.visibilityState === 'visible') {
-                    setPollingInterval(10000); // Reset interval on focus
-                    refreshFiles();
-                }
-            };
-            document.addEventListener('visibilitychange', handleVisibilityChange);
-
-            return () => {
-                clearInterval(interval);
-                document.removeEventListener('visibilitychange', handleVisibilityChange);
-            };
+            return () => clearInterval(interval);
         } else {
-            setFiles([]);
+            if (!isConnected && !isSignedIn) {
+                setFiles([]);
+            }
         }
-    }, [isConnected, isSignedIn, pollingInterval, sessionId]);
+    }, [isConnected, isSignedIn, pollingInterval, isTabVisible, sessionId]);
 
     // Fetch User Files when signed in
     useEffect(() => {
