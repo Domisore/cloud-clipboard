@@ -8,6 +8,7 @@ import { InstallationGuide } from "@/components/ui/InstallationGuide";
 import { PclipPromoBanner } from "@/components/ui/PclipPromoBanner";
 import { AgentSplash } from "@/components/moltbot/AgentSplash";
 import { VisitorBadge } from "@/components/ui/VisitorBadge";
+import { TokenBenchmark } from "@/components/ui/TokenBenchmark";
 
 export default function Home() {
   return (
@@ -60,6 +61,9 @@ export default function Home() {
 
         {/* How It Works Steps */}
         <HowItWorks />
+
+        {/* Measured Benchmark Data */}
+        <TokenBenchmark />
 
         {/* Main Interaction Area */}
         <div className="w-full max-w-5xl mx-auto flex flex-col gap-12">
