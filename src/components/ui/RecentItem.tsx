@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { UploadResult } from '@/services/mockUpload';
-import { Trash2, Copy, FileText, Image as ImageIcon, File, Clock, Download } from 'lucide-react';
+import { Trash2, Copy, FileText, Image as ImageIcon, File, Clock } from 'lucide-react';
 
 interface RecentItemProps {
     upload: UploadResult;
@@ -99,7 +99,12 @@ export function RecentItem({ upload, isCopied, onCopy, onDelete }: RecentItemPro
     };
 
     return (
-        <div className="border border-border-color bg-surface/30 hover:bg-surface/50 transition-colors group">
+        <a 
+            href={upload.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border border-border-color bg-surface/30 hover:bg-surface/50 transition-colors group block hover:border-accent/40 active:scale-[0.99]"
+        >
             <div className="p-4">
                 {/* Header Row */}
                 <div className="flex items-start justify-between gap-4 mb-3">
@@ -142,23 +147,11 @@ export function RecentItem({ upload, isCopied, onCopy, onDelete }: RecentItemPro
                     {/* Actions */}
                     <div className="flex items-center gap-2 flex-shrink-0">
                         <button
-                            onClick={() => {
-                                // Simple download logic for URLs
-                                const link = document.createElement('a');
-                                link.href = upload.url;
-                                link.download = upload.filename;
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                onCopy(upload.url, upload.id);
                             }}
-                            className="text-xs bg-accent/10 text-accent border border-accent/20 px-3 py-1.5 font-bold hover:bg-accent/20 transition-colors flex items-center gap-1.5"
-                            title="Download File"
-                        >
-                            <Download className="w-3 h-3" />
-                            DL
-                        </button>
-                        <button
-                            onClick={() => onCopy(upload.url, upload.id)}
                             className="text-xs bg-white text-black px-3 py-1.5 font-bold hover:bg-accent transition-colors flex items-center gap-1.5"
                             title="Copy Link"
                         >
@@ -166,7 +159,11 @@ export function RecentItem({ upload, isCopied, onCopy, onDelete }: RecentItemPro
                             {isCopied ? 'COPIED!' : 'COPY'}
                         </button>
                         <button
-                            onClick={() => onDelete(upload.id)}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                onDelete(upload.id);
+                            }}
                             className="p-1.5 hover:text-danger transition-colors border border-transparent hover:border-danger"
                             title="Burn Now"
                         >
@@ -181,17 +178,12 @@ export function RecentItem({ upload, isCopied, onCopy, onDelete }: RecentItemPro
                         <code className="text-xs text-accent font-mono truncate">
                             {upload.url}
                         </code>
-                        <a
-                            href={upload.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-gray-500 hover:text-accent transition-colors whitespace-nowrap"
-                        >
+                        <span className="text-xs text-gray-500 group-hover:text-accent transition-colors whitespace-nowrap">
                             OPEN →
-                        </a>
+                        </span>
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     );
 }

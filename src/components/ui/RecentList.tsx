@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { FileText, Image as ImageIcon, Link as LinkIcon, Clock, Trash2, Check, ChevronDown, ChevronUp, Download } from 'lucide-react';
+import { FileText, Image as ImageIcon, Link as LinkIcon, Clock, Trash2, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { useSession } from '@/context/SessionContext'; // Import context
 import { UploadResult } from '@/services/mockUpload';
 
@@ -151,9 +151,12 @@ export function RecentList() {
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {uploads.map((upload) => (
-                                <div
+                                <a
                                     key={upload.key}
-                                    className="group relative bg-surface/50 hover:bg-surface border border-border-color rounded-lg p-5 transition-all text-left"
+                                    href={upload.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group relative bg-surface/50 hover:bg-surface border border-border-color rounded-lg p-5 transition-all text-left block hover:border-accent/40 active:scale-[0.99]"
                                 >
                                     <div className="flex items-start justify-between mb-3">
                                         <div className="p-2 rounded-md bg-background border border-border-color text-accent/80">
@@ -187,22 +190,9 @@ export function RecentList() {
 
                                         <div className="flex items-center gap-3">
                                             <button
-                                                onClick={() => {
-                                                    const link = document.createElement('a');
-                                                    link.href = upload.url;
-                                                    link.download = upload.filename || 'download';
-                                                    document.body.appendChild(link);
-                                                    link.click();
-                                                    document.body.removeChild(link);
-                                                }}
-                                                className="flex items-center gap-1.5 text-xs font-bold text-foreground-muted hover:text-accent transition-colors"
-                                                title="Download"
-                                            >
-                                                <Download size={12} />
-                                                DL
-                                            </button>
-                                            <button
-                                                onClick={() => {
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
                                                     navigator.clipboard.writeText(upload.url);
                                                     setShowToast(true);
                                                 }}
@@ -213,7 +203,7 @@ export function RecentList() {
                                             </button>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             ))}
                         </div>
                     )}
