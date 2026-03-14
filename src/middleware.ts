@@ -1,11 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isPublicRoute = createRouteMatcher(['/share-target(.*)']);
-
-export default clerkMiddleware(async (auth, req) => {
-    if (isPublicRoute(req)) return;
-    await auth.protect();
-});
+export default clerkMiddleware();
 
 export const config = {
     matcher: [
