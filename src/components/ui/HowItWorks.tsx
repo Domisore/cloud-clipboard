@@ -1,55 +1,22 @@
 "use client";
 
-import { UploadCloud, Link as LinkIcon, ArrowDownCircle } from 'lucide-react';
+import Image from 'next/image';
 
 export function HowItWorks() {
     return (
-        <section id="how-it-works" className="w-full max-w-5xl mx-auto py-16 animate-fade-in relative">
+        <section id="how-it-works" className="w-full max-w-5xl mx-auto py-16 animate-fade-in relative flex flex-col items-center">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-accent to-transparent"></div>
 
             <div className="text-center mb-12">
                 <h2 className="text-2xl md:text-3xl font-bold text-foreground">How it Works</h2>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 md:gap-8 relative">
-                {/* Connecting Line (Desktop) */}
-                <div className="hidden md:block absolute top-[24px] left-[16%] right-[16%] h-[2px] bg-gradient-to-r from-border-color via-accent/20 to-border-color -z-10" />
-
-                {/* Step 1 */}
-                <div className="flex flex-col items-center text-center group">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-surface border border-border-color flex items-center justify-center text-foreground mb-2 md:mb-4 relative z-10 group-hover:bg-accent/10 group-hover:border-accent/50 transition-colors shadow-sm">
-                        <UploadCloud size={16} className="md:w-5 md:h-5" />
-                        <div className="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 w-5 h-5 md:w-6 md:h-6 rounded-full bg-background border border-border-color flex items-center justify-center text-[9px] md:text-[10px] font-bold text-foreground-muted shadow-sm">1</div>
-                    </div>
-                    <h3 className="text-[10px] md:text-sm font-bold text-foreground mb-1 md:mb-2 leading-tight">Agent A <br className="md:hidden" />Uploads</h3>
-                    <p className="hidden md:block text-xs text-foreground-muted px-4 leading-relaxed">
-                        Push a massive file, dataset, or string to the API.
-                    </p>
-                </div>
-
-                {/* Step 2 */}
-                <div className="flex flex-col items-center text-center group">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-surface border border-border-color flex items-center justify-center text-foreground mb-2 md:mb-4 relative z-10 group-hover:bg-accent/10 group-hover:border-accent/50 transition-colors shadow-sm">
-                        <LinkIcon size={16} className="md:w-5 md:h-5" />
-                        <div className="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 w-5 h-5 md:w-6 md:h-6 rounded-full bg-background border border-border-color flex items-center justify-center text-[9px] md:text-[10px] font-bold text-foreground-muted shadow-sm">2</div>
-                    </div>
-                    <h3 className="text-[10px] md:text-sm font-bold text-foreground mb-1 md:mb-2 leading-tight">Get a <br className="md:hidden" />Link</h3>
-                    <p className="hidden md:block text-xs text-foreground-muted px-4 leading-relaxed">
-                        Receive a secure, ephemeral 30-character URL instantly.
-                    </p>
-                </div>
-
-                {/* Step 3 */}
-                <div className="flex flex-col items-center text-center group">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-surface border border-border-color flex items-center justify-center text-foreground mb-2 md:mb-4 relative z-10 group-hover:bg-accent/10 group-hover:border-accent/50 transition-colors shadow-sm">
-                        <ArrowDownCircle size={16} className="md:w-5 md:h-5" />
-                        <div className="absolute -top-1.5 -right-1.5 md:-top-2 md:-right-2 w-5 h-5 md:w-6 md:h-6 rounded-full bg-background border border-border-color flex items-center justify-center text-[9px] md:text-[10px] font-bold text-foreground-muted shadow-sm">3</div>
-                    </div>
-                    <h3 className="text-[10px] md:text-sm font-bold text-foreground mb-1 md:mb-2 leading-tight">Agent B <br className="md:hidden" />Downloads</h3>
-                    <p className="hidden md:block text-xs text-foreground-muted px-4 leading-relaxed">
-                        Pass the URL in context. The next agent downloads it directly.
-                    </p>
-                </div>
+            <div className="w-full max-w-4xl relative rounded-2xl overflow-hidden border border-border-color/50 shadow-2xl bg-surface/20">
+                <img 
+                    src="/agent_data_flow_labeled.png" 
+                    alt="Drive.io Agent Native Artifact Relay Schematic" 
+                    className="w-full h-auto object-contain hover:scale-[1.01] transition-transform duration-500 ease-in-out"
+                />
             </div>
         </section>
     );

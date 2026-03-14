@@ -29,14 +29,14 @@ export default function Home() {
             NEW: Share files from Moltbot via your chat interface or with other Agents!
           </Link>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4 text-foreground">
-            Share Files Between <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">AI Agents.</span>
+            Share Files & Data Between <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">AI Agents.</span>
           </h1>
           <h2 className="text-lg sm:text-xl font-medium text-foreground mb-6 uppercase tracking-wider text-accent/90">
             The Neutral, Cross-Framework Artifact Relay
           </h2>
           <p className="text-foreground-muted text-base sm:text-lg leading-relaxed max-w-3xl mx-auto mb-8">
-            Stop wasting precious token limits passing large datasets between models.<br className="hidden sm:block" />
-            Programmatically offload files and context windows into secure, ephemeral storage instantly. Reduce token overhead by up to <span className="text-foreground font-semibold">7x per handoff</span>. <span className="mx-1 mt-2 sm:mt-0 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-yellow-400 before:opacity-80"><span className="relative text-black font-bold px-1">Zero human auth required.</span></span>
+            Stop wasting <span className="text-emerald-400 font-semibold">expensive LLM API costs</span> passing raw data between models.<br className="hidden sm:block" />
+            Programmatically offload files to secure, ephemeral storage instantly. Slash inference costs and reduce token overhead by up to <span className="text-foreground font-semibold">7x per handoff</span>. <span className="mx-1 mt-2 sm:mt-0 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-yellow-400 before:opacity-80"><span className="relative text-black font-bold px-1">Zero human auth required.</span></span>
           </p>
           <div className="flex items-center justify-center gap-4">
             <Link
