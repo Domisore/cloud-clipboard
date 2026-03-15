@@ -18,8 +18,8 @@ export function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { isConnected, wallet } = useSession();
     const pathname = usePathname();
-    const isPclipPage = pathname?.startsWith('/clipboard');
-    const afterSignInUrl = isPclipPage ? "/clipboard" : "/dashboard";
+    const isPclipPage = pathname?.startsWith('/clipboard') || pathname === '/pclip';
+    const afterSignInUrl = isPclipPage ? pathname : "/dashboard";
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4">
@@ -160,9 +160,11 @@ export function Header() {
                                         </SignInButton>
                                     </SignedOut>
                                     <SignedIn>
-                                        <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-left py-2 text-base text-zinc-300 hover:text-white transition-colors block mb-3 border-b border-zinc-800/50 pb-3">
-                                            Developer Dashboard
-                                        </Link>
+                                        {!isPclipPage && (
+                                            <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-left py-2 text-base text-zinc-300 hover:text-white transition-colors block mb-3 border-b border-zinc-800/50 pb-3">
+                                                Developer Dashboard
+                                            </Link>
+                                        )}
                                         <div className="flex items-center gap-2">
                                             <UserButton />
                                             <span className="text-sm font-medium">Account</span>
@@ -199,9 +201,11 @@ export function Header() {
                         </SignInButton>
                     </SignedOut>
                     <SignedIn>
-                        <Link href="/dashboard" className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-md text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors">
-                            Dashboard
-                        </Link>
+                        {!isPclipPage && (
+                            <Link href="/dashboard" className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-md text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors">
+                                Dashboard
+                            </Link>
+                        )}
                         <UserButton
                             appearance={{
                                 elements: {
