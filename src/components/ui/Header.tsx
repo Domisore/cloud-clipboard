@@ -22,15 +22,15 @@ export function Header() {
     const afterSignInUrl = isPclipPage ? "/clipboard" : "/dashboard";
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+        <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Logo */}
                 <Link href={isPclipPage ? "/clipboard" : "/"} className="flex items-center gap-2 group" suppressHydrationWarning>
                     <div className="w-8 h-8 rounded-lg bg-surface border border-border-color flex items-center justify-center group-hover:border-accent/50 transition-colors shadow-sm overflow-hidden">
-                        <img 
-                            src={isPclipPage ? "/pclip-192x192.png" : "/icon-192x192.png"} 
-                            alt={isPclipPage ? "Pclip Logo" : "Drive.io Logo"} 
-                            className="w-full h-full object-cover" 
+                        <img
+                            src={isPclipPage ? "/pclip-192x192.png" : "/icon-192x192.png"}
+                            alt={isPclipPage ? "Pclip Logo" : "Drive.io Logo"}
+                            className="w-full h-full object-cover"
                         />
                     </div>
                     <span className="font-sans font-semibold text-sm tracking-tight text-foreground group-hover:text-white transition-colors">

@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let selectedFile = null;
 
-    // --- Auth Check ---
+    // --- Auth & Recent Activity ---
     async function checkAuth() {
         // 1. Immediately show cached state if available
         chrome.storage.local.get(['pclipAuthState'], (result) => {
@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 authenticatedView.style.display = 'block';
                 signedOutView.style.display = 'none';
                 authStatusDiv.innerHTML = `<span style="color: #4ade80;">Signed in as ${userInfo.identifier}</span>`;
+                loadRecentFiles();
             } else {
                 chrome.storage.local.remove('pclipAuthState');
                 authenticatedView.style.display = 'none';
@@ -58,6 +59,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check auth immediately
     checkAuth();
+
+    async function loadRecentFiles() {
+        const recentActivityDiv = document.getElementById('recentActivity');
+        const recentListDiv = document.getElementById('recentList');
+
+        try {
+            const res = await fetch('https://drive.io/api/user/files', {
+                credentials: 'include'
+            });
+
+            if (!res.ok) throw new Error('Failed to load recent files');
+
+            const data = await res.json();
+            const files = data.files || [];
+
+            if (files.length === 0) {
+                recentActivityDiv.style.display = 'none';
+                return;
+            }
+
+            recentActivityDiv.style.display = 'block';
+            recentListDiv.innerHTML = '';
+
+            // Only show up to 5 items
+            const topFiles = files.slice(0, 5);
+
+            topFiles.forEach(file => {
+                // Parse stringified JSON if needed (sometimes redis returns string)
+                let item = file;
+                if (typeof file === 'string') {
+                    try { item = JSON.parse(file); } catch (e) { }
+                }
+
+                const dt = new Date(item.createdAt || item.uploadedAt || Date.now());
+                const dateStr = dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+                let iconHtml = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>';
+                if (item.type === 'text') {
+                    iconHtml = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>';
+                } else if (item.contentType && item.contentType.startsWith('image/')) {
+                    iconHtml = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
+                }
+
+                const url = item.url || `https://drive.io/${item.id}`;
+                const title = item.title || item.filename || 'Untitled Clipboard Item';
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                a.className = 'recent-item';
+                a.innerHTML = `
+                    <div class="recent-icon">${iconHtml}</div>
+                    <div class="recent-content">
+                        <div class="recent-title" title="${title}">${title}</div>
+                        <div class="recent-meta">${dateStr}</div>
+                    </div>
+                `;
+                recentListDiv.appendChild(a);
+            });
+        } catch (e) {
+            console.error('Recent activity error:', e);
+            recentActivityDiv.style.display = 'none';
+        }
+    }
 
     // Focus textarea on open
     clipText.focus();
@@ -130,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('fileInput').addEventListener('change', (e) => {
                 if (e.target.files.length > 0) handleFileSelected(e.target.files[0]);
             });
+            setTimeout(loadRecentFiles, 500); // refresh list after saving
         }
     });
 

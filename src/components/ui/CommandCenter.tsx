@@ -272,8 +272,8 @@ export function CommandCenter() {
 
                 {/* ACTION BAR (Bottom) */}
                 {(state === 'has-content' || file) && state !== 'uploading' && state !== 'success' && (
-                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background to-transparent flex items-center justify-between pb-6 px-6">
-                        <div className="flex items-center gap-2">
+                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 sm:pb-6 bg-gradient-to-t from-background to-transparent flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
+                        <div className="flex justify-center sm:justify-start w-full sm:w-auto items-center gap-2">
                             <Tooltip content="Permanently deleted after first view">
                                 <button
                                     onClick={() => setBurnOnRead(!burnOnRead)}
@@ -290,7 +290,7 @@ export function CommandCenter() {
 
                         <button
                             onClick={handleUpload}
-                            className="flex items-center gap-2 px-6 py-2.5 bg-accent text-background font-bold text-sm rounded-lg hover:bg-accent/90 transform hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(88,166,255,0.3)]"
+                            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-accent text-background font-bold text-sm rounded-lg hover:bg-accent/90 transform hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(88,166,255,0.3)] w-full sm:w-auto"
                         >
                             Create Link
                             <UploadCloud className="w-4 h-4 ml-1" />

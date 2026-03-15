@@ -17,7 +17,7 @@ server.tool(
         filename: z.string().describe("A descriptive name for the artifact (e.g. data.json)"),
         burnAfterReading: z.boolean().optional().describe("If true, the link will self-destruct after one read.")
     },
-    async ({ content, filename, burnAfterReading }) => {
+    async ({ content, filename, burnAfterReading }: { content: string; filename: string; burnAfterReading?: boolean }) => {
         try {
             // MVP demonstration
             const size = new Blob([content]).size;
@@ -40,7 +40,7 @@ server.tool(
     {
         url: z.string().describe("The drive.io URL (e.g. https://drive.io/abcXYZ)")
     },
-    async ({ url }) => {
+    async ({ url }: { url: string }) => {
         return {
             content: [{
                 type: "text",
