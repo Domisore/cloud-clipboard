@@ -26,7 +26,7 @@ export default function Home() {
             <span className="flex items-center justify-center p-0.5 rounded-full bg-purple-500/20">
               <img src="/moltbot-2.png" alt="Moltbot" className="w-8 h-8 rounded-full" />
             </span>
-            NEW: Share files from Moltbot via your chat interface or with other Agents!
+            NEW: Share files from OpenClaw via your chat interface or with other Agents!
           </Link>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4 text-foreground">
             Share Files & Data Between <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">AI Agents.</span>
