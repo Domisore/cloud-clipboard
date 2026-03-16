@@ -18,19 +18,19 @@ export function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { isConnected, wallet } = useSession();
     const pathname = usePathname();
-    const isPclipPage = pathname?.startsWith('/clipboard');
-    const afterSignInUrl = isPclipPage ? "/clipboard" : "/dashboard";
+    const isPclipPage = pathname?.startsWith('/clipboard') || pathname === '/pclip';
+    const afterSignInUrl = isPclipPage ? pathname : "/dashboard";
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+        <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Logo */}
                 <Link href={isPclipPage ? "/clipboard" : "/"} className="flex items-center gap-2 group" suppressHydrationWarning>
                     <div className="w-8 h-8 rounded-lg bg-surface border border-border-color flex items-center justify-center group-hover:border-accent/50 transition-colors shadow-sm overflow-hidden">
-                        <img 
-                            src={isPclipPage ? "/pclip-192x192.png" : "/icon-192x192.png"} 
-                            alt={isPclipPage ? "Pclip Logo" : "Drive.io Logo"} 
-                            className="w-full h-full object-cover" 
+                        <img
+                            src={isPclipPage ? "/pclip-192x192.png" : "/icon-192x192.png"}
+                            alt={isPclipPage ? "Pclip Logo" : "Drive.io Logo"}
+                            className="w-full h-full object-cover"
                         />
                     </div>
                     <span className="font-sans font-semibold text-sm tracking-tight text-foreground group-hover:text-white transition-colors">
@@ -160,9 +160,11 @@ export function Header() {
                                         </SignInButton>
                                     </SignedOut>
                                     <SignedIn>
-                                        <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-left py-2 text-base text-zinc-300 hover:text-white transition-colors block mb-3 border-b border-zinc-800/50 pb-3">
-                                            Developer Dashboard
-                                        </Link>
+                                        {!isPclipPage && (
+                                            <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-left py-2 text-base text-zinc-300 hover:text-white transition-colors block mb-3 border-b border-zinc-800/50 pb-3">
+                                                Developer Dashboard
+                                            </Link>
+                                        )}
                                         <div className="flex items-center gap-2">
                                             <UserButton />
                                             <span className="text-sm font-medium">Account</span>
@@ -199,9 +201,11 @@ export function Header() {
                         </SignInButton>
                     </SignedOut>
                     <SignedIn>
-                        <Link href="/dashboard" className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-md text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors">
-                            Dashboard
-                        </Link>
+                        {!isPclipPage && (
+                            <Link href="/dashboard" className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-md text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors">
+                                Dashboard
+                            </Link>
+                        )}
                         <UserButton
                             appearance={{
                                 elements: {

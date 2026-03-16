@@ -16,19 +16,19 @@ export default function Home() {
 
       <Header />
 
-      <main className="flex-1 flex flex-col relative pt-24 pb-12 px-4 sm:px-6">
+      <main className="flex-1 flex flex-col relative pt-20 sm:pt-24 pb-8 sm:pb-12 px-4 sm:px-6">
 
         {/* Pclip Prominent Promo Banner */}
         <PclipPromoBanner />
         {/* Pclip Prominent Promo Banner */}
         <div className="text-center max-w-2xl mx-auto mb-12 animate-fade-in">
-          <Link href="/agents" className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300 text-base font-medium mb-8 hover:bg-purple-500/20 transition-colors">
+          <Link href="/agents" className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 px-4 sm:px-5 py-2 rounded-xl sm:rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300 text-sm sm:text-base font-medium mb-8 hover:bg-purple-500/20 transition-colors text-center w-full sm:w-auto">
             <span className="flex items-center justify-center p-0.5 rounded-full bg-purple-500/20">
               <img src="/moltbot-2.png" alt="Moltbot" className="w-8 h-8 rounded-full" />
             </span>
             NEW: Share files from OpenClaw via your chat interface or with other Agents!
           </Link>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4 text-foreground">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4 text-foreground leading-tight">
             Share Files & Data Between <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">AI Agents.</span>
           </h1>
           <h2 className="text-lg sm:text-xl font-medium text-foreground mb-6 uppercase tracking-wider text-accent/90">

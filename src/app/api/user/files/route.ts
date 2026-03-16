@@ -23,7 +23,14 @@ export async function GET() {
         // Pipeline would be better but let's do parallel get for now or loop.
 
         // Actually, let's use a pipeline or just Promise.all
-        const promises = fileIds.map(id => redis.get(`file:${id}`));
+        // We try primarily file:{id}, if missing, fallback to clip:{id} via multi-get or separate gets
+        const promises = fileIds.map(async id => {
+            let data = await redis.get(`file:${id}`);
+            if (!data) {
+                data = await redis.get(`clip:${id}`);
+            }
+            return data;
+        });
         const rawFiles = await Promise.all(promises);
 
         // Filter out nulls (expired files)
