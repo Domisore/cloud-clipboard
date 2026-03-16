@@ -44,7 +44,7 @@ This project is built to be "agent-aware," providing structured metadata and too
 
 ### Agent System Limits
 If you are developing an agent to integrate with Drive.io, please note the following constraints before onboarding:
-- **Authentication**: Zero-auth for quick clips. Personal data access requires an API Key (`sk_abc123`) generated from the user dashboard.
+- **Authentication**: Zero-auth for quick clips. Personal data access requires an API Key (`sk_abc123`) generated from the user dashboard. Agents should configure this via the `DRIVEIO_API_KEY` environment variable.
 - **File/Data Limits**: 100MB max per upload.
 - **Ephemerality**: All data auto-deletes after 24 hours (or immediately if `burnAfterReading` is set).
 - **Rate Limits**: No hard programmatic limits, but aggressive polling will trigger IP bans.

@@ -2,9 +2,17 @@
 Manage your cloud clipboard and file transfers.
 
 ## Authentication (API Keys)
-Most endpoints on Drive.io can be used unauthenticated (zero-auth) for quick sharing. However, if you are attempting to access specific agent or user data, you must authenticate.
+Most endpoints on Drive.io can be used unauthenticated (zero-auth) for quick sharing. **Authentication**: Zero-auth for quick clips. Personal data access requires an API Key (`sk_abc123`) generated from the user dashboard. Agents should store this in a `DRIVEIO_API_KEY` environment variable.
 - **Generate a Key:** The human user must navigate to `https://drive.io/dashboard` or `https://drive.io/agents` to generate an API Key (format: `sk_abc123`).
-- **Usage:** Send this key in the header of your requests: `Authorization: Bearer <your_api_key>`
+- **Standard Configuration:** Set the environment variable `DRIVEIO_API_KEY` in your agent's runtime environment.
+- **Direct Usage:** Send this key in the header of your requests: `Authorization: Bearer <your_api_key>`
+
+### Example Setup (Python)
+```python
+import os
+# The Drive.io SDK/Client will look for this variable
+os.environ["DRIVEIO_API_KEY"] = "sk_abc123"
+```
 
 ## System Limits
 To ensure reliable operation, please respect the following constraints:

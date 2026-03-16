@@ -93,7 +93,7 @@ export function Header() {
                     )}
 
                     <Link
-                        href="https://forms.fillout.com/t/vej46NKrCkus"
+                        href="/contact"
                         className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
                     >
                         Contact
@@ -144,8 +144,7 @@ export function Header() {
                                     </>
                                 )}
                                 <Link
-                                    href="https://forms.fillout.com/t/vej46NKrCkus"
-                                    target="_blank" rel="noopener noreferrer"
+                                    href="/contact"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
                                 >
