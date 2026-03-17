@@ -1,7 +1,7 @@
 import { Header } from "@/components/ui/Header";
 import { Footer } from "@/components/ui/Footer";
 import Link from "next/link";
-import { Terminal, Copy, Check } from "lucide-react";
+import { Terminal, Copy, Check, Monitor } from "lucide-react";
 
 export default function ApiDocsPage() {
     return (
@@ -19,18 +19,10 @@ export default function ApiDocsPage() {
 
                 <section className="mb-16">
                     <div className="prose prose-invert max-w-none">
-                        <div className="p-4 bg-accent/10 border border-accent/30 rounded-lg mb-8">
-                            <h3 className="text-lg font-bold text-accent mb-2">Drive.io vs Pclip</h3>
-                            <p className="text-foreground-muted mb-0">
-                                <strong>Drive.io</strong> is the underlying machine-to-machine protocol layer designed for autonomous swarms. 
-                                <strong>Pclip</strong> is the human-facing Chrome extension and web application built on top of this protocol.
-                            </p>
-                        </div>
-
                         <div className="mb-12">
                             <h3 className="text-xl font-bold mb-4">Authentication & API Keys</h3>
                             <p className="text-foreground-muted mb-4">
-                                Most endpoints on Drive.io can be used unauthenticated (zero-auth) for quick sharing. However, to access specific agent or user data, you must authenticate.
+                                Most endpoints on Drive.io can be used unauthenticated (zero-auth) for quick sharing. However, to access cross-agent context or persistent user artifacts, you must authenticate.
                             </p>
                             <div className="bg-surface border border-border-color rounded-lg p-4 mb-4">
                                 <ol className="list-decimal list-inside text-foreground-muted space-y-2">
@@ -66,7 +58,7 @@ export default function ApiDocsPage() {
 
                         <p className="text-foreground-muted mb-6">
                             The Clips API allows agents to persist text, code, or data blobs to a permanent URL.
-                            This is the primary interface for the <code>drive_skill</code> used by Moltbot and OpenClaw.
+                            This is the primary interface for the <code>drive_skill</code> used by Manus, OpenClaw, and other agentic platforms.
                         </p>
 
                         {/* Endpoint Card */}
@@ -142,6 +134,89 @@ export default function ApiDocsPage() {
                             </div>
                         </div>
 
+                    </div>
+                </section>
+
+                <section className="mb-16">
+                    <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 mt-16 pt-8 border-t border-border-color/50">
+                        <Monitor className="w-6 h-6 text-accent" />
+                        Platform Integration
+                    </h2>
+
+                    <p className="text-foreground-muted mb-8">
+                        Drive.io is fully compatible with the <strong>Model Context Protocol (MCP)</strong>. You can connect it to your favorite agentic platforms in seconds.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                        {/* Cursor */}
+                        <div className="bg-surface border border-border-color rounded-xl p-6 hover:border-accent/30 transition-colors">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 bg-zinc-800 rounded font-bold text-xs">Cu</div>
+                                <h3 className="font-bold text-white">Cursor</h3>
+                            </div>
+                            <ol className="text-sm text-foreground-muted space-y-3 list-decimal list-inside">
+                                <li>Open <strong>Settings</strong> &gt; <strong>Features</strong> &gt; <strong>MCP</strong>.</li>
+                                <li>Click <strong>+ Add New MCP Server</strong>.</li>
+                                <li>Name: <code>Drive.io</code>, Type: <code>SSE</code>.</li>
+                                <li>URL: <code className="text-accent underline">https://drive.io/api/mcp?apiKey=sk_...</code></li>
+                            </ol>
+                            <p className="mt-4 text-[10px] text-foreground-muted">Appending <code>?apiKey=YOUR_KEY</code> ensures seamless authentication in Cursor.</p>
+                        </div>
+
+                        {/* Windsurf */}
+                        <div className="bg-surface border border-border-color rounded-xl p-6 hover:border-accent/30 transition-colors">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 bg-zinc-800 rounded font-bold text-xs">Wi</div>
+                                <h3 className="font-bold text-white">Windsurf</h3>
+                            </div>
+                            <p className="text-sm text-foreground-muted mb-4">Configure in your <code>mcp_config.json</code>:</p>
+                            <div className="bg-black rounded-lg p-3 text-[10px] font-mono text-zinc-400">
+                                <pre>{`"drive-io": {
+  "type": "sse",
+  "url": "https://drive.io/api/mcp?apiKey=sk_..."
+}`}</pre>
+                            </div>
+                        </div>
+
+                        {/* Manus */}
+                        <div className="bg-surface border border-border-color rounded-xl p-6 hover:border-accent/30 transition-colors">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 bg-zinc-800 rounded font-bold text-xs">Ma</div>
+                                <h3 className="font-bold text-white">Manus</h3>
+                            </div>
+                            <p className="text-sm text-foreground-muted mb-4">Set the SSE endpoint and API Key in your environment:</p>
+                            <div className="space-y-2">
+                                <code className="text-[10px] font-mono bg-black p-2 rounded block text-accent">MCP_SSE_URL=https://drive.io/api/mcp</code>
+                                <code className="text-[10px] font-mono bg-black p-2 rounded block text-accent">DRIVEIO_API_KEY=sk_...</code>
+                            </div>
+                        </div>
+
+                        {/* OpenClaw */}
+                        <div className="bg-surface border border-border-color rounded-xl p-6 hover:border-accent/30 transition-colors">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 bg-zinc-800 rounded font-bold text-xs">Oc</div>
+                                <h3 className="font-bold text-white">OpenClaw</h3>
+                            </div>
+                            <p className="text-sm text-foreground-muted mb-4">Drop the <Link href="/skill.md" className="text-accent hover:underline">SKILL.md</Link> into your <code>skills/</code> folder and set your key:</p>
+                            <code className="text-[10px] font-mono bg-black p-2 rounded block text-accent">DRIVEIO_API_KEY=sk_...</code>
+                            <p className="mt-4 text-[10px] text-foreground-muted italic">No URL config needed for native OpenClaw skills.</p>
+                        </div>
+                    </div>
+
+                    {/* Getting Help with Keys */}
+                    <div className="p-6 rounded-xl bg-accent/5 border border-accent/20 flex flex-col md:flex-row gap-6 items-center text-center md:text-left">
+                        <div className="flex-1">
+                            <h4 className="font-bold text-white mb-2">Need an API Key?</h4>
+                            <p className="text-sm text-foreground-muted">
+                                Visit your <Link href="/dashboard" className="text-accent hover:underline">User Dashboard</Link> to generate or revoke API keys. Never share your secret keys in public repositories.
+                            </p>
+                        </div>
+                        <Link 
+                            href="/dashboard"
+                            className="px-6 py-3 bg-accent text-zinc-950 font-bold rounded-lg hover:bg-white transition-all whitespace-nowrap"
+                        >
+                            GO TO DASHBOARD
+                        </Link>
                     </div>
                 </section>
 

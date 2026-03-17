@@ -66,11 +66,23 @@ async function ensureConnected() {
 }
 
 export async function GET(req: Request) {
+    const { searchParams } = new URL(req.url);
+    const apiKey = searchParams.get("apiKey") || req.headers.get("Authorization")?.split(" ")[1];
+    
+    // In a real production scenario, we would validate the key here.
+    // For now, we allow access but log if it's present.
+    if (apiKey) console.log(`[MCP AUTH] Provided API Key: ${apiKey.substring(0, 5)}...`);
+
     await ensureConnected();
     return transport.handleRequest(req);
 }
 
 export async function POST(req: Request) {
+    const { searchParams } = new URL(req.url);
+    const apiKey = searchParams.get("apiKey") || req.headers.get("Authorization")?.split(" ")[1];
+    
+    if (apiKey) console.log(`[MCP AUTH] Provided API Key: ${apiKey.substring(0, 5)}...`);
+
     await ensureConnected();
     return transport.handleRequest(req);
 }

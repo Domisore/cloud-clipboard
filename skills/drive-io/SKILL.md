@@ -1,5 +1,8 @@
 # Skill: drive.io Cloud Bridge
-Manage your cloud clipboard and file transfers.
+Manage your cloud clipboard and file transfers. 
+
+> [!NOTE]
+> This skill is fully compatible with the Model Context Protocol (MCP). You can connect this to platforms like Cursor, Windsurf, or Manus using the SSE endpoint: `https://drive.io/api/mcp`
 
 ## Authentication (API Keys)
 Most endpoints on Drive.io can be used unauthenticated (zero-auth) for quick sharing. **Authentication**: Zero-auth for quick clips. Personal data access requires an API Key (`sk_abc123`) generated from the user dashboard. Agents should store this in a `DRIVEIO_API_KEY` environment variable.
