@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { Download } from "lucide-react";
 import Link from "next/link";
 import { Header } from "@/components/ui/Header";
@@ -107,6 +107,9 @@ export default function FilePage() {
     }
 
     const fileSizeMB = (fileData.size / 1024 / 1024).toFixed(2);
+    const pathname = usePathname();
+    const isPclipBranding = pathname && /^\/[a-zA-Z0-9]+$/.test(pathname) && !['/dashboard', '/contact', '/privacy', '/terms', '/docs'].includes(pathname);
+    const returnPath = isPclipBranding ? "/clipboard" : "/";
 
     return (
         <div className="min-h-screen flex flex-col font-mono selection:bg-accent selection:text-black">
@@ -119,7 +122,7 @@ export default function FilePage() {
 
                     {/* Close Button */}
                     <Link
-                        href="/"
+                        href={returnPath}
                         className="absolute top-3 right-3 text-gray-500 hover:text-accent transition-colors p-1"
                         title="Close"
                     >
@@ -183,7 +186,7 @@ export default function FilePage() {
                                     link.click();
                                     document.body.removeChild(link);
                                 } else {
-                                    window.open(fileData.url, '_blank');
+                                    window.open(fileData.url, '_self');
                                 }
                             }}
                             className="w-full h-12 bg-foreground text-background font-bold flex items-center justify-center gap-2 hover:bg-accent hover:text-black transition-colors"
@@ -196,7 +199,7 @@ export default function FilePage() {
                             <p className="text-[10px] text-gray-600 uppercase mb-4">
                                 {fileSizeMB} MB // {fileData.mimeType || 'unknown'}
                             </p>
-                            <Link href="/" className="text-xs text-gray-500 hover:text-accent border-b border-transparent hover:border-accent transition-colors">
+                            <Link href={returnPath} className="text-xs text-gray-500 hover:text-accent border-b border-transparent hover:border-accent transition-colors">
                                 [ TOSS ANOTHER FILE ]
                             </Link>
                         </div>

@@ -175,8 +175,6 @@ export function RecentList() {
                                 <a
                                     key={upload.key}
                                     href={upload.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
                                     className="group relative bg-surface/50 hover:bg-surface border border-border-color rounded-lg p-5 transition-all text-left block hover:border-accent/40 active:scale-[0.99]"
                                 >
                                     <div className="flex items-start justify-between mb-3">
