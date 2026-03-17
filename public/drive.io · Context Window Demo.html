@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>drive.io · Context Window Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080a0d;
+  --surface: #0f1318;
+  --surface2: #141920;
+  --border: #1c2433;
+  --border-hi: #2a3a52;
+  --teal: #00c9a7;
+  --teal-dim: rgba(0,201,167,.1);
+  --teal-glow: rgba(0,201,167,.2);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,.1);
+  --red: #f43f5e;
+  --red-dim: rgba(244,63,94,.1);
+  --purple: #a78bfa;
+  --text: #dde3ef;
+  --text-dim: #64748b;
+  --text-mid: #94a3b8;
+  --mono: 'JetBrains Mono', monospace;
+  --display: 'Syne', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--display); min-height: 100vh; }
+
+.wrap { max-width: 860px; margin: 0 auto; padding: 36px 20px 48px; }
+
+/* Header */
+.hdr { text-align: center; margin-bottom: 36px; }
+.tag { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--teal); margin-bottom: 10px; }
+h1 { font-size: 26px; font-weight: 700; line-height: 1.25; margin-bottom: 8px; }
+h1 em { font-style: normal; color: var(--teal); }
+.sub { font-size: 13px; color: var(--text-dim); line-height: 1.6; max-width: 500px; margin: 0 auto; }
+
+/* Config row */
+.config {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
+}
+.cfg-label { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); white-space: nowrap; }
+select, input[type=text] {
+  background: var(--bg); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--mono); font-size: 12px;
+  padding: 7px 11px; border-radius: 7px; outline: none;
+}
+select:focus, input:focus { border-color: var(--teal); }
+.user-input { flex: 1; min-width: 180px; }
+.send-btn {
+  background: var(--teal); color: #000; border: none;
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
+  padding: 8px 20px; border-radius: 7px; cursor: pointer;
+  letter-spacing: .04em; transition: opacity .15s, transform .1s;
+  white-space: nowrap; margin-left: auto;
+}
+.send-btn:hover { opacity: .85; }
+.send-btn:active { transform: scale(.97); }
+.send-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+/* Main layout */
+.main { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+
+/* Panel */
+.panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
+}
+.panel-hdr {
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px; background: #0b0e13;
+}
+.ph-dot { width: 7px; height: 7px; border-radius: 50%; }
+.ph-dot-user { background: var(--purple); }
+.ph-dot-agent { background: var(--teal); }
+.ph-dot-llm { background: var(--amber); }
+.ph-dot-store { background: var(--red); }
+.ph-name { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .12em; }
+.ph-name-user { color: var(--purple); }
+.ph-name-agent { color: var(--teal); }
+.ph-name-llm { color: var(--amber); }
+.ph-name-store { color: #60a5fa; }
+.ph-sub { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-left: auto; }
+.ph-badge {
+  font-family: var(--mono); font-size: 9px; padding: 2px 7px;
+  border-radius: 4px; margin-left: auto;
+}
+.badge-ok { background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(0,201,167,.2); }
+.badge-warn { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,158,11,.2); }
+.badge-bad { background: var(--red-dim); color: var(--red); border: 1px solid rgba(244,63,94,.2); }
+
+.panel-body { padding: 13px; flex: 1; min-height: 200px; }
+
+/* Window fill viz */
+.window-fill-wrap { margin-bottom: 12px; }
+.window-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-bottom: 5px; display: flex; justify-content: space-between; }
+.window-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.window-fill-inner {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--teal), var(--amber));
+  width: 0%; transition: width 1s cubic-bezier(.16,1,.3,1);
+}
+.window-fill-inner.danger { background: linear-gradient(90deg, var(--amber), var(--red)); }
+
+/* Log */
+.log { display: flex; flex-direction: column; gap: 3px; }
+.log-line {
+  font-family: var(--mono); font-size: 10.5px; line-height: 1.55;
+  opacity: 0; transform: translateY(3px);
+  transition: opacity .25s, transform .25s;
+}
+.log-line.show { opacity: 1; transform: none; }
+.ts { color: var(--text-dim); margin-right: 5px; }
+.c-teal { color: var(--teal); }
+.c-amber { color: var(--amber); }
+.c-red { color: var(--red); }
+.c-purple { color: var(--purple); }
+.c-dim { color: var(--text-dim); }
+.c-blue { color: #60a5fa; }
+
+/* Context breakdown */
+.ctx-breakdown { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+.ctx-row {
+  display: flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: 10px;
+  opacity: 0; transition: opacity .3s;
+}
+.ctx-row.show { opacity: 1; }
+.ctx-swatch { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.ctx-name { color: var(--text-dim); flex: 1; }
+.ctx-val { color: var(--text); min-width: 60px; text-align: right; }
+.ctx-bar-wrap { width: 60px; }
+.ctx-mini-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.ctx-mini-fill { height: 100%; border-radius: 2px; transition: width .8s cubic-bezier(.16,1,.3,1); }
+
+/* LLM payload panel spans full width */
+.panel-wide {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+}
+.payload-body { padding: 13px; }
+
+/* Payload preview */
+.payload-preview {
+  font-family: var(--mono); font-size: 10.5px; line-height: 1.6;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px;
+  min-height: 70px; color: var(--text-dim);
+}
+.payload-section { margin-bottom: 6px; }
+.ps-label { color: var(--text-dim); }
+.ps-val { color: var(--text-mid); }
+.ps-val.hi { color: var(--teal); }
+.ps-val.warn { color: var(--amber); }
+.ps-val.bad { color: var(--red); }
+
+/* Bottom stats */
+.stats-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; text-align: center;
+}
+.stat-val {
+  font-family: var(--mono); font-size: 22px; font-weight: 700;
+  line-height: 1; margin-bottom: 4px; transition: color .4s;
+}
+.stat-val.good { color: var(--teal); }
+.stat-val.bad { color: var(--red); }
+.stat-val.neutral { color: var(--text); }
+.stat-lbl { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+
+/* Drive.io store panel */
+.store-items { display: flex; flex-direction: column; gap: 5px; }
+.store-item {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 10px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 6px 9px;
+  opacity: 0; transform: translateY(3px);
+  transition: opacity .3s, transform .3s, border-color .3s;
+}
+.store-item.show { opacity: 1; transform: none; }
+.store-item.active { border-color: var(--teal); }
+.si-tier {
+  font-size: 9px; padding: 1px 5px; border-radius: 3px;
+  background: var(--teal-dim); color: var(--teal); flex-shrink: 0;
+}
+.si-url { color: var(--teal); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.si-size { color: var(--text-dim); white-space: nowrap; }
+
+/* Savings comparison */
+.compare-strip {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 14px;
+  display: none;
+}
+.compare-strip.show { display: block; }
+.cs-title { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; }
+.cs-bars { display: flex; flex-direction: column; gap: 7px; }
+.cs-row { display: flex; align-items: center; gap: 10px; }
+.cs-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); width: 100px; flex-shrink: 0; text-align: right; }
+.cs-track { flex: 1; height: 14px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.cs-fill { height: 100%; border-radius: 3px; transition: width 1.2s cubic-bezier(.16,1,.3,1); display: flex; align-items: center; padding-left: 6px; }
+.cs-fill-bad { background: var(--red-dim); border: 1px solid rgba(244,63,94,.3); }
+.cs-fill-good { background: var(--teal-dim); border: 1px solid rgba(0,201,167,.3); }
+.cs-num { font-family: var(--mono); font-size: 9px; white-space: nowrap; margin-left: 6px; }
+.cs-num-bad { color: var(--red); }
+.cs-num-good { color: var(--teal); }
+
+@keyframes glow-pulse {
+  0%,100% { box-shadow: 0 0 0 0 var(--teal-glow); }
+  50% { box-shadow: 0 0 12px 2px var(--teal-glow); }
+}
+.glowing { animation: glow-pulse 1.5s ease-in-out; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div class="tag">drive.io · single agent demo</div>
+    <h1>Your agent is <em>bleeding tokens.</em><br>Here's what that looks like.</h1>
+    <p class="sub">Send a message. Watch what your agent actually sends to the LLM — with and without drive.io managing the context.</p>
+  </div>
+
+  <div class="config">
+    <span class="cfg-label">Turn</span>
+    <select id="turn-select">
+      <option value="1">Turn 1 — fresh session</option>
+      <option value="2">Turn 3 — some history</option>
+      <option value="3" selected>Turn 7 — session warming up</option>
+      <option value="4">Turn 15 — heavy session</option>
+      <option value="5">Turn 25 — context critical</option>
+    </select>
+    <span class="cfg-label" style="margin-left:8px">Attachment</span>
+    <select id="attach-select">
+      <option value="none">none</option>
+      <option value="doc" selected>document (12 KB)</option>
+      <option value="code">codebase (45 KB)</option>
+      <option value="data">dataset (100 KB)</option>
+    </select>
+    <input type="text" class="user-input" id="user-msg" value="Summarize the key findings" placeholder="Your message…">
+    <button class="send-btn" id="send-btn" onclick="runDemo()">Send →</button>
+  </div>
+
+  <div class="main">
+
+    <!-- Without drive.io -->
+    <div class="panel" id="panel-without">
+      <div class="panel-hdr">
+        <div class="ph-dot ph-dot-store" style="background:var(--red)"></div>
+        <span class="ph-name" style="color:var(--red)">WITHOUT drive.io</span>
+        <span class="ph-badge badge-bad" id="badge-without">—</span>
+      </div>
+      <div class="panel-body">
+        <div class="window-fill-wrap">
+          <div class="window-label">
+            <span>context window used</span>
+            <span id="pct-without">0%</span>
+          </div>
+          <div class="window-bar">
+            <div class="window-fill-inner" id="bar-without"></div>
+          </div>
+        </div>
+        <div class="ctx-breakdown" id="breakdown-without"></div>
+      </div>
+    </div>
+
+    <!-- With drive.io -->
+    <div class="panel" id="panel-with">
+      <div class="panel-hdr">
+        <div class="ph-dot ph-dot-agent"></div>
+        <span class="ph-name ph-name-agent">WITH drive.io</span>
+        <span class="ph-badge badge-ok" id="badge-with">—</span>
+      </div>
+      <div class="panel-body">
+        <div class="window-fill-wrap">
+          <div class="window-label">
+            <span>context window used</span>
+            <span id="pct-with">0%</span>
+          </div>
+          <div class="window-bar">
+            <div class="window-fill-inner" id="bar-with"></div>
+          </div>
+        </div>
+        <div class="ctx-breakdown" id="breakdown-with"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Agent flow log -->
+  <div class="panel" style="margin-bottom:14px">
+    <div class="panel-hdr">
+      <div class="ph-dot ph-dot-agent"></div>
+      <span class="ph-name ph-name-agent">AGENT LOG</span>
+      <span class="ph-sub" id="agent-framework">OpenClaw · claude-sonnet</span>
+    </div>
+    <div class="panel-body" style="min-height:120px">
+      <div class="log" id="agent-log"></div>
+    </div>
+  </div>
+
+  <!-- drive.io store -->
+  <div class="panel" style="margin-bottom:14px">
+    <div class="panel-hdr">
+      <div class="ph-dot" style="background:#60a5fa"></div>
+      <span class="ph-name" style="color:#60a5fa">DRIVE.IO STORE</span>
+      <span class="ph-sub">artifacts offloaded from context</span>
+    </div>
+    <div class="panel-body" style="min-height:80px">
+      <div class="store-items" id="store-items">
+        <span style="font-family:var(--mono);font-size:11px;color:var(--text-dim)">No artifacts stored yet.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Savings comparison -->
+  <div class="compare-strip" id="compare-strip">
+    <div class="cs-title">token cost comparison · this turn</div>
+    <div class="cs-bars">
+      <div class="cs-row">
+        <span class="cs-label">without drive.io</span>
+        <div class="cs-track">
+          <div class="cs-fill cs-fill-bad" id="cs-bad" style="width:0%"></div>
+        </div>
+        <span class="cs-num cs-num-bad" id="cs-num-bad">—</span>
+      </div>
+      <div class="cs-row">
+        <span class="cs-label">with drive.io</span>
+        <div class="cs-track">
+          <div class="cs-fill cs-fill-good" id="cs-good" style="width:0%"></div>
+        </div>
+        <span class="cs-num cs-num-good" id="cs-num-good">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-val neutral" id="stat-without">—</div>
+      <div class="stat-lbl">tokens without drive.io</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val good" id="stat-with">—</div>
+      <div class="stat-lbl">tokens with drive.io</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val good" id="stat-saved">—</div>
+      <div class="stat-lbl">tokens saved this turn</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val good" id="stat-pct">—</div>
+      <div class="stat-lbl">reduction</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const CTX_WINDOW = 128000;
+
+// Simulated session state — grows with turns
+const TURN_STATE = {
+  '1': { historyTokens: 0,    systemTokens: 820,  toolTokens: 0     },
+  '2': { historyTokens: 3200, systemTokens: 820,  toolTokens: 1400  },
+  '3': { historyTokens: 9800, systemTokens: 820,  toolTokens: 4200  },
+  '4': { historyTokens: 28000,systemTokens: 820,  toolTokens: 11000 },
+  '5': { historyTokens: 61000,systemTokens: 820,  toolTokens: 24000 },
+};
+
+const ATTACHMENTS = {
+  none: { label: 'none',          rawTokens: 0     },
+  doc:  { label: 'document',      rawTokens: 3200  },
+  code: { label: 'codebase',      rawTokens: 11500 },
+  data: { label: 'dataset',       rawTokens: 25600 },
+};
+
+const SWATCHES = {
+  system:   '#a78bfa',
+  history:  '#f59e0b',
+  tool:     '#60a5fa',
+  attach:   '#f43f5e',
+  pointer:  '#00c9a7',
+  message:  '#94a3b8',
+};
+
+const storeItems = [];
+let running = false;
+
+function ts() {
+  const n = new Date();
+  return [n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');
+}
+
+function addLog(html, delay=0) {
+  return new Promise(res => setTimeout(() => {
+    const el = document.getElementById('agent-log');
+    const d = document.createElement('div');
+    d.className = 'log-line';
+    d.innerHTML = `<span class="ts">${ts()}</span>${html}`;
+    el.appendChild(d);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('show')));
+    res();
+  }, delay));
+}
+
+function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
+
+function animNum(id, val, ms=700, prefix='', suffix='') {
+  const el = document.getElementById(id);
+  const start = parseInt(el.textContent.replace(/[^0-9]/g,''))||0;
+  const t0 = performance.now();
+  (function step(now) {
+    const p = Math.min((now-t0)/ms,1);
+    const e = 1-Math.pow(1-p,3);
+    const v = Math.round(start+(val-start)*e);
+    el.textContent = prefix + v.toLocaleString() + suffix;
+    if(p<1) requestAnimationFrame(step);
+  })(t0);
+}
+
+function slug() {
+  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:8},()=>c[Math.floor(Math.random()*c.length)]).join('');
+}
+
+function renderBreakdown(panelId, rows) {
+  const el = document.getElementById(panelId);
+  el.innerHTML = '';
+  let max = Math.max(...rows.map(r=>r.tokens), 1);
+  rows.forEach((row, i) => {
+    const d = document.createElement('div');
+    d.className = 'ctx-row';
+    d.innerHTML = `
+      <div class="ctx-swatch" style="background:${row.color}"></div>
+      <span class="ctx-name">${row.label}</span>
+      <div class="ctx-bar-wrap">
+        <div class="ctx-mini-bar">
+          <div class="ctx-mini-fill" style="background:${row.color};width:0%" data-target="${(row.tokens/max*100).toFixed(1)}"></div>
+        </div>
+      </div>
+      <span class="ctx-val">${row.tokens === 7 ? '<span style="color:var(--teal)">7</span>' : row.tokens.toLocaleString()}</span>
+    `;
+    el.appendChild(d);
+    setTimeout(() => {
+      d.classList.add('show');
+      const fill = d.querySelector('.ctx-mini-fill');
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        fill.style.width = fill.dataset.target + '%';
+      }));
+    }, i * 80);
+  });
+}
+
+function addStoreItem(url, tier, size) {
+  const el = document.getElementById('store-items');
+  if (el.querySelector('.c-dim')) el.innerHTML = '';
+  const d = document.createElement('div');
+  d.className = 'store-item';
+  d.innerHTML = `<span class="si-tier">${tier}</span><span class="si-url">${url}</span><span class="si-size">${size}</span>`;
+  el.appendChild(d);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    d.classList.add('show');
+    setTimeout(()=>d.classList.add('active'), 100);
+    setTimeout(()=>d.classList.remove('active'), 1500);
+  }));
+}
+
+async function runDemo() {
+  if(running) return;
+  running = true;
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  btn.textContent = '…';
+
+  const turnKey = document.getElementById('turn-select').value;
+  const attachKey = document.getElementById('attach-select').value;
+  const userMsg = document.getElementById('user-msg').value || 'Summarize the key findings';
+  const state = TURN_STATE[turnKey];
+  const attach = ATTACHMENTS[attachKey];
+  const msgTokens = Math.ceil(userMsg.length / 4) + 5;
+
+  // reset
+  document.getElementById('agent-log').innerHTML = '';
+  document.getElementById('compare-strip').className = 'compare-strip';
+  document.getElementById('bar-without').style.width = '0%';
+  document.getElementById('bar-with').style.width = '0%';
+  document.getElementById('bar-without').className = 'window-fill-inner';
+  document.getElementById('cs-bad').style.width = '0%';
+  document.getElementById('cs-good').style.width = '0%';
+  ['stat-without','stat-with','stat-saved','stat-pct'].forEach(id=>{
+    document.getElementById(id).textContent='—';
+    document.getElementById(id).className='stat-val neutral';
+  });
+  ['breakdown-without','breakdown-with'].forEach(id=>{
+    document.getElementById(id).innerHTML='';
+  });
+
+  // TOTALS
+  const withoutTotal = state.systemTokens + state.historyTokens + state.toolTokens + attach.rawTokens + msgTokens;
+  const withTotal    = state.systemTokens + state.historyTokens + (state.toolTokens > 0 ? 7 * Math.ceil(state.toolTokens/1000) : 0) + (attach.rawTokens > 0 ? 7 : 0) + msgTokens;
+  const saved        = withoutTotal - withTotal;
+  const pct          = ((saved / withoutTotal) * 100).toFixed(1);
+  const pctWithout   = Math.min((withoutTotal / CTX_WINDOW * 100), 100).toFixed(1);
+  const pctWith      = Math.min((withTotal / CTX_WINDOW * 100), 100).toFixed(1);
+
+  // Agent log sequence
+  await addLog(`<span class="c-purple">user →</span> <span class="c-dim">"${userMsg}"</span>`);
+  await sleep(300);
+  await addLog(`<span class="c-teal">agent</span> <span class="c-dim">assembling context payload...</span>`);
+  await sleep(300);
+  await addLog(`<span class="c-dim">  system prompt</span> <span class="c-teal">+${state.systemTokens} tokens</span>`);
+  await sleep(200);
+
+  if (state.historyTokens > 0) {
+    await addLog(`<span class="c-dim">  conversation history</span> <span class="c-amber">+${state.historyTokens.toLocaleString()} tokens</span>`);
+    await sleep(200);
+  }
+
+  if (state.toolTokens > 0) {
+    await addLog(`<span class="c-dim">  previous tool outputs (${Math.ceil(state.toolTokens/1000)} calls)</span> <span class="c-amber">+${state.toolTokens.toLocaleString()} tokens inline</span>`);
+    await sleep(200);
+    await addLog(`<span class="c-teal">  → drive.io: offloading tool outputs to store</span>`);
+    // Add store items for tool outputs
+    const numTools = Math.ceil(state.toolTokens/1000);
+    for(let i=0;i<Math.min(numTools,3);i++){
+      const u = `drive.io/c/${slug()}`;
+      addStoreItem(u, 'L1', `${Math.round(state.toolTokens/numTools/1024)}KB`);
+      await sleep(150);
+    }
+    await addLog(`<span class="c-teal">  ✓ replaced ${state.toolTokens.toLocaleString()} tokens with ${Math.min(numTools,3)*7} token pointers</span>`);
+    await sleep(200);
+  }
+
+  if (attach.rawTokens > 0) {
+    await addLog(`<span class="c-dim">  attachment: ${attach.label}</span> <span class="c-red">+${attach.rawTokens.toLocaleString()} tokens inline</span>`);
+    await sleep(200);
+    const aUrl = `drive.io/c/${slug()}`;
+    addStoreItem(aUrl, 'L0', attach.label);
+    await sleep(200);
+    await addLog(`<span class="c-teal">  → drive.io: stored ${attach.label}, pointer = 7 tokens</span>`);
+    await sleep(200);
+  }
+
+  await addLog(`<span class="c-dim">  user message</span> <span class="c-dim">+${msgTokens} tokens</span>`);
+  await sleep(300);
+  await addLog(`<span class="c-amber">without drive.io →</span> <span class="c-red">${withoutTotal.toLocaleString()} tokens to LLM</span>`);
+  await sleep(200);
+  await addLog(`<span class="c-teal">with drive.io →</span> <span class="c-teal">${withTotal.toLocaleString()} tokens to LLM</span>`);
+  await sleep(200);
+  await addLog(`<span class="c-teal">✓ saved ${saved.toLocaleString()} tokens (${pct}% reduction) this turn</span>`);
+
+  // Render breakdowns
+  renderBreakdown('breakdown-without', [
+    { label: 'system prompt',      tokens: state.systemTokens,  color: SWATCHES.system  },
+    { label: 'conversation hist.', tokens: state.historyTokens, color: SWATCHES.history },
+    { label: 'tool outputs',       tokens: state.toolTokens,    color: SWATCHES.tool    },
+    { label: attach.label !== 'none' ? attach.label : 'attachment', tokens: attach.rawTokens, color: SWATCHES.attach },
+    { label: 'user message',       tokens: msgTokens,            color: SWATCHES.message },
+  ].filter(r=>r.tokens>0));
+
+  const pointerTokens = (state.toolTokens > 0 ? 7 * Math.min(Math.ceil(state.toolTokens/1000),3) : 0) + (attach.rawTokens > 0 ? 7 : 0);
+  renderBreakdown('breakdown-with', [
+    { label: 'system prompt',      tokens: state.systemTokens,  color: SWATCHES.system  },
+    { label: 'conversation hist.', tokens: state.historyTokens, color: SWATCHES.history },
+    { label: 'drive.io pointers',  tokens: pointerTokens || 7,  color: SWATCHES.pointer },
+    { label: 'user message',       tokens: msgTokens,            color: SWATCHES.message },
+  ].filter(r=>r.tokens>0));
+
+  // Animate window bars
+  await sleep(200);
+  const barWithout = document.getElementById('bar-without');
+  barWithout.style.width = pctWithout + '%';
+  if (parseFloat(pctWithout) > 60) barWithout.className = 'window-fill-inner danger';
+  document.getElementById('pct-without').textContent = pctWithout + '%';
+  document.getElementById('bar-with').style.width = pctWith + '%';
+  document.getElementById('pct-with').textContent = pctWith + '%';
+
+  document.getElementById('badge-without').textContent = withoutTotal.toLocaleString() + ' tok';
+  document.getElementById('badge-with').textContent = withTotal.toLocaleString() + ' tok';
+  if (parseFloat(pctWithout) > 60) {
+    document.getElementById('badge-without').className = 'ph-badge badge-bad';
+  } else {
+    document.getElementById('badge-without').className = 'ph-badge badge-warn';
+  }
+
+  // Stats
+  await sleep(300);
+  animNum('stat-without', withoutTotal, 600);
+  document.getElementById('stat-without').className = 'stat-val bad';
+  await sleep(150);
+  animNum('stat-with', withTotal, 600);
+  document.getElementById('stat-with').className = 'stat-val good';
+  await sleep(150);
+  animNum('stat-saved', saved, 600);
+  document.getElementById('stat-saved').className = 'stat-val good';
+  await sleep(150);
+  document.getElementById('stat-pct').textContent = pct + '%';
+  document.getElementById('stat-pct').className = 'stat-val good';
+
+  // Comparison bars
+  document.getElementById('compare-strip').className = 'compare-strip show';
+  await sleep(100);
+  document.getElementById('cs-bad').style.width = '100%';
+  document.getElementById('cs-num-bad').textContent = withoutTotal.toLocaleString() + ' tokens';
+  document.getElementById('cs-good').style.width = ((withTotal/withoutTotal)*100).toFixed(1) + '%';
+  document.getElementById('cs-num-good').textContent = withTotal.toLocaleString() + ' tokens';
+
+  btn.textContent = 'Send →';
+  btn.disabled = false;
+  running = false;
+}
+</script>
+</body>
+</html>
