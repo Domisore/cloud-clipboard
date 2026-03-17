@@ -7,9 +7,7 @@ import Link from "next/link";
 import { Header } from "@/components/ui/Header";
 import { Footer } from "@/components/ui/Footer";
 import { UploadResult } from "@/services/mockUpload";
-import { CarbonAd } from "@/components/ui/CarbonAd";
-import { MONETIZATION } from "@/components/monetization/MonetizationWrapper";
-import { ShieldAlert } from "lucide-react";
+import { ShieldAlert, FileText, Clock, X } from "lucide-react";
 
 export default function FilePage() {
     const params = useParams();
@@ -119,24 +117,23 @@ export default function FilePage() {
                     {/* Top Green Bar */}
                     <div className="absolute top-0 left-0 right-0 h-1 bg-accent"></div>
 
-                    <div className="flex justify-between items-start mb-8">
-                        <div className="flex-1 pr-4">
-                            <h1 className="text-xl font-bold break-all">{fileData.filename}</h1>
-                            <p className="text-xs text-gray-500 mt-1">{fileSizeMB} MB // {fileData.mimeType || 'unknown'}</p>
-                        </div>
-                        <div className="text-right flex-shrink-0">
-                            <p className="text-xs text-danger font-bold animate-pulse whitespace-nowrap">
-                                {timeLeft} MIN LEFT
-                            </p>
-                        </div>
-                    </div>
+                    {/* Close Button */}
+                    <Link
+                        href="/"
+                        className="absolute top-3 right-3 text-gray-500 hover:text-accent transition-colors p-1"
+                        title="Close"
+                    >
+                        <X className="w-5 h-5" />
+                    </Link>
 
-                    <div className="bg-background border border-border-color p-4 mb-6">
-                        <p className="text-xs text-gray-400 mb-2 font-bold">FILE_INFO:</p>
-                        <div className="space-y-1 text-xs font-mono">
-                            <p><span className="text-accent">ID:</span> {fileData.id}</p>
-                            <p><span className="text-accent">SIZE:</span> {fileData.size} bytes</p>
-                            <p><span className="text-accent">EXPIRES:</span> {new Date(fileData.expiresAt).toLocaleString()}</p>
+                    <div className="flex justify-between items-center mb-6">
+                        <div className="flex items-center gap-2">
+                            <FileText className="w-4 h-4 text-accent" />
+                            <h1 className="text-lg font-bold truncate max-w-[200px]">{fileData.filename}</h1>
+                        </div>
+                        <div className="flex items-center gap-2 text-danger font-bold text-xs">
+                            <Clock className="w-3 h-3 animate-pulse" />
+                            <span>{timeLeft} MIN</span>
                         </div>
                     </div>
 
@@ -179,62 +176,35 @@ export default function FilePage() {
                                 if (fileData.url.includes('drive.io')) {
                                     alert(`In production, this would download:\n${fileData.filename}\n\nFor now, this is just a mock preview.`);
                                 } else if (fileData.url.startsWith('data:')) {
-                                    // Handle Text Clips (Data URLs) - Force Download
                                     const link = document.createElement('a');
                                     link.href = fileData.url;
-                                    link.download = fileData.filename; // Force filename
+                                    link.download = fileData.filename;
                                     document.body.appendChild(link);
                                     link.click();
                                     document.body.removeChild(link);
                                 } else {
-                                    // Browser native behavior - open in new tab (for R2 / S3 URLs)
                                     window.open(fileData.url, '_blank');
                                 }
                             }}
-                            className="w-full h-12 bg-foreground text-background font-bold flex items-center justify-center gap-2 hover:bg-accent hover:text-black transition-colors shadow-hacker"
+                            className="w-full h-12 bg-foreground text-background font-bold flex items-center justify-center gap-2 hover:bg-accent hover:text-black transition-colors"
                         >
                             <Download className="w-4 h-4" />
                             OPEN / DOWNLOAD
                         </button>
 
-                        {/* Affiliate: VPN Safe-Share */}
-                        {MONETIZATION.AFFILIATES.ENABLED && (
-                            <div className="bg-surface border border-accent/30 p-4 text-center mt-2">
-                                <div className="flex items-center justify-center gap-2 mb-2">
-                                    <ShieldAlert className="w-4 h-4 text-accent" />
-                                    <p className="text-xs font-bold text-gray-300">UNSECURED CONNECTION DETECTED</p>
-                                </div>
-                                <p className="text-xs text-gray-400 mb-3">
-                                    Your IP address is visible. Protect your downloads with a no-logs VPN.
-                                </p>
-                                <a
-                                    href={MONETIZATION.AFFILIATES.VPN_URL}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-block bg-accent/10 text-accent border border-accent px-4 py-2 text-xs font-bold hover:bg-accent hover:text-black transition-all"
-                                >
-                                    [ ENABLE_CLOAKING_MODE ]
-                                </a>
-                            </div>
-                        )}
-
-                        {/* Ad Placement */}
-                        {MONETIZATION.CARBON.ENABLED && (
-                            <div className="mt-4">
-                                <CarbonAd />
-                            </div>
-                        )}
-
-                        <div className="text-center mt-4">
+                        <div className="text-center mt-2">
+                            <p className="text-[10px] text-gray-600 uppercase mb-4">
+                                {fileSizeMB} MB // {fileData.mimeType || 'unknown'}
+                            </p>
                             <Link href="/" className="text-xs text-gray-500 hover:text-accent border-b border-transparent hover:border-accent transition-colors">
-                                [ I_WANT_TO_TOSS_A_FILE_TOO ]
+                                [ TOSS ANOTHER FILE ]
                             </Link>
                         </div>
                     </div>
 
-                    <div className="mt-6 pt-6 border-t border-border-color">
-                        <p className="text-xs text-gray-600 text-center">
-                            TOSSED VIA DRIVE.IO // NO LOGS // NO MASTERS
+                    <div className="mt-6 pt-4 border-t border-border-color">
+                        <p className="text-[10px] text-gray-700 text-center tracking-widest uppercase">
+                            ENCRYPTED // NO LOGS // DRIVE.IO
                         </p>
                     </div>
                 </div>

@@ -18,7 +18,7 @@ export function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { isConnected, wallet } = useSession();
     const pathname = usePathname();
-    const isPclipPage = pathname?.startsWith('/clipboard') || pathname === '/pclip';
+    const isPclipPage = pathname?.startsWith('/clipboard') || pathname === '/pclip' || (pathname && /^\/[a-zA-Z0-9]+$/.test(pathname) && !['/dashboard', '/contact', '/privacy', '/terms', '/docs'].includes(pathname));
     const afterSignInUrl = isPclipPage ? pathname : "/dashboard";
 
     return (
