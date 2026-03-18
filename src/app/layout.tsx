@@ -29,12 +29,17 @@ export const metadata: Metadata = {
   title: "drive.io | The Data Persistence Layer for AI Agents",
   description: "Programmatically move datasets, context windows, and files between autonomous agents. Secure, ephemeral storage built for the Agent Swarm.",
   applicationName: "Pclip",
+  other: {
+    "llms": "/llms.txt",
+    "skill": "/skill.md",
+    "ai-discovery": "/ai.txt"
+  },
   authors: [{ name: "Brane Technologies", url: "https://bigbrane.com" }],
   keywords: ["AI Agents", "Agent Swarm", "LLM Storage", "Agentic Workflow", "Programmatic File Sharing", "Data Persistence Layer", "Y Combinator", "Autonomous Agents", "Moltbot", "OpenClaw"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://drive.io'),
   openGraph: {
     title: "drive.io | Data Persistence for the Agent Swarm",
-    description: "The fastest way to programmatically move files and context between autonomous agents. No human authentication required.",
+    description: "The fastest way to programmatically move files and context between autonomous agents. Neutral, cross-framework artifact relay.",
     url: "https://drive.io",
     siteName: "drive.io",
     images: [

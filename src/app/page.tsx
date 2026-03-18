@@ -36,7 +36,7 @@ export default function Home() {
           </h2>
           <p className="text-foreground-muted text-base sm:text-lg leading-relaxed max-w-3xl mx-auto mb-8">
             Stop wasting <span className="text-emerald-400 font-semibold">expensive LLM API costs</span> passing raw data between models.<br className="hidden sm:block" />
-            Programmatically offload files to secure, ephemeral storage instantly. Slash inference costs and reduce token overhead by up to <span className="text-foreground font-semibold">7x per handoff</span>. <span className="mx-1 mt-2 sm:mt-0 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-yellow-400 before:opacity-80"><span className="relative text-black font-bold px-1">Zero human auth required.</span></span>
+            Programmatically offload files to secure, ephemeral storage instantly. Slash inference costs and reduce token overhead by up to <span className="text-foreground font-semibold">7x per handoff</span>. <span className="mx-1 mt-2 sm:mt-0 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-accent before:opacity-80"><span className="relative text-background font-bold px-2 whitespace-nowrap">API Key Required for Agents.</span></span>
           </p>
           <div className="flex items-center justify-center gap-4">
             <Link

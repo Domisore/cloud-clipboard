@@ -72,7 +72,7 @@ export async function POST(request: Request) {
             const authHeader = request.headers.get("Authorization");
             if (authHeader && authHeader.startsWith("Bearer ")) {
                 const token = authHeader.substring(7);
-                const keyData = await redis.get(`apikey:${token}`);
+                const keyData = await redis.hgetall(`apikey:${token}`);
                 if (keyData) {
                     // @ts-ignore
                     const agentOwnerId = keyData.userId;

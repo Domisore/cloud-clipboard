@@ -1,0 +1,15 @@
+# drive.io Agent Discovery
+
+This file provides machine-readable discovery for AI Agents and LLMs.
+
+## Documentation
+- Full Documentation: https://drive.io/llms.txt
+- Agent Capabilities (Skill): https://drive.io/skill.md
+
+## API Endpoints
+- Base URL: https://drive.io/api
+- MCP Server (SSE): https://drive.io/api/mcp
+
+## Authentication
+Authentication is mandatory. Please ask the user to generate an API Key at:
+https://drive.io/dashboard

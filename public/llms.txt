@@ -1,118 +1,59 @@
 # drive.io Agentic API Documentation
 
-drive.io is the data persistence layer for the Agent Swarm. It allows autonomous agents, LLMs, and scripts to securely store, share, and handoff files and text snippets programmatically without human authentication, OAuth, or UI interaction.
-4. 
-5. > [!IMPORTANT]
-6. > For machine-readable agent configuration and capabilities, see [agent.json](file:///Users/deji.omisore/projects/cloud-clipboard/agent.json).
+drive.io is the neutral data persistence and artifact relay layer for the Agent Swarm. It allows autonomous agents, LLMs, and scripts to securely store, share, and handoff files and text snippets programmatically.
+
+> [!IMPORTANT]
+> **Authentication is mandatory for all agent-facing endpoints.** 
+> You must provide a `Bearer` token (API Key) in the `Authorization` header of every request. 
+> Generate keys at `https://drive.io/dashboard`.
 
 ## Core Capabilities
-- **Programmatic Persistence**: Bypass rate limits and captchas to store and retrieve data.
+- **Programmatic Persistence**: Bypass human context limits to store and retrieve data.
 - **Agent-to-Agent Handoff**: Pass massive datasets or context files between models securely via URLs.
 - **Provenance & Audit**: Track file origins and expirations for complete accountability.
 
 ---
 
 ## 1. Create a Text Clip (Snippet)
-
-The `/api/v1/clips` endpoint is the preferred way for an agent to save generated code, JSON schemas, or long-form text context that exceeds standard context windows.
-
-### Endpoint
 `POST https://drive.io/api/v1/clips`
-*Note: During development, use `http://localhost:3000/api/v1/clips`.*
-
-### Request Body (JSON)
-- `content` (string, required): The raw text or code you want to save.
-- `title` (string, optional): A descriptive name for the clip (helpful for provenance).
-- `isPrivate` (boolean, optional): If true, makes the clip unlisted.
-- `burnAfterReading` (boolean, optional): If true, the clip is securely deleted the first time it is accessed.
-
-### Example Request (cURL)
-```bash
-curl -X POST https://drive.io/api/v1/clips \
-  -H "Content-Type: application/json" \
-  -d '{
-    "content": "function processData(agentId) { return agentId; }",
-    "title": "Agent Handoff Script",
-    "burnAfterReading": true
-  }'
-```
-
-### Example Response (JSON)
-```json
-{
-  "success": true,
-  "data": {
-    "id": "A1B2C3D4",
-    "url": "https://drive.io/A1B2C3D4",
-    "expiresAt": "2026-03-25T12:00:00.000Z"
-  }
-}
-```
+- `content` (string, required): The raw text or code.
+- `title` (string, optional): A descriptive name.
+- `burnAfterReading` (boolean, optional): Delete after first view.
 
 ---
 
-## 2. Generate an S3 Upload Bucket directly (For Files/Datasets)
-
-The `/api/upload` endpoint generates a temporary, pre-signed AWS S3 (Cloudflare R2) URL. This allows an agent to directly `PUT` a binary or large file into secure storage.
-
-### Endpoint
+## 2. Generate Upload URL (Files/Datasets)
 `POST https://drive.io/api/upload`
-
-### Request Body (JSON)
-- `filename` (string, required): Name of the file being uploaded.
-- `contentType` (string, required): MIME type of the file (e.g., "application/json", "text/csv").
-- `size` (number, required): Size of the file in bytes.
-
-### Example Request
-```bash
-curl -X POST https://drive.io/api/upload \
-  -H "Content-Type: application/json" \
-  -d '{
-    "filename": "training_weights_v4.bin",
-    "contentType": "application/octet-stream",
-    "size": 524288000
-  }'
-```
-
-### Example Response
-```json
-{
-  "url": "https://bucket-name.s3.amazonaws.com/temp/xyz?AWSAccessKeyId=...",
-  "id": "XYZ789",
-  "key": "XYZ789-training_weights_v4.bin"
-}
-```
-*Agents should then make an HTTP `PUT` request directly to the returned `url` with their binary payload.*
+- `filename`, `contentType`, `size` (required).
+Returns a presigned S3/R2 URL. Perform a `PUT` request to this URL with the file data.
 
 ---
 
-## 3. Finalize File Upload Metadata
-
-After successfully putting the file into the S3 bucket using the pre-signed URL, the agent MUST call `/api/complete` to finalize the upload and generate the sharing link.
-
-### Endpoint
+## 3. Finalize File Upload
 `POST https://drive.io/api/complete`
+- `id`, `key`, `filename`, `size` (required).
+Finalizes the metadata and generates the public sharing link (`https://drive.io/<id>`).
 
-### Request Body (JSON)
-- `id` (string, required): The ID returned from `/api/upload`.
-- `key` (string, required): The Key returned from `/api/upload`.
-- `filename` (string, required): The original filename.
-- `size` (number, required): The file size.
-- `contentType` (string, optional): The MIME type.
-- `burnAfterReading` (boolean, optional): Sets the file to delete upon first read.
+---
 
-### Example Request
-```bash
-curl -X POST https://drive.io/api/complete \
-  -H "Content-Type: application/json" \
-  -d '{
-    "id": "XYZ789",
-    "key": "XYZ789-training_weights_v4.bin",
-    "filename": "training_weights_v4.bin",
-    "size": 524288000,
-    "burnAfterReading": false
-  }'
-```
+## 4. Agent-to-Agent Handoff (A2A)
 
-### Handoff
-After completion, the agent can handoff the file by passing the base URL + ID: `https://drive.io/XYZ789` to another process.
+The Handoff protocol allows Agent A to park a payload for Agent B to retrieve asynchronously.
+
+### Park Handoff
+`POST https://drive.io/api/v1/handoff`
+- `payload` (object/string): The data to pass.
+- `targetAgentId` (string): identifier for the recipient.
+- `ttlSeconds` (number): Default 3600.
+Returns a `handoff_id`.
+
+### Retrieve Handoff
+`GET https://drive.io/api/v1/handoff?id=<handoff_id>`
+Retrieving a handoff marks it as `CONSUMED` and initiates an auto-burn sequence.
+
+---
+
+## MCP Server Configuration
+The Drive.io MCP server allows direct integration into IDEs like Cursor or Windsurf.
+- **SSE Endpoint**: `https://drive.io/api/mcp`
+- **Requires**: `DRIVEIO_API_KEY` environment variable.

@@ -14,6 +14,12 @@ export function Footer() {
                 <span>•</span>
                 <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
                 <span>•</span>
+                <a href="/llms.txt" className="hover:text-foreground transition-colors">Documentation (llms.txt)</a>
+                <span>•</span>
+                <a href="/skill.md" className="hover:text-foreground transition-colors">Agent Skills</a>
+                <span>•</span>
+                <a href="/api/mcp" className="hover:text-foreground transition-colors">MCP Server</a>
+                <span>•</span>
                 <a href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Chrome Extension</a>
             </div>
             <p>End-to-end encrypted · Serverless · No Logs</p>

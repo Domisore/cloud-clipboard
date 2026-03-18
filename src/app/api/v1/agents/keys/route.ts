@@ -42,8 +42,8 @@ export async function POST(req: Request) {
             usage: 0
         };
 
-        // 1. Store the key metadata (allows looking up the owner by key)
-        await redis.set(keyId, keyData);
+        // 1. Store the key metadata as a Hash (supports hincrby for usage)
+        await redis.hset(keyId, keyData);
 
         // 2. Add to user's list of keys
         await redis.sadd(`user:${userId}:apikeys`, apiKey);
@@ -77,7 +77,7 @@ export async function GET(req: Request) {
 
         const keys = await Promise.all(
             userKeyIds.map(async (key) => {
-                const data = await redis.get(`apikey:${key}`);
+                const data = await redis.hgetall(`apikey:${key}`);
                 return data;
             })
         );
@@ -113,7 +113,7 @@ export async function DELETE(req: Request) {
         }
 
         const keyId = `apikey:${apiKey}`;
-        const keyData: any = await redis.get(keyId);
+        const keyData: any = await redis.hgetall(keyId);
         
         // Verify ownership
         if (!keyData || keyData.userId !== userId) {
