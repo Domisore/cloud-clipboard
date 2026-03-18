@@ -56,15 +56,25 @@ export function DriveBotConcierge() {
         <div className="fixed bottom-6 right-6 z-[100]">
             <AnimatePresence>
                 {!isOpen ? (
-                    <motion.button
-                        layoutId="chat-window"
-                        onClick={() => setIsOpen(true)}
-                        className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center shadow-2xl text-white hover:scale-110 transition-transform relative group"
-                    >
-                        <Bot className="w-8 h-8" />
-                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-4 border-[#0a0a0a] group-hover:scale-110 transition-transform"></div>
-                        <div className="absolute inset-0 rounded-full border-2 border-purple-400 opacity-20 animate-ping"></div>
-                    </motion.button>
+                    <div className="relative group flex items-center gap-3">
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 1.5, duration: 0.8 }}
+                            className="bg-zinc-950/80 backdrop-blur-md border border-purple-500/30 px-3 py-1.5 rounded-xl shadow-2xl mr-2"
+                        >
+                            <span className="text-xs font-medium text-purple-200 whitespace-nowrap">Ask me anything!</span>
+                        </motion.div>
+                        <motion.button
+                            layoutId="chat-window"
+                            onClick={() => setIsOpen(true)}
+                            className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center shadow-2xl text-white hover:scale-110 transition-transform relative"
+                        >
+                            <Bot className="w-8 h-8" />
+                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-4 border-[#0a0a0a] group-hover:scale-110 transition-transform"></div>
+                            <div className="absolute inset-0 rounded-full border-2 border-purple-400 opacity-20 animate-ping"></div>
+                        </motion.button>
+                    </div>
                 ) : (
                     <motion.div
                         layoutId="chat-window"
