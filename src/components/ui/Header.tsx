@@ -18,7 +18,7 @@ export function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { isConnected, wallet } = useSession();
     const pathname = usePathname();
-    const isPclipPage = pathname?.startsWith('/clipboard') || pathname === '/pclip' || (pathname && /^\/[a-zA-Z0-9]+$/.test(pathname) && !['/dashboard', '/contact', '/privacy', '/terms', '/docs'].includes(pathname));
+    const isPclipPage = pathname?.startsWith('/clipboard') || pathname?.startsWith('/pclip') || (pathname && /^\/[a-zA-Z0-9]+$/.test(pathname) && !['/dashboard', '/contact', '/privacy', '/terms', '/docs', '/pricing'].includes(pathname));
     const afterSignInUrl = isPclipPage ? pathname : "/dashboard";
 
     return (
@@ -93,6 +93,13 @@ export function Header() {
                     )}
 
                     <Link
+                        href={isPclipPage ? "/pclip/pricing" : "/pricing"}
+                        className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+                    >
+                        Pricing
+                    </Link>
+
+                    <Link
                         href="/contact"
                         className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
                     >
@@ -140,6 +147,13 @@ export function Header() {
                                             className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
                                         >
                                             How it works
+                                        </Link>
+                                        <Link
+                                            href={isPclipPage ? "/pclip/pricing" : "/pricing"}
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                        >
+                                            Pricing
                                         </Link>
                                     </>
                                 )}
