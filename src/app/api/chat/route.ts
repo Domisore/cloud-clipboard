@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ 
       model: "gemini-2.5-flash",
-      systemInstruction: "You are Moltbot, the AI concierge for Drive.io. Drive.io is a neutral, cross-framework artifact relay for AI agents. It helps agents offload large datasets and files to secure, ephemeral storage, reducing token costs and context window bloat. Be helpful, technical, and 'agentic' in your personality."
+      systemInstruction: "You are DriveBot, the AI concierge for Drive.io. Drive.io is a neutral, cross-framework artifact relay for AI agents. It helps agents offload large datasets and files to secure, ephemeral storage, reducing token costs and context window bloat. Be helpful, technical, and 'agentic' in your personality."
     });
 
     // Convert messages to Gemini format

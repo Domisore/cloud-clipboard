@@ -10,12 +10,12 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export function MoltbotConcierge() {
+export function DriveBotConcierge() {
     const [isOpen, setIsOpen] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [messages, setMessages] = useState([
-        { role: 'assistant', content: "Hello! I'm Moltbot, the Drive.io concierge. How can I help you optimize your agentic workflows today?" }
+        { role: 'assistant', content: "Hello! I'm DriveBot, the Drive.io concierge. How can I help you optimize your agentic workflows today?" }
     ]);
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -80,7 +80,7 @@ export function MoltbotConcierge() {
                                     <Bot className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-bold text-white tracking-tight">Moltbot Concierge</h3>
+                                    <h3 className="text-sm font-bold text-white tracking-tight">DriveBot Concierge</h3>
                                     <div className="flex items-center gap-1.5 leading-none mt-1">
                                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
                                         <span className="text-[10px] text-emerald-500/80 font-mono tracking-widest uppercase">System Online</span>

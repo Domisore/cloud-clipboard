@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   },
 };
 
-import { MoltbotConcierge } from "@/components/moltbot/MoltbotConcierge";
+import { DriveBotConcierge } from "@/components/moltbot/DriveBotConcierge";
 import { Analytics } from "@vercel/analytics/next";
 
 export default function RootLayout({
@@ -96,7 +96,7 @@ export default function RootLayout({
           <MonetizationWrapper>
             <SessionProvider>
               {children}
-              <MoltbotConcierge />
+              <DriveBotConcierge />
               <AdUnit />
               <BMCWidget />
               <Analytics />

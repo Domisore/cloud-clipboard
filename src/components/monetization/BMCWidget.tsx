@@ -10,7 +10,7 @@ export function BMCWidget() {
             href={`https://www.buymeacoffee.com/${MONETIZATION.BMC.USER_ID}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="fixed bottom-10 right-4 z-50 hover:scale-105 transition-transform"
+            className="fixed bottom-10 left-4 z-50 hover:scale-105 transition-transform"
             style={{
                 lineHeight: 0 // Prevent extra height from text baseline
             }}
