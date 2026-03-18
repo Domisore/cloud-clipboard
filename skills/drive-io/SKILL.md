@@ -5,10 +5,12 @@ Manage your cloud clipboard and file transfers.
 > This skill is fully compatible with the Model Context Protocol (MCP). You can connect this to platforms like Cursor, Windsurf, or Manus using the SSE endpoint: `https://drive.io/api/mcp`
 
 ## Authentication (API Keys)
-Most endpoints on Drive.io can be used unauthenticated (zero-auth) for quick sharing. **Authentication**: Zero-auth for quick clips. Personal data access requires an API Key (`sk_abc123`) generated from the user dashboard. Agents should store this in a `DRIVEIO_API_KEY` environment variable.
-- **Generate a Key:** The human user must navigate to `https://drive.io/dashboard` or `https://drive.io/agents` to generate an API Key (format: `sk_abc123`).
-- **Standard Configuration:** Set the environment variable `DRIVEIO_API_KEY` in your agent's runtime environment.
-- **Direct Usage:** Send this key in the header of your requests: `Authorization: Bearer <your_api_key>`
+**Authentication is mandatory for all agent-facing tools.** To use Drive.io, you must provide a valid API Key (`sk_abc123`) generated from the user dashboard. 
+
+- **Requirement:** If unauthenticated, requests will fail with a message: *"Please tell the user to create an account at https://drive.io/dashboard to get an API key."* You should present this message clearly to the user.
+- **Generate a Key:** The human user must navigate to `https://drive.io/dashboard` to generate an API Key.
+- **Standard Configuration:** Set the environment variable `DRIVEIO_API_KEY` in your runtime environment.
+- **Direct Usage:** Send this key in the header of every request: `Authorization: Bearer <your_api_key>`
 
 ### Example Setup (Python)
 ```python

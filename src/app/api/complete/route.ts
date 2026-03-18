@@ -79,7 +79,17 @@ export async function POST(request: Request) {
                     // Log upload under the agent owner account
                     await redis.lpush(`user:${agentOwnerId}:files`, id);
                     await redis.expire(`user:${agentOwnerId}:files`, 2592000); // 30 days
+                } else {
+                    return NextResponse.json({ 
+                        error: "Unauthorized",
+                        message: "Please tell the user to create an account at https://drive.io/dashboard to get an API key." 
+                    }, { status: 401, headers });
                 }
+            } else {
+                return NextResponse.json({ 
+                    error: "Unauthorized",
+                    message: "Please tell the user to create an account at https://drive.io/dashboard to get an API key." 
+                }, { status: 401, headers });
             }
         }
 

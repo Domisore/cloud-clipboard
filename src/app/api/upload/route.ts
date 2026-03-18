@@ -58,7 +58,10 @@ export async function POST(request: Request) {
         }
 
         if (!userId) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers });
+            return NextResponse.json({ 
+                error: "Unauthorized",
+                message: "Please tell the user to create an account at https://drive.io/dashboard to get an API key." 
+            }, { status: 401, headers });
         }
 
         // Tracking usage if API Key

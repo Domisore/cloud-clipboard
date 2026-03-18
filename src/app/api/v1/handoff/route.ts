@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { nanoid } from 'nanoid';
+import { currentUser } from "@clerk/nextjs/server";
 
 // A2A Handoff Protocol Endpoint
 // Agent A POSTs a context/payload here, gets a handoff_id.
@@ -58,6 +59,29 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
     try {
+        // Authentication Check
+        let userId = null;
+
+        const authHeader = req.headers.get("Authorization");
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+            const token = authHeader.substring(7);
+            const keyData = await redis.get(`apikey:${token}`);
+            if (keyData) {
+                // @ts-ignore
+                userId = keyData.userId;
+            }
+        } else {
+            const user = await currentUser();
+            userId = user?.id;
+        }
+
+        if (!userId) {
+            return NextResponse.json({ 
+                error: "Unauthorized",
+                message: "Please tell the user to create an account at https://drive.io/dashboard to get an API key." 
+            }, { status: 401 });
+        }
+
         const { searchParams } = new URL(req.url);
         const handoffId = searchParams.get("id");
 

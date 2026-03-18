@@ -37,6 +37,33 @@ export async function POST(request: Request) {
             );
         }
 
+        // Authentication Check
+        let userId = null;
+
+        // 1. Check Bearer Token (Agent API Key)
+        const authHeader = request.headers.get("Authorization");
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+            const token = authHeader.substring(7);
+            const keyData = await redis.get(`apikey:${token}`);
+            if (keyData) {
+                // @ts-ignore
+                userId = keyData.userId;
+                // Increment API Key usage
+                await redis.hincrby(`apikey:${token}`, "usage", 1);
+            }
+        } else {
+            // 2. Fallback to Clerk Session (Human Web App)
+            const user = await currentUser();
+            userId = user?.id;
+        }
+
+        if (!userId) {
+            return NextResponse.json({ 
+                error: "Unauthorized",
+                message: "Please tell the user to create an account at https://drive.io/dashboard to get an API key." 
+            }, { status: 401, headers });
+        }
+
         const id = nanoid(10); // Short but unique enough for now
         const createdAt = new Date().toISOString();
 
