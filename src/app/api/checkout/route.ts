@@ -16,17 +16,21 @@ export async function POST(req: Request) {
     try {
         const { userId } = await auth();
         if (!userId) {
-            return new NextResponse("Unauthorized", { status: 401 });
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { priceId } = await req.json();
+        const { priceId, successUrl: customSuccessUrl } = await req.json();
 
         if (!priceId) {
-            return new NextResponse("Price ID is required", { status: 400 });
+            return NextResponse.json({ error: "Price ID is required" }, { status: 400 });
         }
 
         const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
-        console.log(`[STRIPE_CHECKOUT] Creating session for user: ${userId}, price: ${priceId}, callback: ${baseUrl}`);
+        const successUrl = customSuccessUrl 
+            ? `${baseUrl}${customSuccessUrl}`
+            : `${baseUrl}/clipboard?success=true`;
+
+        console.log(`[STRIPE_CHECKOUT] Creating session for user: ${userId}, price: ${priceId}, callback: ${successUrl}`);
 
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
@@ -37,8 +41,13 @@ export async function POST(req: Request) {
                 },
             ],
             mode: "subscription",
-            success_url: `${baseUrl}/clipboard?success=true`,
+            success_url: successUrl,
             cancel_url: `${baseUrl}/pricing?canceled=true`,
+            subscription_data: {
+                metadata: {
+                    userId,
+                },
+            },
             metadata: {
                 userId,
             },
@@ -48,6 +57,9 @@ export async function POST(req: Request) {
         return NextResponse.json({ url: session.url });
     } catch (error: any) {
         console.error("[STRIPE_CHECKOUT_ERROR]", error);
-        return new NextResponse(error.message || "Internal Server Error", { status: 500 });
+        return NextResponse.json(
+            { error: error.message || "Internal Server Error" },
+            { status: 500 }
+        );
     }
 }

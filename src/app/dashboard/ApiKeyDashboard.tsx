@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Terminal, Key, Plus, Copy, CheckCircle2, Trash2, Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { Terminal, Key, Plus, Copy, CheckCircle2, Trash2, Eye, EyeOff, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
+import { useRouter } from 'next/navigation';
 
 interface ApiKey {
     id: string;
@@ -13,7 +14,7 @@ interface ApiKey {
     // The raw key is only shown ONCE upon creation.
 }
 
-export function ApiKeyDashboard({ isBypass = false }: { isBypass?: boolean }) {
+export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?: boolean; plan?: string }) {
     const [keys, setKeys] = useState<ApiKey[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
@@ -22,10 +23,31 @@ export function ApiKeyDashboard({ isBypass = false }: { isBypass?: boolean }) {
     const [revealedKeys, setRevealedKeys] = useState<Record<string, boolean>>({});
     const [keyToDelete, setKeyToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isSyncing, setIsSyncing] = useState(false);
+    const router = useRouter();
 
+    const isLocal = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+    
     useEffect(() => {
         fetchKeys();
     }, []);
+
+    const handleSyncSubscription = async () => {
+        setIsSyncing(true);
+        try {
+            const res = await fetch('/api/user/sync-subscription', { method: 'POST' });
+            if (res.ok) {
+                // Refresh the page to get latest metadata from server
+                router.refresh();
+                // Or just a window reload for absolute certainty on localhost
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Failed to sync subscription", error);
+        } finally {
+            setIsSyncing(false);
+        }
+    };
 
     const fetchKeys = async () => {
         try {
@@ -101,9 +123,27 @@ export function ApiKeyDashboard({ isBypass = false }: { isBypass?: boolean }) {
             <main className="flex-1 w-full max-w-5xl mx-auto pt-32 pb-20 px-6">
 
                 <div className="mb-12">
-                    <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
+                    <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 flex items-center gap-4">
                         Developer Dashboard
-                        {isBypass && <span className="ml-4 text-sm bg-red-500/20 text-red-400 px-3 py-1 rounded-full border border-red-500/50 align-middle">TEST MODE</span>}
+                        <span className={`text-xs px-3 py-1 rounded-full border align-middle uppercase tracking-wider font-bold ${
+                            plan === 'pro' 
+                                ? 'bg-accent/20 text-accent border-accent/50' 
+                                : 'bg-zinc-800 text-zinc-500 border-zinc-700'
+                        }`}>
+                            {plan} Plan
+                        </span>
+                        {isLocal && (
+                            <button 
+                                onClick={handleSyncSubscription}
+                                disabled={isSyncing}
+                                className="p-1.5 bg-zinc-900 border border-zinc-800 rounded-md text-zinc-500 hover:text-white hover:border-zinc-700 transition-all flex items-center gap-2 text-[10px] uppercase font-bold tracking-wider"
+                                title="Sync Pro Status manually (Local Only)"
+                            >
+                                <RefreshCw size={12} className={isSyncing ? "animate-spin" : ""} />
+                                {isSyncing ? "Syncing..." : "Sync status"}
+                            </button>
+                        )}
+                        {isBypass && <span className="text-sm bg-red-500/20 text-red-400 px-3 py-1 rounded-full border border-red-500/50">TEST MODE</span>}
                     </h1>
                     <p className="text-zinc-500 max-w-2xl">
                         Manage your Agent API keys. These credentials allow headless swarms to push artifacts and

@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { ApiKeyDashboard } from "./ApiKeyDashboard";
 import { Metadata } from "next";
@@ -22,5 +22,12 @@ export default async function DashboardPage({
         redirect("/sign-in?redirect_url=/dashboard");
     }
 
-    return <ApiKeyDashboard isBypass={isBypass} />;
+    let plan = "free";
+    if (userId) {
+        const client = await clerkClient();
+        const user = await client.users.getUser(userId);
+        plan = (user.publicMetadata as any)?.plan || "free";
+    }
+
+    return <ApiKeyDashboard isBypass={isBypass} plan={plan} />;
 }

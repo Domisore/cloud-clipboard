@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 
 const tiers = [
     {
@@ -49,23 +50,41 @@ export function Pricing() {
     const pathname = usePathname();
     const isPclip = pathname?.startsWith('/pclip') || pathname?.startsWith('/clipboard');
 
+    const { userId } = useAuth();
+    const router = useRouter();
+
     const handleCheckout = async (priceId: string) => {
+        if (!userId) {
+            // Redirect to sign-in if not authenticated
+            // We use window.location to ensure a full reload/redirect to Clerk's hosted UI if needed
+            window.location.href = `/sign-in?redirect_url=${encodeURIComponent(window.location.href)}`;
+            return;
+        }
+
         try {
             setIsLoading(priceId);
+            const successUrl = isPclip ? "/clipboard?success=true" : "/dashboard?success=true";
+
             const response = await fetch("/api/checkout", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ priceId }),
+                body: JSON.stringify({ priceId, successUrl }),
             });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `Checkout failed with status ${response.status}`);
+            }
 
             const data = await response.json();
             if (data.url) {
                 window.location.assign(data.url);
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Checkout error:", error);
+            // You might want to show a toast here in a real app
         } finally {
             setIsLoading(null);
         }
