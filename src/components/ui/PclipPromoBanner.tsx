@@ -27,25 +27,26 @@ export function PclipPromoBanner() {
         <AnimatePresence>
             {isVisible && (
                 <motion.div
-                    initial={{ opacity: 0, y: -20 }}
+                    initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
                     className="w-full max-w-4xl mx-auto mb-8 px-4"
                 >
-                    <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-purple-500/10 via-surface to-surface border border-purple-500/20 shadow-lg p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 backdrop-blur-sm">
+                    <div className="relative overflow-hidden rounded-xl bg-surface border border-border-color shadow-sm p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 backdrop-blur-sm">
 
                         {/* Content */}
                         <div className="flex items-center gap-3 flex-1">
                             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                                <span className="text-[10px] font-bold bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded uppercase tracking-wider w-fit">News</span>
+                                <span className="text-[10px] font-bold bg-muted/50 text-foreground-muted px-1.5 py-0.5 rounded uppercase tracking-wider w-fit">News</span>
                                 <p className="text-sm text-foreground-muted">
-                                    Meet <span className="text-white font-bold">Pclip</span> — the independent, human-centric cloud clipboard companion by the Drive.io team.
+                                    Meet <span className="text-white font-medium">Pclip</span> — the independent, human-centric cloud clipboard companion by the Drive.io team.
                                 </p>
                             </div>
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center gap-3 w-full sm:w-auto pl-14 sm:pl-0 shrink-0">
+                        <div className="flex items-center gap-3 w-full sm:w-auto pl-10 sm:pl-0 shrink-0">
                             <Link
                                 href="/clipboard"
                                 className="text-xs font-semibold bg-surface border border-border-color text-foreground px-4 py-2 rounded-md hover:bg-white/5 transition-colors whitespace-nowrap flex items-center gap-1.5"
@@ -57,9 +58,9 @@ export function PclipPromoBanner() {
                                 href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-xs font-semibold bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition-colors whitespace-nowrap flex items-center gap-1.5 shadow-sm shadow-purple-500/20"
+                                className="text-xs font-semibold bg-surface border border-purple-500/30 text-purple-300 px-4 py-2 rounded-md hover:bg-purple-500/10 transition-colors whitespace-nowrap flex items-center gap-1.5"
                             >
-                                <ExternalLink className="w-3.5 h-3.5" />
+                                <Download className="w-3.5 h-3.5" />
                                 Get Extension
                             </a>
                             <button
