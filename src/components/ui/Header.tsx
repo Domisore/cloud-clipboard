@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SyncHub } from '@/components/sync/SyncHub';
 import { usePathname } from 'next/navigation';
 import { useSession } from '@/context/SessionContext';
@@ -18,8 +18,25 @@ export function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { isConnected, wallet } = useSession();
     const pathname = usePathname();
-    const isPclipPage = pathname?.startsWith('/clipboard') || pathname?.startsWith('/pclip') || (pathname && /^\/[a-zA-Z0-9]+$/.test(pathname) && !['/dashboard', '/contact', '/privacy', '/terms', '/docs', '/pricing'].includes(pathname));
-    const afterSignInUrl = isPclipPage ? pathname : "/dashboard";
+    
+    // Detect if we are in a "Pclip" context (either via path or domain)
+    const [isPclipDomain, setIsPclipDomain] = useState(false);
+    
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const hostname = window.location.hostname;
+            setIsPclipDomain(hostname.includes('pclip.me'));
+        }
+    }, []);
+
+    const isPclipPage = isPclipDomain || pathname?.startsWith('/clipboard') || pathname?.startsWith('/pclip') || (pathname && /^\/[a-zA-Z0-9]+$/.test(pathname) && !['/dashboard', '/contact', '/privacy', '/terms', '/docs', '/pricing'].includes(pathname));
+    
+    // Smarter redirect: if on a Pclip landing page, go to the app (/clipboard). 
+    // Otherwise stay on current path if it's a Pclip app page, or default to dashboard.
+    const isLandingPage = pathname === '/' || pathname === '/pclip';
+    const afterSignInUrl = isPclipPage 
+        ? (isLandingPage ? "/clipboard" : pathname) 
+        : "/dashboard";
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4">
