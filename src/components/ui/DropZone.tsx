@@ -1,25 +1,44 @@
 "use client";
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { usePaste } from '@/hooks/usePaste';
 import { clsx } from 'clsx';
 import { uploadFile } from '@/services/upload';
+import { useUser } from '@clerk/nextjs';
+import Link from 'next/link';
+
+const FREE_LIMIT = 5 * 1024 * 1024; // 5MB
+const PRO_LIMIT = 100 * 1024 * 1024; // 100MB
 
 export function DropZone() {
+    const { user } = useUser();
     const [isDragging, setIsDragging] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
     const [burnOnRead, setBurnOnRead] = useState(false);
     const [showTooltip, setShowTooltip] = useState(false);
+    const [error, setError] = useState<{ message: string; type: 'limit' | 'other' } | null>(null);
+
+    const plan = (user?.publicMetadata?.plan as 'free' | 'pro') || 'free';
+    const limit = plan === 'pro' ? PRO_LIMIT : FREE_LIMIT;
 
     const handleUpload = useCallback(async (file: File) => {
+        setError(null);
+
+        if (file.size > limit) {
+            setError({
+                message: `File too large (${(file.size / (1024 * 1024)).toFixed(1)}MB). Free tier limit is 5MB.`,
+                type: 'limit'
+            });
+            return;
+        }
+
         setIsUploading(true);
         setUploadSuccess(null);
 
         try {
             const result = await uploadFile(file, burnOnRead);
 
-            // Save to local storage
             // Save to local storage
             const existing = JSON.parse(localStorage.getItem('recent_uploads') || '[]');
             const uploadWithSnippet = {
@@ -34,14 +53,15 @@ export function DropZone() {
 
             setUploadSuccess(result.url);
 
-            // Clear success message after 3 seconds
-            setTimeout(() => setUploadSuccess(null), 3000);
-        } catch (error) {
-            console.error(error);
+            // Clear success message after 5 seconds
+            setTimeout(() => setUploadSuccess(null), 5000);
+        } catch (err: any) {
+            console.error(err);
+            setError({ message: err.message || 'Upload failed', type: 'other' });
         } finally {
             setIsUploading(false);
         }
-    }, [burnOnRead]);
+    }, [burnOnRead, limit]);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -76,7 +96,7 @@ export function DropZone() {
     usePaste(handlePaste);
 
     return (
-        <div className="w-full max-w-4xl mx-auto p-4 sm:p-8 border-2 border-dashed border-border-color rounded-none relative">
+        <div className="w-full max-w-4xl mx-auto p-4 sm:p-8 border-2 border-dashed border-border-color rounded-none relative overflow-hidden">
             <div className="grid grid-cols-3 gap-2 sm:gap-4">
 
                 {/* Card 1: Paste Text */}
@@ -133,7 +153,7 @@ export function DropZone() {
             {/* Footer Actions */}
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <p className="text-sm text-gray-400 max-w-xs text-center sm:text-left">
-                    Paste here, get a link, access from any device or AI agent. Your universal cloud drive.
+                    {plan === 'free' ? 'Free Plan: 5MB Max' : 'Pro Plan: 100MB Max'}. Clips are encrypted and ephemeral.
                 </p>
 
                 <div className="flex items-center gap-4">
@@ -177,18 +197,48 @@ export function DropZone() {
                         </div>
                     </div>
 
-
-
-                    <button className="bg-white text-black px-3 py-1 text-xs font-bold hover:bg-accent transition-colors">
-                        Copy Link
-                    </button>
+                    {plan === 'free' && (
+                        <Link href="/pricing" className="bg-accent/20 text-accent px-3 py-1 text-[10px] font-bold border border-accent/30 hover:bg-accent hover:text-background transition-all uppercase tracking-wider">
+                            Get Pro
+                        </Link>
+                    )}
                 </div>
             </div>
 
+            {/* Error Overlay */}
+            {error && (
+                <div className="absolute inset-0 bg-black/95 flex items-center justify-center z-20 animate-in fade-in duration-300">
+                    <div className="text-center p-8 space-y-6 max-w-md">
+                        <div className="text-red-500 font-black text-2xl uppercase tracking-tighter">
+                            [ ERROR: LIMIT_EXCEEDED ]
+                        </div>
+                        <p className="text-gray-400 font-mono text-sm leading-relaxed">
+                            {error.message}
+                        </p>
+                        <div className="flex flex-col gap-3">
+                            {error.type === 'limit' && (
+                                <Link 
+                                    href="/pricing"
+                                    className="bg-accent text-background px-6 py-3 text-sm font-black uppercase hover:bg-accent/90 transition-all shadow-hacker-green"
+                                >
+                                    Upgrade to Pro (100MB)
+                                </Link>
+                            )}
+                            <button
+                                onClick={() => setError(null)}
+                                className="text-gray-500 font-mono text-xs uppercase hover:text-white transition-colors"
+                            >
+                                Dismiss
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Status Overlay */}
             {isUploading && (
-                <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-10">
-                    <div className="text-accent font-bold text-xl animate-pulse">
+                <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-10 transition-all duration-300">
+                    <div className="text-accent font-bold text-xl animate-pulse tracking-[0.2em]">
                         UPLOADING...
                     </div>
                 </div>
@@ -196,23 +246,35 @@ export function DropZone() {
 
             {/* Success Overlay */}
             {uploadSuccess && !isUploading && (
-                <div className="absolute inset-0 bg-black/90 flex items-center justify-center z-10">
+                <div className="absolute inset-0 bg-black/90 flex items-center justify-center z-10 animate-in zoom-in-95 duration-200">
                     <div className="text-center space-y-4 p-6">
-                        <div className="text-accent font-bold text-2xl">
+                        <div className="text-accent font-bold text-2xl uppercase tracking-widest">
                             ✓ UPLOADED
                         </div>
-                        <div className="text-white text-sm font-mono break-all max-w-md">
+                        <div className="text-white text-xs font-mono break-all max-w-sm p-3 bg-white/5 border border-white/10">
                             {uploadSuccess}
                         </div>
-                        <button
-                            onClick={() => {
-                                navigator.clipboard.writeText(uploadSuccess);
-                                setUploadSuccess(null);
-                            }}
-                            className="bg-white text-black px-4 py-2 text-sm font-bold hover:bg-accent transition-colors"
-                        >
-                            COPY_LINK
-                        </button>
+                        <div className="flex gap-2 justify-center pt-2">
+                             <button
+                                onClick={() => {
+                                    navigator.clipboard.writeText(uploadSuccess);
+                                    // Feedback
+                                    const btn = document.getElementById('copy-btn-inner');
+                                    if (btn) btn.textContent = 'COPIED!';
+                                    setTimeout(() => { if (btn) btn.textContent = 'COPY_LINK'; }, 2000);
+                                }}
+                                className="bg-white text-black px-6 py-2 text-sm font-bold hover:bg-accent transition-colors min-w-[120px]"
+                                id="copy-btn-inner"
+                            >
+                                COPY_LINK
+                            </button>
+                            <button
+                                onClick={() => setUploadSuccess(null)}
+                                className="bg-gray-700 text-white px-6 py-2 text-sm font-bold hover:bg-gray-600 transition-colors"
+                            >
+                                DONE
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

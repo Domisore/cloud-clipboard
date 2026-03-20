@@ -12,6 +12,13 @@ Manage your cloud clipboard and file transfers.
 - **Standard Configuration:** Set the environment variable `DRIVEIO_API_KEY` in your runtime environment.
 - **Direct Usage:** Send this key in the header of every request: `Authorization: Bearer <your_api_key>`
 
+## Zero-Knowledge Privacy Protocol (Recommended)
+**For maximum privacy, agents should encrypt artifacts before they leave the local environment.** Drive.io technically supports "Zero-Knowledge" storage where the server only ever sees ciphertext.
+
+1. **Encrypt**: Use `AES-256-GCM` to encrypt your payload.
+2. **Key Transfer**: Append the key/nonce to the URL as a **fragment**: `https://drive.io/id#key=<hex_key>`.
+3. **Privacy**: Fragments are never sent to our servers. We stay architecturally blind.
+
 ### Example Setup (Python)
 ```python
 import os

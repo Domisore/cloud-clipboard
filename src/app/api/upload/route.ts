@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { nanoid } from "nanoid";
 import { redis } from "@/lib/redis";
 import { auth } from "@clerk/nextjs/server";
+import { getFileSizeLimit, getUserPlan, formatBytes } from "@/lib/plan";
 
 // CORS headers Helper
 function corsHeaders(origin: string | null) {
@@ -49,7 +50,7 @@ export async function POST(request: Request) {
                 return NextResponse.json({ error: "Invalid API Key" }, { status: 401, headers });
             }
             // @ts-ignore - KV response structure
-            userId = keyData.userId;
+            userId = keyData.userId as string;
             apiKeyId = `apikey:${token}`;
         } else {
             // 2. Fallback to Clerk Session (Human Web App)
@@ -64,9 +65,31 @@ export async function POST(request: Request) {
             }, { status: 401, headers });
         }
 
+        // --- TIERED LIMIT ENFORCEMENT ---
+        const plan = await getUserPlan(userId);
+        const limit = getFileSizeLimit(plan);
+
+        if (size > limit) {
+            return NextResponse.json({
+                error: "limit_exceeded",
+                code: "FREE_TIER_LIMIT_EXCEEDED",
+                message: `The file size (${formatBytes(size)}) exceeds the limit for your current '${plan}' plan (${formatBytes(limit)}).`,
+                limits: [
+                    {
+                        name: "file_size",
+                        limit: formatBytes(limit),
+                        actual: formatBytes(size),
+                        status: "exceeded"
+                    }
+                ],
+                resolution: "To increase your limits to 100 MB per file, please upgrade to Pro at https://drive.io/pricing"
+            }, { status: 413, headers });
+        }
+        // --------------------------------
+
         // Tracking usage if API Key
         if (apiKeyId) {
-            const currentUsage = await redis.hincrby(apiKeyId, "usage", 1);
+            await redis.hincrby(apiKeyId, "usage", 1);
         }
 
         // Generate a short ID
@@ -85,8 +108,8 @@ export async function POST(request: Request) {
         const url = await getSignedUrl(r2, command, { expiresIn: 600 });
 
         return NextResponse.json({ url, id, key }, { headers });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Presigned URL error:", error);
-        return NextResponse.json({ error: "Failed to generate upload URL" }, { status: 500, headers });
+        return NextResponse.json({ error: error.message || "Failed to generate upload URL" }, { status: 500, headers });
     }
 }

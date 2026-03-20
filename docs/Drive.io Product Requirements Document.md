@@ -33,9 +33,9 @@ To ensure 100% PWA compliance, high speed, and low overhead, the following stack
 
 ### **3.1 Upload Logic**
 
-* **File Drop:** Drag-and-drop support for files up to 100MB (Free tier).  
+* **File Drop:** Drag-and-drop support for files up to **5MB (Free tier)** or **100MB (Pro tier)**.  
 * **Clipboard Listener:** Ctrl+V (or mobile long-press) detection.  
-  * **Text:** If clipboard contains text, create a .txt file or a "Pastebin" view.  
+  * **Text:** If clipboard contains text, create a .txt file or a "Pastebin" view (restricted to the same file size limits).  
   * **Image:** If clipboard contains an image (PNG/JPG), upload immediately as a file.  
 * **Unique URL Generation:** Short, non-sequential Base62 IDs (e.g., drive.io/xK39j).
 

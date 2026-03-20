@@ -1,0 +1,54 @@
+This is actually one of the most important infrastructure decisions you can make early â€” and the good news is there's a well-established architectural pattern that makes staff read access technically impossible, not just policy-restricted.
+
+**The distinction that matters**
+
+There's a big difference between "we promise not to look" and "we architecturally cannot look." The first is a privacy policy. The second is zero-knowledge encryption. One requires trust in your staff. The other requires trust only in mathematics. For developer-savvy users â€” which is your entire market â€” only the second one is meaningful.
+
+**The architecture: client-side encryption before upload**
+
+The approach is straightforward in principle. The encryption key is derived from the user's credentials or a user-controlled secret â€” never sent to drive.io's servers. The agent encrypts the artifact locally before uploading. Drive.io stores an encrypted blob it cannot read. The receiving agent decrypts after fetching using the same key.
+
+```
+Agent A                    drive.io                    Agent B
+  |                           |                           |
+  | encrypt(payload, key)     |                           |
+  |â†’ upload encrypted blob  â†’|                           |
+  |â† returns URL            â†|                           |
+  |                           |                           |
+  |    pass URL + key hint    |â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’â†’|
+  |                           |                           |
+  |                           |â† fetch encrypted blob   â†|
+  |                           |â†’ returns encrypted blob â†’|
+  |                           |                           |
+  |                           |    decrypt(blob, key)     |
+```
+
+Drive.io sees only ciphertext at every point. Your R2 bucket contains only ciphertext. Your staff â€” including you â€” cannot read any user content regardless of access level.
+
+**The practical implementation options**
+
+The simplest path is AES-256-GCM with a user-derived key. The agent generates or receives a key, encrypts the payload before the API call, uploads the ciphertext, and appends the key to the pointer URL as a fragment â€” something like `drive.io/c/N37X6P9R2Z#key=abc123`. URL fragments are never sent to the server, so drive.io never sees the key. The receiving agent splits the URL from the fragment, fetches the ciphertext, and decrypts locally.
+
+A more sophisticated approach uses envelope encryption â€” the user has a master key, drive.io generates a per-artifact data encryption key, encrypts it with the user's master key, and stores the encrypted DEK alongside the ciphertext. This is how AWS KMS and similar services work. Drive.io cannot decrypt the DEK without the user's master key, which it never holds.
+
+**What Cloudflare R2 already gives you**
+
+Cloudflare encrypts data at rest by default using AES-256. That protects against external breaches and Cloudflare's own infrastructure staff. But it does not protect against you â€” as the R2 account holder you can read any object in your bucket. Client-side encryption is what closes that gap.
+
+**How to communicate this publicly**
+
+The clean framing is:
+
+> "Drive.io uses client-side encryption for Pro users. Your artifacts are encrypted before they leave your agent. We store ciphertext. We hold no keys. Mathematically, we cannot read your data â€” and neither can anyone who gains access to our storage."
+
+That sentence ends the privacy conversation with technically sophisticated users. It also meaningfully differentiates drive.io from Fast.io and every other file relay that stores plaintext.
+
+**The one honest tradeoff to disclose**
+
+Client-side encryption makes L0 and L1 tier generation impossible server-side â€” you can't summarise content you can't read. For encrypted artifacts, tier generation has to happen client-side before encryption, with the tiers uploaded as separate encrypted blobs. This is buildable but adds complexity. It's worth being transparent that zero-knowledge encryption and server-side intelligence are in tension, and Pro users can choose which they prioritise.
+
+**The roadmap position**
+
+Ship plaintext storage now with the honest "Cloudflare R2, ephemeral by default, we don't process content" assurance. Ship client-side encryption as a Pro feature in the next iteration. Ship BYOS as Team tier. Each step moves drive.io further toward zero-knowledge and each step is a legitimate upgrade reason for privacy-conscious users.
+
+That three-step progression is also a clean narrative for the YC application â€” you're not promising something you haven't built, you're showing you've thought through the full architecture.
