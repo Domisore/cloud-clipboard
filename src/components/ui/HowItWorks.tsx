@@ -9,8 +9,8 @@ export function HowItWorks() {
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-accent to-transparent"></div>
 
             <div className="text-center mb-12">
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground">See How it Works</h2>
-                <p className="text-foreground-muted mt-2 max-w-2xl">Visualizing the impact of the Drive.io protocol on agent performance and token efficiency.</p>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground">How Drive.io Cuts Token Costs Mid-Pipeline — Without Touching Memory</h2>
+                <p className="text-foreground-muted mt-2 max-w-2xl mx-auto">Visualizing the impact of the Drive.io protocol on agent performance and token efficiency.</p>
             </div>
 
             <div className="w-full mb-20">

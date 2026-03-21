@@ -26,8 +26,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "drive.io | The Data Persistence Layer for AI Agents",
-  description: "Programmatically move datasets, context windows, and files between autonomous agents. Secure, ephemeral storage built for the Agent Swarm.",
+  title: "Drive.io | Reduce LLM Token Costs with Multi-Agent Data Relays",
+  description: "Slash LLM token usage for LangGraph, CrewAI, and AutoGen. Secure, neutral artifact relays for multi-agent handoffs with persistent, ephemeral storage.",
   applicationName: "Pclip",
   other: {
     "llms": "/llms.txt",
@@ -98,7 +98,6 @@ export default function RootLayout({
               {children}
               <DriveBotConcierge />
               <AdUnit />
-              <BMCWidget />
               <Analytics />
             </SessionProvider>
           </MonetizationWrapper>

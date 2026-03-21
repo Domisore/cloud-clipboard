@@ -19,7 +19,7 @@ export function TokenBenchmark() {
                     Measured Performance
                 </div>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-6 text-foreground text-balance">
-                    drive.io Token Efficiency Benchmark
+                    Benchmark: 99%+ Token Reduction Across File Sizes
                 </h2>
                 <div className="bg-surface/50 border border-border-color rounded-xl p-4 max-w-2xl backdrop-blur-sm">
                     <div className="flex items-start gap-4 text-left">

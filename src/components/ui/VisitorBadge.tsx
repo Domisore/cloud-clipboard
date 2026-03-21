@@ -18,7 +18,7 @@ export function VisitorBadge() {
                 <div className="flex items-center gap-2">
                     <Users className="w-3.5 h-3.5 text-accent" />
                     <span className="text-xs font-medium text-foreground-muted">
-                        Join <span className="text-foreground font-bold">6,700+</span> visitors sharing securely
+                        Relaying <span className="text-foreground font-bold">8.4M+</span> tokens across Agent Swarms
                     </span>
                 </div>
             </div>

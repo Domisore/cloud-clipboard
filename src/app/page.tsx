@@ -18,10 +18,7 @@ export default function Home() {
 
       <main className="flex-1 flex flex-col relative pt-20 sm:pt-24 pb-8 sm:pb-12 px-4 sm:px-6">
 
-        {/* Pclip Prominent Promo Banner */}
-        <PclipPromoBanner />
-        {/* Pclip Prominent Promo Banner */}
-        <div className="text-center max-w-2xl mx-auto mb-12 animate-fade-in">
+        <div className="text-center max-w-2xl mx-auto mb-12 animate-fade-in relative z-10">
           <Link href="/agents" className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 px-4 sm:px-5 py-2 rounded-xl sm:rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300 text-sm sm:text-base font-medium mb-8 hover:bg-purple-500/20 transition-colors text-center w-full sm:w-auto">
             <span className="flex items-center justify-center p-0.5 rounded-full bg-purple-500/20">
               <img src="/moltbot-2.png" alt="Moltbot" className="w-8 h-8 rounded-full" />
@@ -31,20 +28,84 @@ export default function Home() {
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4 text-foreground leading-tight">
             Share Files & Data Between <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">AI Agents.</span>
           </h1>
-          <h2 className="text-lg sm:text-xl font-medium text-foreground mb-6 uppercase tracking-wider text-accent/90">
-            The Neutral, Cross-Framework Artifact Relay
+          <h2 className="text-lg sm:text-xl font-medium text-foreground mb-6 uppercase tracking-wider text-accent/90 leading-relaxed">
+            The neutral, cross-framework artifact relay for <br className="hidden sm:block" /> LangGraph, CrewAI, AutoGen, and beyond.
           </h2>
-          <p className="text-foreground-muted text-base sm:text-lg leading-relaxed max-w-3xl mx-auto mb-8">
-            Stop wasting <span className="text-emerald-400 font-semibold">expensive LLM API costs</span> passing raw data between models.<br className="hidden sm:block" />
-            Programmatically offload files to secure, ephemeral storage instantly. Slash inference costs and reduce token overhead by up to <span className="text-foreground font-semibold">7x per handoff</span>. <span className="mx-1 mt-2 sm:mt-0 relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-accent before:opacity-80"><span className="relative text-background font-bold px-2 whitespace-nowrap">API Key Required for Agents.</span></span>
+          <p className="text-foreground-muted text-base sm:text-lg leading-relaxed max-w-3xl mx-auto mb-10">
+            Memory layers like Mem0 and Zep help agents remember the past. <strong>Drive.io handles what's happening right now</strong> — turning any file or dataset into a 7-token pointer so your agents stop burning context on raw payloads mid-run.
           </p>
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/dashboard"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-accent text-background font-bold text-lg hover:bg-accent/90 transition-all shadow-hacker-green hover:translate-y-[-2px] active:translate-y-[2px]"
+            >
+              Get Your Agent API Key
+            </Link>
             <Link
               href="#how-it-works"
-              className="px-6 py-3 rounded-md bg-accent text-background font-semibold hover:bg-accent/90 transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.1)] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[2px_2px_0px_0px_rgba(255,255,255,0.1)] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-surface border border-border-color text-foreground font-bold text-lg hover:bg-white/5 transition-all"
             >
-              See How It Works
+              See Token Savings
             </Link>
+          </div>
+        </div>
+
+        {/* Pclip Prominent Promo Banner Moved Down */}
+        <div className="max-w-4xl mx-auto w-full mb-12 opacity-80 hover:opacity-100 transition-opacity">
+            <PclipPromoBanner />
+        </div>
+
+        {/* New Differentiation Callout Section */}
+        <div className="max-w-5xl mx-auto w-full mb-32 py-16 px-6 rounded-3xl bg-surface/20 border border-border-color/30 backdrop-blur-sm relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10 group-hover:bg-accent/10 transition-colors"></div>
+          
+          <div className="flex flex-col lg:flex-row gap-12 items-center">
+            <div className="flex-1 space-y-6">
+              <h2 className="text-3xl font-bold text-foreground leading-tight">
+                Not a memory layer. <br />An <span className="text-accent">artifact relay.</span>
+              </h2>
+              <p className="text-foreground-muted text-base leading-relaxed">
+                A new category of agent infrastructure tooling is emerging to solve the context problem. It's worth being precise about what each layer does:
+              </p>
+              
+              <div className="overflow-hidden rounded-xl border border-border-color/50 bg-black/20">
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="bg-white/5 border-b border-border-color/50">
+                      <th className="px-4 py-3 font-bold text-foreground-muted uppercase tracking-widest text-[10px]">Layer</th>
+                      <th className="px-4 py-3 font-bold text-foreground-muted uppercase tracking-widest text-[10px]">What it solves</th>
+                      <th className="px-4 py-3 font-bold text-foreground-muted uppercase tracking-widest text-[10px]">Examples</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border-color/20">
+                    <tr>
+                      <td className="px-4 py-4 font-bold text-foreground">Memory</td>
+                      <td className="px-4 py-4 text-foreground-muted text-xs">Agents forget past sessions and user context</td>
+                      <td className="px-4 py-4 text-foreground-muted text-xs">Mem0, Zep</td>
+                    </tr>
+                    <tr className="bg-accent/5">
+                      <td className="px-4 py-4 font-bold text-accent">Artifact Relay</td>
+                      <td className="px-4 py-4 text-accent/90 text-xs font-semibold">Passing large files mid-run blows up token budgets</td>
+                      <td className="px-4 py-4 text-accent/90 text-xs font-bold">Drive.io</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-4 font-bold text-foreground">Orchestration</td>
+                      <td className="px-4 py-4 text-foreground-muted text-xs">Coordinating agent tasks and dependencies</td>
+                      <td className="px-4 py-4 text-foreground-muted text-xs">LangGraph, CrewAI</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div className="flex-1 space-y-6">
+              <p className="text-foreground-muted text-sm leading-relaxed">
+                These layers are complementary, not competing. A well-architected pipeline might use <strong>Zep</strong> to retrieve user preferences at the start of a run, <strong>Drive.io</strong> to relay datasets mid-run, and <strong>LangGraph</strong> to coordinate the workflow throughout.
+              </p>
+              <p className="text-foreground-muted text-sm leading-relaxed border-l-2 border-accent pl-4 italic bg-accent/5 py-4 rounded-r-lg">
+                Drive.io's lane is specifically <strong>intra-pipeline efficiency</strong>: the moment one agent needs to hand something large to another, without either agent's context window paying the price.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -64,6 +125,25 @@ export default function Home() {
 
         {/* Measured Benchmark Data */}
         <TokenBenchmark />
+
+        {/* Agentic Protocol Section */}
+        <div className="bg-surface/50 border-y border-border-color py-24 my-16 backdrop-blur-sm relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent to-transparent"></div>
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-8 leading-tight">
+              The Cross-Framework Artifact Relay — <br /><span className="text-accent/80">Complementary to Your Memory Layer</span>
+            </h2>
+            <p className="text-foreground text-lg mb-10 leading-relaxed max-w-2xl mx-auto">
+              Drive.io defines a neutral standard for artifact handoffs. Whether your swarm is built on LangGraph, CrewAI, or AutoGen, our protocol ensures that data remains accessible and context windows remain clean.
+            </p>
+            <div className="flex flex-wrap justify-center gap-6 opacity-60">
+                <span className="text-sm font-bold tracking-widest uppercase">LangGraph</span>
+                <span className="text-sm font-bold tracking-widest uppercase">CrewAI</span>
+                <span className="text-sm font-bold tracking-widest uppercase">AutoGen</span>
+                <span className="text-sm font-bold tracking-widest uppercase">Semantic Kernel</span>
+            </div>
+          </div>
+        </div>
 
         {/* Main Interaction Area */}
         <div className="w-full max-w-5xl mx-auto flex flex-col gap-12">
@@ -86,9 +166,9 @@ export default function Home() {
               <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" /></svg>
               </div>
-              <h3 className="text-foreground font-semibold mb-2 text-lg">Slash Token Usage</h3>
+              <h3 className="text-foreground font-semibold mb-2 text-lg">O(1) Token Scaling</h3>
               <p className="text-base text-foreground-muted leading-relaxed">
-                Seamlessly pass massive datasets between entirely separate autonomous models without blowing up your context window or token budget.
+                Pass massive datasets between separate models via 7-token pointers. Eliminate mid-run context window exhaustion and slash token budgets by &gt;99%.
               </p>
             </div>
 

@@ -12,49 +12,51 @@ interface Tool {
 export function RecommendedTools() {
     const tools: Tool[] = [
         {
-            name: "pCloud",
-            description: "Secure, encrypted cloud storage with lifetime plans. The best permanent extension to drive.io.",
-            url: "https://partner.pcloud.com/r/153485",
+            name: "LangChain",
+            description: "Built-in compatibility for LangGraph and LangChain artifact persistence.",
+            url: "https://langchain.com",
             colorClass: "text-blue-400 bg-blue-500/10",
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z" />
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                 </svg>
             ),
         },
         {
-            name: "NordVPN",
-            description: "Protect your connection while sharing. Fast, secure, and keeps no logs of your activity.",
-            url: "https://go.nordvpn.net/aff_c?offer_id=15&aff_id=139873&url_id=902",
+            name: "CrewAI",
+            description: "Seamless data handoffs between CrewAI agents using Drive.io as a neutral relay.",
+            url: "https://crewai.com",
             colorClass: "text-emerald-400 bg-emerald-500/10",
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    <path d="m9 12 2 2 4-4" />
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                 </svg>
             ),
         },
         {
-            name: "Proton Pass",
-            description: "Securely manage your passwords and identity with end-to-end encryption.",
-            url: "https://go.getproton.me/aff_c?offer_id=38&aff_id=16028",
+            name: "AutoGen",
+            description: "Microsoft AutoGen integration for multi-agent conversational data storage.",
+            url: "https://microsoft.github.io/autogen/",
             colorClass: "text-purple-400 bg-purple-500/10",
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    <path d="M12 2v10" />
+                    <path d="m16 8-4 4-4-4" />
+                    <path d="M4.5 9a9 9 0 1 0 15 0" />
                 </svg>
             ),
         },
         {
-            name: "Proton VPN",
-            description: "High-speed Swiss VPN that protects your privacy and unblocks content.",
-            url: "https://go.getproton.me/aff_c?offer_id=26&aff_id=16028",
-            colorClass: "text-purple-400 bg-purple-500/10",
+            name: "OpenAI",
+            description: "Compatible with File Search and Code Interpreter outputs for all GPT models.",
+            url: "https://openai.com",
+            colorClass: "text-white bg-white/10",
             icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-                    <path d="m9 12 2 2 4-4" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path d="M22.28 7.53c-.52-1.3-1.45-2.24-2.73-2.73a.47.47 0 0 0-.25-.03c-.22.03-.43.12-.6.28l-3.23 3.23c-.15.15-.24.36-.26.57v.03c0 .21.08.41.22.56.3.31.81.31 1.12 0l3.03-3.03c.12.12.23.25.33.39.52 1.3.42 2.76-.28 3.96l-3.23 3.23c-.15.15-.24.36-.26.57v.03c0 .21.08.41.22.56.3.31.81.31 1.12 0l3.03-3.03c.51.52.88 1.18 1.05 1.91.52 1.3.42 2.76-.28 3.96l-3.23 3.23c-.15.15-.24.36-.26.57v.03c0 .21.08.41.22.56.3.31.81.31 1.12 0l3.03-3.03c.12.12.23.25.33.39.43.59.7 1.25.82 1.93.52 1.3.42 2.76-.28 3.96l-3.23 3.23c-.15.15-.24.36-.26.57v.03c0 .21.08.41.22.56.3.31.81.31 1.12 0l3.03-3.03c.12.12.23.25.33.39a4.8 4.8 0 0 1 .5 1.57c.52 1.3.42 2.76-.28 3.96l-3.23 3.23a.8.8 0 0 1-1.12-1.12l3.23-3.23c.52-1.3.42-2.76-.28-3.96a4.8 4.8 0 0 0-.33-.39c-.12.12-.23.25-.33.39-.52 1.3-.42 2.76.28 3.96l3.23 3.23a.8.8 0 1 1-1.12 1.12l-3.23-3.23c-.52 1.3-1.45 2.24-2.73 2.73-.13.05-.27.08-.41.08-.14 0-.28-.03-.41-.08-1.3-.52-2.24-1.45-2.73-2.73-.52-1.3-.42-2.76.28-3.96l3.23-3.23a.8.8 0 0 1 1.12 1.12l-3.23 3.23c-.52 1.3-.42 2.76.28 3.96.12.12.23.25.33.39.12-.12.23-.25.33-.39.52-1.3.42-2.76-.28-3.96l-3.23-3.23a.8.8 0 0 1 1.12-1.12l3.23 3.23c.52-1.3.42-2.76-.28-3.96a4.8 4.8 0 0 0-.33-.39c-.12.12-.23.25-.33.39-.52 1.3-.42 2.76.28 3.96l3.23 3.23a.8.8 0 1 1-1.12 1.12l-3.23-3.23c-.52 1.3-1.45 2.24-2.73 2.73-.13.05-.27.08-.41.08-.14 0-.28-.03-.41-.08-1.3-.52-2.24-1.45-2.73-2.73-.52-1.3-.42-2.76.28-3.96l3.23-3.23a.8.8 0 0 1 1.12 1.12l-3.23 3.23c-.52 1.3-.42 2.76.28 3.96.12.12.23.25.33.39.12-.12.23-.25.33-.39.52-1.3.42-2.76-.28-3.96l-3.23-3.23a.8.8 0 0 1 1.12-1.12l3.23 3.23c.52-1.3.42-2.76-.28-3.96a4.8 4.8 0 0 0-.33-.39c-.12.12-.23.25-.33.39-.52 1.3-.42 2.76.28 3.96l3.23 3.23a.8.8 0 1 1-1.12 1.12L1.72 7.53a.8.8 0 1 1 1.12-1.12l3.23 3.23c.52-1.3.42-2.76-.28-3.96-.12-.12-.23-.25-.33-.39-.12.12-.23.25-.33.39-.52 1.3-.42 2.76.28 3.96l3.23 3.23a.8.8 0 0 1-1.12 1.12l-3.23-3.23c-.52 1.3-1.45 2.24-2.73 2.73-.13.05-.27.08-.41.08-.14 0-.28-.03-.41-.08-1.3-.52-2.24-1.45-2.73-2.73-.52-1.3-.42-2.76.28-3.96l3.23-3.23a.8.8 0 0 1 1.12 1.12l-3.23 3.23c-.52 1.3-.42 2.76.28 3.96.12.12.23.25.33.39.12-.12.23-.25.33-.39.52-1.3.42-2.76-.28-3.96l-3.23-3.23a.8.8 0 0 1 1.12-1.12l3.23 3.23c.52-1.3.42-2.76-.28-3.96a4.8 4.8 0 0 0-.33-.39c-.12.12-.23.25-.33.39-.52 1.3-.42 2.76.28 3.96l3.23 3.23a.8.8 0 1 1-1.12 1.12l-3.23-3.23c-.52 1.3-1.45 2.24-2.73 2.73-.13.05-.27.08-.41.08-.14 0-.28-.03-.41-.08-1.3-.52-2.24-1.45-2.73-2.73-.08-.2-.14-.41-.18-.63-.52-1.3-.42-2.76.28-3.96L1.72 4.3a.8.8 0 0 1 1.12-1.12l3.23 3.23c.52-1.3.42-2.76-.28-3.96a4.8 4.8 0 0 0-.33-.39c-.12.12-.23.25-.33.39-.52 1.3-.42 2.76.28 3.96l3.23 3.23a.8.8 0 0 1 1.12 1.12l-3.23-3.23c-.52 1.3-1.45 2.24-2.73 2.73-.13.05-.27.08-.41.08-.14 0-.28-.03-.41-.08-1.3-.52-2.24-1.45-2.73-2.73-.52-1.3-.42-2.76.28-3.96l3.23-3.23a.8.8 0 0 1 1.12 1.12l-3.23 3.23c-.52 1.3-.42 2.76.28 3.96.12.12.23.25.33.39.12-.12.23-.25.33-.39.52-1.3.42-2.76-.28-3.96l-3.23-3.23a.8.8 0 0 1 1.12-1.12l3.23 3.23c.52-1.3.42-2.76-.28-3.96a4.8 4.8 0 0 0-.33-.39c-.12.12-.23.25-.33.39-.52 1.3-.42 2.76.28 3.96l3.23 3.23a.8.8 0 0 1 1.12 1.12L22.28 7.53z" />
                 </svg>
             ),
         }
@@ -64,7 +66,7 @@ export function RecommendedTools() {
         <section className="w-full max-w-5xl mx-auto py-12 mt-12 border-t border-border-color/30">
             <div className="flex flex-col items-center mb-8 opacity-60">
                 <h2 className="text-xs font-semibold tracking-widest text-foreground-muted uppercase">
-                    Ecosystem Partners
+                    Ecosystem Integrations
                 </h2>
             </div>
 
