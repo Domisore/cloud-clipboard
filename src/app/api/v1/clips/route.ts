@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { nanoid } from 'nanoid';
 import { currentUser, auth } from "@clerk/nextjs/server";
-import { getFileSizeLimit, getUserPlan, formatBytes } from "@/lib/plan";
+import { getFileSizeLimit, getUserPlan, formatBytes, getMaxClips, getClipExpiry } from "@/lib/plan";
 
 // CORS headers Helper
 function corsHeaders(origin: string | null) {
@@ -68,12 +68,35 @@ export async function POST(request: Request) {
         // --- TIERED LIMIT ENFORCEMENT ---
         const plan = await getUserPlan(userId);
         const limit = getFileSizeLimit(plan);
+        const maxClips = getMaxClips(plan);
         const contentSize = new Blob([content]).size;
 
+        // 1. Check Max Clips (for Free tier)
+        if (maxClips !== null) {
+            const currentClipCount = await redis.llen(`user:${userId}:files`);
+            if (currentClipCount >= maxClips) {
+                return NextResponse.json({
+                    error: "limit_exceeded",
+                    code: "FREE_TIER_CLIPS_LIMIT_EXCEEDED",
+                    message: `You have reached the limit of ${maxClips} parallel clips for the 'free' plan.`,
+                    limits: [
+                        {
+                            name: "parallel_clips",
+                            limit: maxClips.toString(),
+                            actual: currentClipCount.toString(),
+                            status: "exceeded"
+                        }
+                    ],
+                    resolution: "To store unlimited clips and increase your storage time, please upgrade to Developer at https://drive.io/pricing"
+                }, { status: 403, headers });
+            }
+        }
+
+        // 2. Check individual Size
         if (contentSize > limit) {
             return NextResponse.json({
                 error: "limit_exceeded",
-                code: "FREE_TIER_LIMIT_EXCEEDED",
+                code: "FREE_TIER_SIZE_LIMIT_EXCEEDED",
                 message: `The clip size (${formatBytes(contentSize)}) exceeds the limit for your current '${plan}' plan (${formatBytes(limit)}).`,
                 limits: [
                     {
@@ -83,7 +106,7 @@ export async function POST(request: Request) {
                         status: "exceeded"
                     }
                 ],
-                resolution: "To increase your limits to 100 MB per clip, please upgrade to Pro at https://drive.io/pricing"
+                resolution: "To increase your limits to 100 MB per clip, please upgrade to Developer at https://drive.io/pricing"
             }, { status: 413, headers });
         }
         // --------------------------------
@@ -106,12 +129,13 @@ export async function POST(request: Request) {
             type: 'text', // Distinguish from files if needed later
         };
 
-        // Store in Redis with a TTL (e.g., 30 days)
-        await redis.set(`clip:${id}`, JSON.stringify(clipData), { ex: 2592000 });
-
+        // Store in Redis with tiered TTL
+        const expiry = getClipExpiry(plan);
+        await redis.set(`clip:${id}`, JSON.stringify(clipData), { ex: expiry });
+        
         // Add to User History
         await redis.lpush(`user:${userId}:files`, id);
-        await redis.expire(`user:${userId}:files`, 2592000); // 30 days
+        await redis.expire(`user:${userId}:files`, expiry);
 
         const publishOrigin = request.headers.get('origin') || 'https://drive.io';
         const url = `${publishOrigin}/${id}`;

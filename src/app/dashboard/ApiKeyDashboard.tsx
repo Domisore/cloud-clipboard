@@ -130,14 +130,14 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                                 ? 'bg-accent/20 text-accent border-accent/50' 
                                 : 'bg-zinc-800 text-zinc-500 border-zinc-700'
                         }`}>
-                            {plan} Plan
+                            {plan === 'pro' ? 'Developer' : 'Free'} Plan
                         </span>
                         {isLocal && (
                             <button 
                                 onClick={handleSyncSubscription}
                                 disabled={isSyncing}
                                 className="p-1.5 bg-zinc-900 border border-zinc-800 rounded-md text-zinc-500 hover:text-white hover:border-zinc-700 transition-all flex items-center gap-2 text-[10px] uppercase font-bold tracking-wider"
-                                title="Sync Pro Status manually (Local Only)"
+                                title="Sync Developer Status manually (Local Only)"
                             >
                                 <RefreshCw size={12} className={isSyncing ? "animate-spin" : ""} />
                                 {isSyncing ? "Syncing..." : "Sync status"}

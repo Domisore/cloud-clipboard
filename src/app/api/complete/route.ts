@@ -1,7 +1,8 @@
 import { redis } from "@/lib/redis";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { currentUser } from "@clerk/nextjs/server";
+import { currentUser, auth } from "@clerk/nextjs/server";
+import { getFileSizeLimit, getUserPlan, formatBytes, getMaxClips, getClipExpiry } from "@/lib/plan";
 
 // CORS headers Helper
 function corsHeaders(origin: string | null) {
@@ -33,40 +34,12 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400, headers });
         }
 
-        // Safe-List Metadata Scrubbing (as per PRD)
-        // Ensure no local paths or EXIF hooks are passed into the DB explicitly
-        const scrubbedFilename = filename.split(/[\\/]/).pop() || "unknown"; // remove local path leakage
-
-        // Save metadata to Redis with 24h expiry
-        const metadata = {
-            id,
-            key,
-            filename: scrubbedFilename,
-            size,
-            contentType,
-            burnAfterReading: !!burnAfterReading, // Enforce boolean
-            uploadedAt: Date.now(),
-        };
-
-        await redis.set(`file:${id}`, metadata, { ex: 86400 }); // 24 hours
-
-        // Add to Session (if active)
-        const cookieStore = await cookies();
-        const sessionId = cookieStore.get('drive_session')?.value;
-
-        if (sessionId) {
-            // Push to front of list
-            await redis.lpush(`session:${sessionId}`, JSON.stringify(metadata));
-            // Keep only last 20 items? Or just rely on expire?
-            // Let's set expire on the list itself to match the session window (24h)
-            await redis.expire(`session:${sessionId}`, 86400);
-        }
-
-        // Add to User History (if active human session)
-        const user = await currentUser();
-        if (user) {
-            await redis.lpush(`user:${user.id}:files`, id);
-            await redis.expire(`user:${user.id}:files`, 2592000); // 30 days
+        // Authentication and Plan Check
+        let userId = null;
+        const clerkUser = await currentUser();
+        
+        if (clerkUser) {
+            userId = clerkUser.id;
         } else {
             // Check for Agent API Key
             const authHeader = request.headers.get("Authorization");
@@ -75,23 +48,65 @@ export async function POST(request: Request) {
                 const keyData = await redis.hgetall(`apikey:${token}`);
                 if (keyData) {
                     // @ts-ignore
-                    const agentOwnerId = keyData.userId;
-                    // Log upload under the agent owner account
-                    await redis.lpush(`user:${agentOwnerId}:files`, id);
-                    await redis.expire(`user:${agentOwnerId}:files`, 2592000); // 30 days
-                } else {
-                    return NextResponse.json({ 
-                        error: "Unauthorized",
-                        message: "Please tell the user to create an account at https://drive.io/dashboard to get an API key." 
-                    }, { status: 401, headers });
+                    userId = keyData.userId as string;
                 }
-            } else {
-                return NextResponse.json({ 
-                    error: "Unauthorized",
-                    message: "Please tell the user to create an account at https://drive.io/dashboard to get an API key." 
-                }, { status: 401, headers });
             }
         }
+
+        if (!userId) {
+            return NextResponse.json({ 
+                error: "Unauthorized",
+                message: "Please tell the user to create an account at https://drive.io/dashboard to get an API key." 
+            }, { status: 401, headers });
+        }
+
+        const plan = await getUserPlan(userId);
+        const maxClips = getMaxClips(plan);
+        const expiry = getClipExpiry(plan);
+
+        // --- TIERED LIMIT ENFORCEMENT ---
+        // 1. Check Max Clips (for Free tier)
+        if (maxClips !== null) {
+            const currentClipCount = await redis.llen(`user:${userId}:files`);
+            if (currentClipCount >= maxClips) {
+                return NextResponse.json({
+                    error: "limit_exceeded",
+                    code: "FREE_TIER_CLIPS_LIMIT_EXCEEDED",
+                    message: `You have reached the limit of ${maxClips} parallel artifacts for the 'free' plan.`,
+                    resolution: "To store unlimited artifacts and increase your storage time, please upgrade to Developer at https://drive.io/pricing"
+                }, { status: 403, headers });
+            }
+        }
+        // --------------------------------
+
+        // Safe-List Metadata Scrubbing (as per PRD)
+        const scrubbedFilename = filename.split(/[\\/]/).pop() || "unknown";
+
+        // Save metadata to Redis with tiered TTL
+        const metadata = {
+            id,
+            key,
+            filename: scrubbedFilename,
+            size,
+            contentType,
+            burnAfterReading: !!burnAfterReading,
+            uploadedAt: Date.now(),
+        };
+
+        await redis.set(`file:${id}`, metadata, { ex: expiry });
+
+        // Add to Session (if active)
+        const cookieStore = await cookies();
+        const sessionId = cookieStore.get('drive_session')?.value;
+
+        if (sessionId) {
+            await redis.lpush(`session:${sessionId}`, JSON.stringify(metadata));
+            await redis.expire(`session:${sessionId}`, 86400); // Sessions are 24h
+        }
+
+        // Add to User History
+        await redis.lpush(`user:${userId}:files`, id);
+        await redis.expire(`user:${userId}:files`, expiry);
 
         return NextResponse.json({ success: true, id }, { headers });
     } catch (error) {

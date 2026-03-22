@@ -12,7 +12,7 @@ const tiers = [
     {
         name: "Free",
         price: "$0",
-        description: "Instant cross-device sharing for quick, one-off transfers. Secure, ephemeral, and no account required.",
+        description: "Free forever for individual developers — no credit card required. We'd rather you use it and tell us what's broken than not use it at all.",
         features: [
             { icon: HardDrive, text: "100 MB Storage" },
             { icon: Clock, text: "24-Hour Link Expiry" },
@@ -25,18 +25,18 @@ const tiers = [
         featured: false,
     },
     {
-        name: "Pro",
-        price: "$9",
+        name: "Developer",
+        price: "$19",
         unit: "/month",
-        description: "The ultimate tier for power users and AI developers. Massive storage, long-term persistence, and priority scale.",
+        description: "Early access rate. Includes direct access to the founding team — bug reports, feature requests, and integration questions get a real response.",
         features: [
             { icon: HardDrive, text: "10 GB Storage" },
             { icon: Clock, text: "30-Day Link Expiry" },
             { icon: Infinity, text: "Unlimited Clips" },
             { icon: Shield, text: "100 MB Max File Size" },
-            { icon: Zap, text: "Priority Email Support" },
+            { icon: Zap, text: "Priority Founding Team Access" },
         ],
-        buttonText: "Upgrade to Pro",
+        buttonText: "Upgrade to Developer",
         href: "#",
         featured: true,
         priceId: "price_1TC7nU2au3jtvYgfJgEcRumO",
@@ -94,15 +94,12 @@ export function Pricing() {
             <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-foreground leading-tight">
-                        Scale Your Workflow with <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">
-                            {isPclip ? "Pclip Pro." : "Drive.io Pro."}
+                        Early access <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400">
+                             pricing.
                         </span>
                     </h2>
-                    <p className="text-foreground-muted text-lg max-w-2xl mx-auto">
-                        {isPclip
-                            ? "Whether you're moving large files between devices or sharing secure links, choose the plan that fits your scale."
-                            : "The ultimate solution for AI agents and developers. Power your data relays with persistent, high-capacity cloud storage."
-                        }
+                    <p className="text-foreground-muted text-lg max-w-2xl mx-auto italic border-l-2 border-accent/30 pl-6 py-2 bg-accent/5 rounded-r-xl">
+                        Drive.io is in active development. Early access pricing locks in your rate permanently &mdash; pricing increases as the product matures. You&apos;re not just getting access, you&apos;re helping shape what gets built next.
                     </p>
                 </div>
 
@@ -153,7 +150,7 @@ export function Pricing() {
                                 ))}
                             </ul>
 
-                            {tier.name === "Pro" ? (
+                            {tier.name === "Developer" ? (
                                 <button
                                     onClick={() => handleCheckout(tier.priceId!)}
                                     disabled={isLoading !== null}

@@ -4,8 +4,8 @@ import { Pricing } from "@/components/ui/Pricing";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Pricing | Pclip Cloud Clipboard",
-    description: "Simple, transparent pricing for individual users and AI Agent developers.",
+    title: "Pricing | Drive.io Early Access",
+    description: "Lock in early access pricing for Drive.io. Transparent, developer-focused rates for AI agent infrastructure.",
 };
 
 export default function PricingPage() {

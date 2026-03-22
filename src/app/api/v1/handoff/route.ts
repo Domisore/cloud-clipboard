@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { nanoid } from 'nanoid';
 import { currentUser } from "@clerk/nextjs/server";
+import { getFileSizeLimit, getUserPlan, formatBytes, getMaxClips, getClipExpiry } from "@/lib/plan";
 
 // A2A Handoff Protocol Endpoint
 // Agent A POSTs a context/payload here, gets a handoff_id.
@@ -22,11 +23,37 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        const { payload, targetAgentId, ttlSeconds = 3600 } = body;
+        const { payload, targetAgentId } = body;
+        let { ttlSeconds = 3600 } = body;
 
         if (!payload || !targetAgentId) {
             return new NextResponse("Missing required fields: payload, targetAgentId", { status: 400 });
         }
+
+        // --- TIERED LIMIT ENFORCEMENT ---
+        const userId = keyData.userId as string;
+        const plan = await getUserPlan(userId);
+        const maxClips = getMaxClips(plan);
+        const maxExpiry = getClipExpiry(plan);
+
+        // 1. Cap TTL
+        if (ttlSeconds > maxExpiry) {
+            ttlSeconds = maxExpiry;
+        }
+
+        // 2. Check Max Clips (for Free tier)
+        if (maxClips !== null) {
+            const currentClipCount = await redis.llen(`user:${userId}:files`);
+            if (currentClipCount >= maxClips) {
+                return NextResponse.json({
+                    error: "limit_exceeded",
+                    code: "FREE_TIER_CLIPS_LIMIT_EXCEEDED",
+                    message: `You have reached the limit of ${maxClips} parallel artifacts for the 'free' plan.`,
+                    resolution: "To store unlimited artifacts and increase your storage time, please upgrade to Developer at https://drive.io/pricing"
+                }, { status: 403 });
+            }
+        }
+        // --------------------------------
 
         const handoffId = `handoff_${nanoid(16)}`;
         const handoffData = {
@@ -34,12 +61,16 @@ export async function POST(req: Request) {
             status: "PENDING",
             payload: payload,
             target: targetAgentId,
-            senderParams: keyData.userId,
+            senderParams: userId,
             createdAt: Date.now()
         };
 
         // Store the handoff payload
         await redis.setex(`handoff:${handoffId}`, ttlSeconds, JSON.stringify(handoffData));
+
+        // Track in user list to enforce parallel limits
+        await redis.lpush(`user:${userId}:files`, handoffId);
+        await redis.expire(`user:${userId}:files`, maxExpiry);
 
         // Increment API Key usage
         await redis.hincrby(`apikey:${apiKey}`, "usage", 1);

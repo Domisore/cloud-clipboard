@@ -153,7 +153,7 @@ export function DropZone() {
             {/* Footer Actions */}
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <p className="text-sm text-gray-400 max-w-xs text-center sm:text-left">
-                    {plan === 'free' ? 'Free Plan: 5MB Max' : 'Pro Plan: 100MB Max'}. Clips are encrypted and ephemeral.
+                    {plan === 'free' ? 'Free Plan: 5MB Max' : 'Developer Plan: 100MB Max'}. Clips are encrypted and ephemeral.
                 </p>
 
                 <div className="flex items-center gap-4">
@@ -199,7 +199,7 @@ export function DropZone() {
 
                     {plan === 'free' && (
                         <Link href="/pricing" className="bg-accent/20 text-accent px-3 py-1 text-[10px] font-bold border border-accent/30 hover:bg-accent hover:text-background transition-all uppercase tracking-wider">
-                            Get Pro
+                            Get Developer
                         </Link>
                     )}
                 </div>
@@ -221,7 +221,7 @@ export function DropZone() {
                                     href="/pricing"
                                     className="bg-accent text-background px-6 py-3 text-sm font-black uppercase hover:bg-accent/90 transition-all shadow-hacker-green"
                                 >
-                                    Upgrade to Pro (100MB)
+                                    Upgrade to Developer (100MB)
                                 </Link>
                             )}
                             <button
