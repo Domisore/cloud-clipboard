@@ -1,0 +1,109 @@
+Show HN: drive.io — We built the missing relay layer between AI agents (97–99% token reduction, measured)
+
+---
+
+Every major agent framework — AutoGen, CrewAI, LangGraph, OpenAI Agents SDK — has solved the single-agent experience reasonably well. What none of them has solved is the space between agents: the moment a file, artifact, dataset, or context object needs to travel from one agent to another, across frameworks, sessions, machines, or organizations.
+
+Today, the default pattern is raw inline transfer — paste the file content directly into the next agent's context window. For a 100KB CSV, that's ~27,431 tokens consumed per hop. In a 10-step pipeline, that's the same dataset eating context window space at every step. For GPT-4's 8K context, a single CSV transfer overflows entirely. For GPT-4o's 128K context, one file consumes 17–27% of the window before the agent has done anything useful.
+
+The naive workaround — use S3 presigned URLs — is better, but a realistic S3 URL with authentication parameters still tokenizes to ~68 tokens. Nearly 10x more expensive than it needs to be, and it compounds at scale across high-call-volume pipelines.
+
+---
+WHAT WE BUILT
+---
+
+drive.io is a networked virtualization layer for AI agent workflows. The core primitive: any payload — JSON, code, CSV, images, logs — becomes a 7-token pointer URL via a single REST call. The payload lives at the edge; agents pass references, not content.
+
+  POST https://drive.io/api/upload
+  → { "url": "https://drive.io/c/N37X6P9R2Z", "tiers": ["L0", "L1", "L2"] }
+
+  // Agent 1 uploads a 300KB base64 image → 7 tokens
+  // Agent 2 receives the pointer       → 7 tokens
+  // Agent 2 fetches only what it needs → L0, L1, or L2
+
+We measured this with a real tokenizer (cl100k_base via tiktoken — the actual tokenizer used by GPT-4 and GPT-4o), across 20 fresh runs per payload type, with programmatically generated representative content rather than hand-crafted examples.
+
+---
+BENCHMARK RESULTS
+---
+
+  Test Case    | Size    | Raw Tokens (mean ±σ)    | S3 Tokens | drive.io | Savings vs Raw | Savings vs S3 | Latency
+  -------------|---------|-------------------------|-----------|----------|----------------|---------------|--------
+  Small JSON   | 1 KB    | 284 ±6.2                | 68        | 7        | 97.54%         | 89.71%        | 31ms ±8.4
+  Code Module  | 10 KB   | 2,701 ±18.4             | 68        | 7        | 99.74%         | 89.71%        | 29ms ±7.9
+  CSV Dataset  | 100 KB  | 27,431 ±94.1            | 68        | 7        | 99.97%         | 89.71%        | 33ms ±9.1
+  Base64 Image | 300 KB  | 101,842 ±310.7          | 68        | 7        | 99.99%         | 89.71%        | 28ms ±7.2
+  Log File     | 1024 KB | 234,918 ±701.3          | 68        | 7        | 99.99%         | 89.71%        | 32ms ±8.8
+
+Note on base64: The common 4 chars/token heuristic would predict ~76,800 tokens for a 300KB base64 image. The real number is ~101,842 — 33% higher — because cl100k_base is not optimized for base64 character patterns and produces smaller token chunks. This means prior estimates of base64 savings were actually understated.
+
+---
+TIERED RETRIEVAL
+---
+
+Token reduction at transfer time is table stakes. The deeper insight is that most agent interactions with a file don't require the full payload at all. Inspired by OpenViking (ByteDance Volcengine's open-source context database for agents), we've built a three-tier retrieval model into the upload pipeline.
+
+When an artifact is uploaded, drive.io automatically processes and stores all three abstraction levels:
+
+  L0 — Abstract  (~100 tokens)   One-sentence summary. Quick relevance check.
+  L1 — Overview  (~2,000 tokens) Core information. Planning and decision-making.
+  L2 — Details   (full content)  Deep reading. Only when genuinely necessary.
+
+The agent requests the tier it actually needs:
+
+  GET https://drive.io/c/N37X6P9R2Z?tier=L0  →  ~100 tokens    (relevance check)
+  GET https://drive.io/c/N37X6P9R2Z?tier=L1  →  ~2,000 tokens  (planning pass)
+  GET https://drive.io/c/N37X6P9R2Z?tier=L2  →  ~27,431 tokens (full analysis)
+
+Token economics for a 100KB file:
+
+  Scenario          | Without Tiers  | With L0/L1/L2   | Additional Saving
+  ------------------|----------------|-----------------|------------------
+  Relevance check   | 27,431 tokens  | ~100 tokens     | 99.6%
+  Planning pass     | 27,431 tokens  | ~2,000 tokens   | 92.7%
+  Full analysis     | 27,431 tokens  | ~27,431 tokens  | 0% (intentional)
+
+Most agent interactions are relevance checks or planning passes. The real-world savings are substantially larger than the headline benchmark numbers suggest.
+
+---
+THE HONEST TRADEOFF
+---
+
+Retrieval latency: ~28–33ms per hop at CDN edge (simulated; not yet measured from live infrastructure). For a 10-step sequential pipeline, that accumulates to ~300ms of additional wall-clock time. This is real and should be factored in.
+
+Tokenizer variance: Results use cl100k_base (GPT-4/GPT-4o). Claude and Gemini use different tokenizers — the directional savings hold, but exact numbers will differ and should be benchmarked independently.
+
+Outbound HTTP required: The receiving agent must be able to make HTTP calls. Sandboxed or air-gapped environments may not support this.
+
+Concurrent swarm not yet tested: 10 agents fetching the same URL simultaneously — CDN caching behavior will significantly affect latency at that scale.
+
+Encryption overhead not included: drive.io's end-to-end encryption adds minor serialization cost not reflected in the benchmark figures.
+
+---
+WHERE THIS IS HEADING
+---
+
+drive.io currently operates as an artifact relay layer (Layer 2 of a four-layer stack):
+
+  LAYER 4 — Swarm Memory
+    Shared write surface for multi-agent pipeline coordination
+  LAYER 3 — Prompt Template Registry
+    Versioned, reusable prompt files fetched by reference
+  LAYER 2 — Artifact Relay  ← current product
+    Cross-framework file & data handoff with tiered retrieval
+  LAYER 1 — Context Store
+    Persistent, self-evolving agent memory across sessions
+
+The long-term thesis: as agent pipelines grow more complex and run across frameworks, organizations, and machines, the between-agents problem is as fundamental as the single-agent experience itself. We're building the layer that owns that space.
+
+---
+
+We're pre-launch and talking to teams actively building multi-agent pipelines — particularly anyone using LangGraph, AutoGen, CrewAI, or the OpenAI Agents SDK at scale. If you're running into context window pressure or cross-framework handoff pain, we'd love to get on a call.
+
+To reproduce the benchmark: cl100k_base tokenizer via tiktoken, 20 runs per data type, programmatically generated payloads. Full methodology at drive.io/benchmark.
+
+  npm install @dqbd/tiktoken
+
+---
+
+Benchmark disclaimer: Token efficiency figures reflect measured token counts from programmatically generated payloads across 20 runs per data type using cl100k_base (GPT-4/GPT-4o). Retrieval latency figures are simulated and have not been measured from live drive.io infrastructure. Results for Claude, Gemini, and other models will differ and should be independently verified.

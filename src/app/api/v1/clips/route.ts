@@ -3,6 +3,7 @@ import { redis } from '@/lib/redis';
 import { nanoid } from 'nanoid';
 import { currentUser, auth } from "@clerk/nextjs/server";
 import { getFileSizeLimit, getUserPlan, formatBytes, getMaxClips, getClipExpiry } from "@/lib/plan";
+import { generateTiers } from "@/lib/summarizer";
 
 // CORS headers Helper
 function corsHeaders(origin: string | null) {
@@ -119,33 +120,44 @@ export async function POST(request: Request) {
         const id = nanoid(10); // Short but unique enough for now
         const createdAt = new Date().toISOString();
 
+        // 3. Generate Tiers (L0, L1) asynchronously or inline for simplicity here
+        const tiers = await generateTiers(content);
+
         const clipData = {
             id,
-            content,
+            content: tiers.L2, // Full content
+            abstract: tiers.L0,
+            overview: tiers.L1,
             title: title || 'Untitled Clip',
             isPrivate: !!isPrivate,
             burnAfterReading: !!burnAfterReading,
             createdAt,
             type: 'text', // Distinguish from files if needed later
+            hasTiers: true
         };
 
         // Store in Redis with tiered TTL
         const expiry = getClipExpiry(plan);
         await redis.set(`clip:${id}`, JSON.stringify(clipData), { ex: expiry });
-        
+
+        // Store specific tiers for O(1) retrieval
+        await redis.set(`clip:${id}:L0`, tiers.L0, { ex: expiry });
+        await redis.set(`clip:${id}:L1`, tiers.L1, { ex: expiry });
+
         // Add to User History
         await redis.lpush(`user:${userId}:files`, id);
         await redis.expire(`user:${userId}:files`, expiry);
 
         const publishOrigin = request.headers.get('origin') || 'https://drive.io';
-        const url = `${publishOrigin}/${id}`;
+        const url = `${publishOrigin}/c/${id}`; // Match the simplified URL in HN article
 
         return NextResponse.json({
             success: true,
             data: {
                 id,
                 url,
-                expiresAt: new Date(Date.now() + 2592000 * 1000).toISOString(),
+                tiers: ["L0", "L1", "L2"],
+                expiresAt: new Date(Date.now() + expiry * 1000).toISOString(),
             },
         }, { headers });
     } catch (error) {

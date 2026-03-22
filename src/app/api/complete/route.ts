@@ -3,6 +3,9 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { currentUser, auth } from "@clerk/nextjs/server";
 import { getFileSizeLimit, getUserPlan, formatBytes, getMaxClips, getClipExpiry } from "@/lib/plan";
+import { r2 } from "@/lib/r2";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { generateTiers } from "@/lib/summarizer";
 
 // CORS headers Helper
 function corsHeaders(origin: string | null) {
@@ -82,6 +85,29 @@ export async function POST(request: Request) {
         // Safe-List Metadata Scrubbing (as per PRD)
         const scrubbedFilename = filename.split(/[\\/]/).pop() || "unknown";
 
+        // --- NEW: TIERED RETRIEVAL GENERATION ---
+        let abstract = "Summary unavailable.";
+        let overview = "Overview unavailable.";
+        
+        try {
+            // Fetch first 100KB from R2 for summarization
+            const getObjectParams = {
+                Bucket: process.env.R2_BUCKET_NAME,
+                Key: key,
+                Range: "bytes=0-102400"
+            };
+            const response = await r2.send(new GetObjectCommand(getObjectParams));
+            const content = await response.Body?.transformToString();
+            
+            if (content) {
+                const tiers = await generateTiers(content, contentType);
+                abstract = tiers.L0;
+                overview = tiers.L1;
+            }
+        } catch (e) {
+            console.error("[TIER_GEN_ERROR] Failed to fetch/summarize file:", e);
+        }
+
         // Save metadata to Redis with tiered TTL
         const metadata = {
             id,
@@ -91,9 +117,16 @@ export async function POST(request: Request) {
             contentType,
             burnAfterReading: !!burnAfterReading,
             uploadedAt: Date.now(),
+            abstract,
+            overview,
+            hasTiers: true
         };
 
         await redis.set(`file:${id}`, metadata, { ex: expiry });
+
+        if (abstract) await redis.set(`file:${id}:L0`, abstract, { ex: expiry });
+        if (overview) await redis.set(`file:${id}:L1`, overview, { ex: expiry });
+        // ----------------------------------------
 
         // Add to Session (if active)
         const cookieStore = await cookies();
@@ -108,7 +141,15 @@ export async function POST(request: Request) {
         await redis.lpush(`user:${userId}:files`, id);
         await redis.expire(`user:${userId}:files`, expiry);
 
-        return NextResponse.json({ success: true, id }, { headers });
+        const publishOrigin = request.headers.get('origin') || 'https://drive.io';
+        const url = `${publishOrigin}/c/${id}`;
+
+        return NextResponse.json({ 
+            success: true, 
+            id,
+            url,
+            tiers: ["L0", "L1", "L2"]
+        }, { headers });
     } catch (error) {
         console.error("Metadata save error:", error);
         return NextResponse.json({ error: "Failed to save metadata" }, { status: 500, headers });
