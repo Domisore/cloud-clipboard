@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 import { currentUser, auth } from "@clerk/nextjs/server";
 import { getFileSizeLimit, getUserPlan, formatBytes, getMaxClips, getClipExpiry } from "@/lib/plan";
 import { generateTiers } from "@/lib/summarizer";
+import { logActivity } from "@/lib/activity";
 
 // CORS headers Helper
 function corsHeaders(origin: string | null) {
@@ -111,14 +112,29 @@ export async function POST(request: Request) {
             }, { status: 413, headers });
         }
         // --------------------------------
-
-        // Increment API Key usage
-        if (apiKeyId) {
-            await redis.hincrby(apiKeyId, "usage", 1);
-        }
-
+        
         const id = nanoid(10); // Short but unique enough for now
         const createdAt = new Date().toISOString();
+        const expiry = getClipExpiry(plan);
+
+        // Log activity with preview
+        if (apiKeyId) {
+            const token = apiKeyId.replace("apikey:", "");
+            await redis.hincrby(apiKeyId, "usage", 1);
+            
+            const expiresAt = Date.now() + expiry * 1000;
+            
+            // Log activity with preview
+            await logActivity(token, {
+                type: "CLIP_CREATED",
+                id: id,
+                preview: content.length > 100 ? content.substring(0, 100) + "..." : content,
+                metadata: { 
+                    title,
+                    expiresAt
+                }
+            });
+        }
 
         // 3. Generate Tiers (L0, L1) asynchronously or inline for simplicity here
         const tiers = await generateTiers(content);
@@ -137,7 +153,6 @@ export async function POST(request: Request) {
         };
 
         // Store in Redis with tiered TTL
-        const expiry = getClipExpiry(plan);
         await redis.set(`clip:${id}`, JSON.stringify(clipData), { ex: expiry });
 
         // Store specific tiers for O(1) retrieval

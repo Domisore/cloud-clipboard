@@ -3,6 +3,7 @@ import { redis } from '@/lib/redis';
 import { nanoid } from 'nanoid';
 import { currentUser } from "@clerk/nextjs/server";
 import { getFileSizeLimit, getUserPlan, formatBytes, getMaxClips, getClipExpiry } from "@/lib/plan";
+import { logActivity } from "@/lib/activity";
 
 // A2A Handoff Protocol Endpoint
 // Agent A POSTs a context/payload here, gets a handoff_id.
@@ -74,6 +75,20 @@ export async function POST(req: Request) {
 
         // Increment API Key usage
         await redis.hincrby(`apikey:${apiKey}`, "usage", 1);
+        
+        // Log activity with preview
+        const preview = typeof payload === 'string' ? payload : JSON.stringify(payload);
+        const expiresAt = Date.now() + ttlSeconds * 1000;
+        
+        await logActivity(apiKey, {
+            type: "HANDOFF_CREATED",
+            id: handoffId,
+            preview: preview.length > 100 ? preview.substring(0, 100) + "..." : preview,
+            metadata: { 
+                target: targetAgentId,
+                expiresAt
+            }
+        });
 
         return NextResponse.json({
             success: true,
@@ -96,9 +111,8 @@ export async function GET(req: Request) {
         const authHeader = req.headers.get("Authorization");
         if (authHeader && authHeader.startsWith("Bearer ")) {
             const token = authHeader.substring(7);
-            const keyData = await redis.get(`apikey:${token}`);
+            const keyData: any = await redis.hgetall(`apikey:${token}`);
             if (keyData) {
-                // @ts-ignore
                 userId = keyData.userId;
             }
         } else {
@@ -135,6 +149,18 @@ export async function GET(req: Request) {
         // In a real scenario you might delete it, here we update status to CONSUMED 
         // and reset TTL to a short window (e.g. 5 mins)
         await redis.setex(`handoff:${handoffId}`, 300, JSON.stringify(handoffData));
+
+        // Log consumption activity if authorized by API key
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+            const token = authHeader.substring(7);
+            const preview = typeof handoffData.payload === 'string' ? handoffData.payload : JSON.stringify(handoffData.payload);
+            await logActivity(token, {
+                type: "HANDOFF_CONSUMED",
+                id: handoffId,
+                preview: preview.length > 100 ? preview.substring(0, 100) + "..." : preview,
+                metadata: { sender: handoffData.senderParams }
+            });
+        }
 
         return NextResponse.json({
             success: true,
