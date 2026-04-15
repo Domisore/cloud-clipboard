@@ -20,10 +20,10 @@ export function AgentSplash() {
                     </div>
 
                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-                        Give your Agents an <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Artifact Relay.</span>
+                        The <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Hard Drive</span> for AI Agents.
                     </h2>
                     <p className="text-zinc-400 text-lg md:text-xl max-w-xl leading-relaxed mb-8">
-                        Stop passing massive datasets directly in context. Equip your AI assistants across LangGraph, CrewAI, AutoGen, and Moltbook with a framework-agnostic handoff layer. Save up to 7x on token costs.
+                        Stop passing massive datasets directly in context. Equip your AI assistants across LangGraph, CrewAI, AutoGen, and beyond with a dedicated persistence layer. Save up to 99% on token costs.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4">
