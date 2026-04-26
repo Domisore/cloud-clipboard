@@ -39,7 +39,8 @@ export async function POST(req: Request) {
             userId,
             name,
             createdAt: Date.now(),
-            usage: 0
+            usage: 0,
+            active: true
         };
 
         // 1. Store the key metadata as a Hash (supports hincrby for usage)

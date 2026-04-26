@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Terminal, Key, Plus, Copy, CheckCircle2, Trash2, Eye, EyeOff, AlertTriangle, RefreshCw } from 'lucide-react';
+import { Terminal, Key, Plus, Copy, CheckCircle2, Trash2, Eye, EyeOff, AlertTriangle, RefreshCw, Activity, X, Trash } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
 import { useRouter } from 'next/navigation';
 
@@ -24,6 +24,9 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
     const [keyToDelete, setKeyToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
+    const [viewingActivityKey, setViewingActivityKey] = useState<string | null>(null);
+    const [activities, setActivities] = useState<any[]>([]);
+    const [isActivityLoading, setIsActivityLoading] = useState(false);
     const router = useRouter();
 
     const isLocal = typeof window !== 'undefined' && window.location.hostname === 'localhost';
@@ -115,6 +118,39 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
 
     const toggleKeyVisibility = (id: string) => {
         setRevealedKeys(prev => ({ ...prev, [id]: !prev[id] }));
+    };
+
+    const fetchActivity = async (key: string) => {
+        setIsActivityLoading(true);
+        setViewingActivityKey(key);
+        try {
+            const url = isBypass 
+                ? `/api/v1/agents/keys/activity?agent_bypass=true&key=${key}` 
+                : `/api/v1/agents/keys/activity?key=${key}`;
+            const res = await fetch(url);
+            if (res.ok) {
+                const data = await res.json();
+                setActivities(data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch activity", error);
+        } finally {
+            setIsActivityLoading(false);
+        }
+    };
+
+    const handleClearActivity = async (key: string) => {
+        try {
+            const url = isBypass 
+                ? `/api/v1/agents/keys/activity?agent_bypass=true&key=${key}` 
+                : `/api/v1/agents/keys/activity?key=${key}`;
+            const res = await fetch(url, { method: 'DELETE' });
+            if (res.ok) {
+                setActivities([]);
+            }
+        } catch (error) {
+            console.error("Failed to clear activity", error);
+        }
     };
 
     return (
@@ -248,13 +284,23 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                                                     <div className="text-xl font-bold text-white">{key.usage || 0}</div>
                                                     <div className="text-[10px] text-zinc-500 uppercase tracking-widest">Relayed</div>
                                                 </div>
-                                                <button 
-                                                    onClick={() => setKeyToDelete(rawKey)}
-                                                    className="p-2 text-zinc-600 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
-                                                    title="Delete agent key"
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        onClick={() => fetchActivity(rawKey)}
+                                                        className="px-3 py-1.5 bg-zinc-800/50 border border-zinc-800 text-zinc-400 hover:text-purple-400 hover:bg-purple-500/10 hover:border-purple-500/30 rounded-lg transition-all flex items-center gap-2 group/btn"
+                                                        title="View activity log"
+                                                    >
+                                                        <Activity size={14} className="group-hover/btn:scale-110 transition-transform" />
+                                                        <span className="text-[10px] font-bold uppercase tracking-wider">Logs</span>
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => setKeyToDelete(rawKey)}
+                                                        className="p-2 text-zinc-600 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
+                                                        title="Delete agent key"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     );
@@ -295,6 +341,130 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                             >
                                 {isDeleting ? "Deleting..." : "Yes, Revoke Key"}
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Activity Modal */}
+            {viewingActivityKey && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-in fade-in">
+                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl w-full max-w-3xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+                        <div className="p-6 border-b border-zinc-800 flex items-center justify-between bg-zinc-900/30">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-purple-500/10 text-purple-400 rounded-lg">
+                                    <Activity size={20} />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-white">Activity Log</h3>
+                                    <p className="text-xs text-zinc-500 font-mono">Key: {viewingActivityKey.substring(0, 8)}...</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                {activities.length > 0 && (
+                                    <button
+                                        onClick={() => handleClearActivity(viewingActivityKey)}
+                                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-bold transition-all border border-red-500/20"
+                                    >
+                                        <Trash size={12} />
+                                        Clear History
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => setViewingActivityKey(null)}
+                                    className="p-2 hover:bg-zinc-800 rounded-full text-zinc-500 hover:text-white transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                            {isActivityLoading ? (
+                                <div className="flex flex-col items-center justify-center py-20 gap-4">
+                                    <RefreshCw size={32} className="text-purple-500 animate-spin" />
+                                    <p className="text-zinc-500 animate-pulse">Syncing logs...</p>
+                                </div>
+                            ) : activities.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center py-20 bg-zinc-900/20 rounded-xl border border-dashed border-zinc-800">
+                                    <Terminal size={40} className="text-zinc-700 mb-4" />
+                                    <p className="text-zinc-500 font-bold">No activity detected yet</p>
+                                    <p className="text-xs text-zinc-600 mt-1 text-center max-w-xs">Logs will appear here once agents start making requests with this key.</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {activities.map((activity, idx) => (
+                                        <div key={idx} className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-all group">
+                                            <div className="flex items-start justify-between mb-3">
+                                                <div className="flex items-center gap-3">
+                                                    <span className={`text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded border ${
+                                                        activity.type === 'CLIP_CREATED' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 
+                                                        activity.type === 'HANDOFF_CREATED' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 
+                                                        'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                                    }`}>
+                                                        {activity.type.replace('_', ' ')}
+                                                    </span>
+                                                    <span className="text-[10px] text-zinc-600 font-mono">
+                                                        {new Date(activity.timestamp).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                                <code className="text-[9px] text-zinc-700 px-1.5 py-0.5 bg-black/30 rounded border border-zinc-800">
+                                                    {activity.id}
+                                                </code>
+                                            </div>
+                                            
+                                            {activity.preview && (
+                                                <div className="relative">
+                                                    <div className="absolute -left-1 top-0 bottom-0 w-1 bg-zinc-800 rounded-full group-hover:bg-purple-500/30 transition-colors" />
+                                                    <div className="pl-4">
+                                                        <p className="text-sm text-zinc-300 font-mono line-clamp-3 bg-black/20 p-2 rounded border border-zinc-900 leading-relaxed italic">
+                                                            "{activity.preview}"
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {activity.metadata && Object.keys(activity.metadata).length > 0 && (
+                                                <div className="mt-3 flex flex-wrap gap-2 items-center">
+                                                    {Object.entries(activity.metadata).map(([k, v]) => {
+                                                        if (k === 'expiresAt') {
+                                                            const timeLeft = (v as number) - Date.now();
+                                                            if (timeLeft <= 0) return null;
+                                                            
+                                                            const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                                                            const mins = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                                                            const days = Math.floor(hours / 24);
+                                                            
+                                                            let display = "";
+                                                            if (days > 0) display = `${days}d ${hours % 24}h`;
+                                                            else if (hours > 0) display = `${hours}h ${mins}m`;
+                                                            else display = `${mins}m`;
+
+                                                            return (
+                                                                <span key={k} className="text-[9px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded flex gap-1 border border-red-500/20 items-center">
+                                                                    <RefreshCw size={8} className="animate-spin-slow" />
+                                                                    <span className="font-bold uppercase">Expires in: {display}</span>
+                                                                </span>
+                                                            );
+                                                        }
+
+                                                        return (
+                                                            <span key={k} className="text-[9px] bg-zinc-800/50 text-zinc-500 px-2 py-0.5 rounded flex gap-1 border border-zinc-800">
+                                                                <span className="text-zinc-600 uppercase font-bold">{k}:</span>
+                                                                <span className="text-zinc-400">{String(v)}</span>
+                                                            </span>
+                                                        );
+                                                    })}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        
+                        <div className="p-4 bg-black/40 border-t border-zinc-800 text-center">
+                            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-bold">Showing last 100 interaction events</p>
                         </div>
                     </div>
                 </div>

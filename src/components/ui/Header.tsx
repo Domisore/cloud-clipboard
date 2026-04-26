@@ -109,6 +109,15 @@ export function Header() {
                         </>
                     )}
 
+                    {!isPclipPage && (
+                        <Link
+                            href="/protocol"
+                            className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+                        >
+                            Protocol
+                        </Link>
+                    )}
+
                     <Link
                         href="/infrastructure"
                         className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
@@ -143,6 +152,15 @@ export function Header() {
                         {/* Mobile Dropdown */}
                         {isMobileMenuOpen && (
                             <div className="absolute top-full right-0 mt-2 w-48 bg-surface border border-border-color rounded-lg shadow-xl py-2 flex flex-col gap-1 animate-in fade-in zoom-in-95 duration-200">
+                                {!isPclipPage && (
+                                    <Link
+                                        href="/protocol"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                    >
+                                        Protocol
+                                    </Link>
+                                )}
                                 {isPclipPage && (
                                     <Link
                                         href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"

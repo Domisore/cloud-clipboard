@@ -16,10 +16,10 @@ export function TokenBenchmark() {
             <div className="flex flex-col items-center text-center mb-16">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-widest mb-6 px-4 py-1.5">
                     <BarChart3 className="w-3.5 h-3.5" />
-                    Measured Performance
+                    Storage Efficiency
                 </div>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-6 text-foreground text-balance">
-                    Benchmark: 99%+ Token Reduction Across File Sizes
+                    Benchmark: Infinite Persistence at Constant O(1) Cost
                 </h2>
                 <div className="bg-surface/50 border border-border-color rounded-xl p-4 max-w-2xl backdrop-blur-sm">
                     <div className="flex items-start gap-4 text-left">
@@ -29,7 +29,7 @@ export function TokenBenchmark() {
                         <div className="space-y-2">
                             <h3 className="font-bold text-sm text-foreground uppercase tracking-widest">Methodology</h3>
                             <p className="text-sm text-foreground-muted leading-relaxed">
-                                Tested using <code className="text-accent">cl100k_base</code> (GPT-4/o tokenizer) across 20 iterations with programmatically generated representative payloads. Latency simulated at 15–50ms CDN edge round-trip.
+                                Measured against <code className="text-accent">cl100k_base</code> across 20 iterations. We compared raw inline payload tokenization against Drive.io retrieval pointers. Latency simulated at 15–50ms edge round-trip.
                             </p>
                         </div>
                     </div>
@@ -46,10 +46,10 @@ export function TokenBenchmark() {
                                 <th className="px-6 py-4 font-bold text-foreground-muted uppercase tracking-widest text-[10px]">Test Case</th>
                                 <th className="px-6 py-4 font-bold text-foreground-muted uppercase tracking-widest text-[10px]">Size</th>
                                 <th className="px-6 py-4 font-bold text-foreground-muted uppercase tracking-widest text-[10px]">Raw Tokens (mean)</th>
-                                <th className="px-6 py-4 font-bold text-foreground-muted uppercase tracking-widest text-[10px]">S3 URL Tokens</th>
-                                <th className="px-6 py-4 font-bold text-accent uppercase tracking-widest text-[10px]">drive.io Tokens</th>
+                                <th className="px-6 py-4 font-bold text-foreground-muted uppercase tracking-widest text-[10px]">Cloud URL Tokens</th>
+                                <th className="px-6 py-4 font-bold text-accent uppercase tracking-widest text-[10px]">Drive.io Tokens</th>
                                 <th className="px-6 py-4 font-bold text-emerald-400 uppercase tracking-widest text-[10px]">Savings vs Raw</th>
-                                <th className="px-6 py-4 font-bold text-foreground-muted uppercase tracking-widest text-[10px]">Retrieval Latency</th>
+                                <th className="px-6 py-4 font-bold text-foreground-muted uppercase tracking-widest text-[10px]">Access Latency</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border-color/30">
