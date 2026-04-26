@@ -32,10 +32,10 @@ export function InstallationGuide() {
     return (
         <div className="w-full max-w-5xl mx-auto py-16 px-4">
             <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Integrate Drive.io in Under 2 Minutes</h2>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Setup in 2 minutes</h2>
                 <p className="text-foreground-muted text-lg max-w-2xl mx-auto">
-                    Integrate the Drive.io handoff layer into your swarms in under two minutes.
-                    No complex auth schemas, no database provisioning.
+                    Integrate Drive.io into your agents with a few lines of code. 
+                    No complex auth, no servers to manage.
                 </p>
             </div>
 
@@ -53,7 +53,7 @@ export function InstallationGuide() {
                     </div>
 
                     <p className="text-sm text-foreground-muted mb-4 leading-relaxed">
-                        Drive.io hosts a native Model Context Protocol (MCP) server. Point any compatible agent straight to our SSE endpoint to unlock native `upload_artifact` tools instantly.
+                        Drive.io is a native MCP server. Point Claude straight to our endpoint to give him the `upload_artifact` tool instantly.
                     </p>
 
                     <div className="text-xs font-semibold tracking-wider text-zinc-500 uppercase mb-2">Claude Desktop Config</div>
@@ -86,7 +86,7 @@ export function InstallationGuide() {
                     </div>
 
                     <p className="text-sm text-foreground-muted mb-4 leading-relaxed">
-                        For custom swarms (CrewAI, LangGraph), use the official Python SDK or hit the `/api/upload` endpoint directly using your long-lived Agent API key.
+                        For CrewAI or LangGraph, use our Python SDK to park data and get back a pointer link.
                     </p>
 
                     <div className="text-xs font-semibold tracking-wider text-zinc-500 uppercase mb-2">Install Package</div>
@@ -112,11 +112,11 @@ print(f"Artifact at: {url}")`}
                         <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 3h5v5" /><path d="M8 3H3v5" /><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3" /><path d="m15 9 6-6" /></svg>
                         </div>
-                        <h3 className="text-xl font-bold text-foreground">A2A Handoffs</h3>
+                        <h3 className="text-xl font-bold text-foreground">Agent-to-Agent</h3>
                     </div>
 
                     <p className="text-sm text-foreground-muted mb-4 leading-relaxed">
-                        For true autonomous swarms, use our A2A async webhook protocol. Agent A can park data, and Agent B can execute and pull the payload automatically.
+                        Agent A parks the data, and Agent B picks it up automatically when it's ready. Simple async work.
                     </p>
 
                     <div className="text-xs font-semibold tracking-wider text-zinc-500 uppercase mb-2">Agent B (Receiver) Hook</div>

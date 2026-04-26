@@ -29,7 +29,7 @@ export function Header() {
         }
     }, []);
 
-    const isPclipPage = isPclipDomain || pathname?.startsWith('/clipboard') || pathname?.startsWith('/pclip') || (pathname && /^\/[a-zA-Z0-9]+$/.test(pathname) && !['/dashboard', '/contact', '/privacy', '/terms', '/docs', '/pricing'].includes(pathname));
+    const isPclipPage = isPclipDomain || pathname?.startsWith('/clipboard') || pathname?.startsWith('/pclip') || (pathname && /^\/[a-zA-Z0-9]+$/.test(pathname) && !['/dashboard', '/contact', '/privacy', '/terms', '/docs', '/pricing', '/infrastructure', '/how-it-works'].includes(pathname));
     
     // Smarter redirect: if on a Pclip landing page, go to the app (/clipboard). 
     // Otherwise stay on current path if it's a Pclip app page, or default to dashboard.
@@ -39,7 +39,7 @@ export function Header() {
         : "/dashboard";
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4">
+        <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4 bg-white/70 backdrop-blur-md border-b border-border-color/50">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Logo */}
                 <Link href={isPclipPage ? "/clipboard" : "/"} className="flex items-center gap-2 group" suppressHydrationWarning>
@@ -110,11 +110,19 @@ export function Header() {
                     )}
 
                     <Link
+                        href="/infrastructure"
+                        className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+                    >
+                        Infrastructure
+                    </Link>
+
+                    <Link
                         href={isPclipPage ? "/pclip/pricing" : "/pricing"}
                         className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
                     >
                         Pricing
                     </Link>
+
 
                     <Link
                         href="/contact"
@@ -166,12 +174,20 @@ export function Header() {
                                             How it works
                                         </Link>
                                         <Link
+                                            href="/infrastructure"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                        >
+                                            Infrastructure
+                                        </Link>
+                                        <Link
                                             href={isPclipPage ? "/pclip/pricing" : "/pricing"}
                                             onClick={() => setIsMobileMenuOpen(false)}
                                             className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
                                         >
                                             Pricing
                                         </Link>
+
                                     </>
                                 )}
                                 <Link
