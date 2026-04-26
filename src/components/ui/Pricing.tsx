@@ -41,6 +41,21 @@ const tiers = [
         featured: true,
         priceId: "price_1TC7nU2au3jtvYgfJgEcRumO",
     },
+    {
+        name: "Enterprise",
+        price: "Custom",
+        description: "Scale Drive.io across your entire organization with bespoke integrations, dedicated support, and team-wide controls.",
+        features: [
+            { icon: Globe, text: "Custom API Integrations" },
+            { icon: Infinity, text: "Team-wide Data Management" },
+            { icon: Shield, text: "Enterprise-grade Security & SSO" },
+            { icon: Zap, text: "Whitelabel & Embedding Support" },
+            { icon: Clock, text: "Dedicated Solutions Architect" },
+        ],
+        buttonText: "Let's Talk",
+        href: "/contact",
+        featured: false,
+    },
 ];
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -103,7 +118,7 @@ export function Pricing() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
                     {tiers.map((tier, idx) => (
                         <motion.div
                             key={tier.name}

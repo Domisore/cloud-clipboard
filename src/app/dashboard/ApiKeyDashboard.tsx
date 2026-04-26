@@ -156,7 +156,30 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
     return (
         <div className="min-h-screen flex flex-col font-mono bg-black text-zinc-300 selection:bg-purple-900/50">
             <Header />
-            <main className="flex-1 w-full max-w-5xl mx-auto pt-32 pb-20 px-6">
+            
+            {/* Active Development Banner */}
+            <div className="w-full bg-indigo-900/30 border-b border-indigo-500/30 py-4 px-6 relative z-20 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-accent/5 via-transparent to-accent/5 animate-pulse"></div>
+                <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 relative z-10">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl bg-accent text-background shadow-lg shadow-accent/20">
+                            <Activity size={18} />
+                        </div>
+                        <div className="flex flex-col">
+                            <p className="text-sm font-bold text-white">Drive.io is in Active Development</p>
+                            <p className="text-xs text-zinc-400">We are currently tailoring the platform for specific enterprise and organization needs.</p>
+                        </div>
+                    </div>
+                    <a 
+                        href="mailto:deji@branelogic.com" 
+                        className="px-5 py-2 rounded-xl bg-white text-black text-xs font-black transition-all hover:scale-105 active:scale-95 shadow-xl flex items-center gap-2 whitespace-nowrap"
+                    >
+                        Contact Founder: deji@branelogic.com
+                    </a>
+                </div>
+            </div>
+
+            <main className="flex-1 w-full max-w-5xl mx-auto pt-20 pb-20 px-6">
 
                 <div className="mb-12">
                     <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 flex items-center gap-4">

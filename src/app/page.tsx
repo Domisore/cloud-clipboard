@@ -85,6 +85,30 @@ export default function Home() {
             </div>
         </section>
 
+        {/* Infographic Section */}
+        <section className="py-24 px-6 bg-white relative overflow-hidden">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-accent/5 blur-[120px] rounded-full -z-10"></div>
+            
+            <div className="max-w-5xl mx-auto">
+                <div className="flex flex-col items-center text-center mb-16">
+                    <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
+                        Personal, private, <span className="text-accent underline underline-offset-8 decoration-accent/20">and built for you.</span>
+                    </h2>
+                    <p className="text-xl text-foreground-muted max-w-2xl leading-relaxed">
+                        Drive.io secures your data while giving your AI the smarts it needs to handle your heaviest tasks.
+                    </p>
+                </div>
+
+                <div className="rounded-[2.5rem] overflow-hidden shadow-2xl border border-border-color shadow-accent/5 bg-white group hover:shadow-accent/10 transition-shadow p-2 md:p-4">
+                    <img 
+                        src="/how-it-works-infographic.png" 
+                        alt="How Your Private AI Assistant Works Infographic" 
+                        className="w-full h-auto rounded-[2rem] transition-transform duration-700 group-hover:scale-[1.01]"
+                    />
+                </div>
+            </div>
+        </section>
+
         {/* Feature Grid */}
         <section className="py-24 px-6 bg-surface border-y border-border-color/50">
 
@@ -117,6 +141,59 @@ export default function Home() {
                             Your documents are encrypted and processed with the highest privacy standards. We don't train on your data.
                         </p>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        {/* Messaging Platforms Section */}
+        <section className="py-24 px-6 bg-white overflow-hidden relative border-t border-border-color/50">
+            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 md:gap-24">
+                <div className="flex-1 space-y-8 text-center lg:text-left">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 text-xs font-bold uppercase tracking-widest">
+                         Omnichannel Assistant
+                    </div>
+                    <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground leading-tight">
+                        Your assistant, <br />
+                        <span className="text-accent underline underline-offset-8 decoration-accent/20">wherever you chat.</span>
+                    </h2>
+                    <p className="text-xl text-foreground-muted leading-relaxed max-w-xl mx-auto lg:mx-0">
+                        No more switching apps. Drive.io integrates directly with your favorite messaging platforms. Get updates on Slack, search on Telegram, or send documents via WhatsApp.
+                    </p>
+                    
+                    <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
+                         <div className="px-6 py-3 rounded-2xl bg-surface border border-border-color shadow-sm flex items-center gap-3 transition-transform hover:scale-105">
+                             <div className="w-2 h-2 rounded-full bg-[#4A154B]"></div>
+                             <span className="font-bold text-foreground">Slack</span>
+                         </div>
+                         <div className="px-6 py-3 rounded-2xl bg-surface border border-border-color shadow-sm flex items-center gap-3 transition-transform hover:scale-105">
+                             <div className="w-2 h-2 rounded-full bg-[#0088cc]"></div>
+                             <span className="font-bold text-foreground">Telegram</span>
+                         </div>
+                         <div className="px-6 py-3 rounded-2xl bg-surface border border-border-color shadow-sm flex items-center gap-3 transition-transform hover:scale-105">
+                             <div className="w-2 h-2 rounded-full bg-[#25D366]"></div>
+                             <span className="font-bold text-foreground">WhatsApp</span>
+                         </div>
+                         <div className="px-6 py-3 rounded-2xl bg-surface border border-border-color shadow-sm flex items-center gap-3 transition-transform hover:scale-105">
+                             <div className="w-2 h-2 rounded-full bg-[#5865F2]"></div>
+                             <span className="font-bold text-foreground">Discord</span>
+                         </div>
+                    </div>
+                </div>
+
+                <div className="flex-1 relative w-full max-w-lg lg:max-w-none">
+                    <div className="relative z-10 p-8 rounded-[3rem] bg-indigo-50 border border-indigo-100 shadow-2xl flex flex-col gap-6">
+                        <div className="p-4 rounded-2xl bg-white shadow-md border border-indigo-50 self-start max-w-[80%] animate-slide-up">
+                            <p className="text-sm font-medium text-slate-800">&quot;Get me the latest invoice from Slack and send it to Sarah on WhatsApp.&quot;</p>
+                        </div>
+                        <div className="p-4 rounded-2xl bg-accent text-white shadow-lg self-end max-w-[80%] animate-slide-up [animation-delay:0.2s]">
+                            <p className="text-sm font-bold">&quot;Found it. Invoice #8842 forwarded to Sarah successfully.&quot;</p>
+                        </div>
+                        <div className="p-4 rounded-2xl bg-white shadow-md border border-indigo-50 self-start max-w-[80%] animate-slide-up [animation-delay:0.4s]">
+                            <p className="text-sm font-medium text-slate-800">&quot;Thanks! Check Telegram for the contract files.&quot;</p>
+                        </div>
+                    </div>
+                    {/* Decorative Background Blur */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-accent/20 blur-[100px] -z-10 animate-pulse"></div>
                 </div>
             </div>
         </section>
