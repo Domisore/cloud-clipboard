@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Terminal, Key, Plus, Copy, CheckCircle2, Trash2, Eye, EyeOff, AlertTriangle, RefreshCw, Activity, X, Trash } from 'lucide-react';
+import { Terminal, Key, Plus, Copy, CheckCircle2, Trash2, Eye, EyeOff, AlertTriangle, RefreshCw, Activity, X, Trash, Mail } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
 import { useRouter } from 'next/navigation';
 
@@ -156,7 +156,34 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
     return (
         <div className="min-h-screen flex flex-col font-mono bg-black text-zinc-300 selection:bg-purple-900/50">
             <Header />
-            <main className="flex-1 w-full max-w-5xl mx-auto pt-32 pb-20 px-6">
+            
+            {/* Active Development Banner */}
+            <div className="w-full bg-indigo-600/10 border-b border-indigo-500/20 py-4 px-6 relative z-20 overflow-hidden group mt-[64px] sm:mt-[72px]">
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 via-transparent to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+                    <div className="flex items-center gap-4 text-center md:text-left">
+                        <div className="hidden sm:flex p-2.5 rounded-2xl bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 animate-pulse-slow">
+                            <Activity size={20} />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-white mb-0.5">We are actively developing Drive.io</p>
+                            <p className="text-xs text-zinc-400 leading-relaxed max-w-xl">
+                                We're looking to work with you if you have any custom ideas or integrations. 
+                                Contact me personally to discuss your needs.
+                            </p>
+                        </div>
+                    </div>
+                    <a 
+                        href="mailto:deji@branelogic.com" 
+                        className="group/btn px-6 py-2.5 rounded-2xl bg-white text-black text-xs font-black transition-all hover:bg-indigo-50 hover:scale-[1.02] active:scale-[0.98] shadow-2xl shadow-indigo-500/10 flex items-center gap-2.5 whitespace-nowrap border-2 border-white"
+                    >
+                        <Mail size={14} className="group-hover/btn:rotate-12 transition-transform" />
+                        deji@branelogic.com
+                    </a>
+                </div>
+            </div>
+
+            <main className="flex-1 w-full max-w-5xl mx-auto pt-12 pb-20 px-6">
 
                 <div className="mb-12">
                     <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 flex items-center gap-4">

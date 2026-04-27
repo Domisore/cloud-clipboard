@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0D1117;
-  --color-surface: #161B22;
-  --color-surface-hover: #21262D;
-  --color-accent: #58A6FF;
-  --color-accent-dim: rgba(88, 166, 255, 0.1);
-  --color-danger: #F85149;
-  --color-foreground: #C9D1D9;
-  --color-foreground-muted: #8B949E;
-  --color-border-color: #30363D;
+  --color-background: #FFFFFF;
+  --color-surface: #F9FAFB;
+  --color-surface-hover: #F3F4F6;
+  --color-accent: #4F46E5; /* Indigo accent for light mode */
+  --color-accent-dim: rgba(79, 70, 229, 0.1);
+  --color-danger: #DC2626;
+  --color-foreground: #111827;
+  --color-foreground-muted: #4B5563;
+  --color-border-color: #E5E7EB;
 
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
@@ -51,7 +51,7 @@ body {
 
 /* Utilities */
 @utility glass-panel {
-  background: rgba(22, 27, 34, 0.7);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   border: 1px solid var(--color-border-color);
 }
