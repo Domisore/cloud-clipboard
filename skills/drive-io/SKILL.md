@@ -106,3 +106,34 @@ To ensure reliable operation, please respect the following constraints:
 - **Returns:** The payload data and marks it as `CONSUMED`.
 - **API Call:**
   - `GET /api/v1/handoff?id=<handoff_id>`
+
+---
+
+## Graph & Knowledge Management Tools (New)
+
+### create_link
+- **Description:** Establishes a relationship between two existing clips or files.
+- **Parameters:**
+  - `sourceId`: (string) The ID of the primary artifact.
+  - `targetId`: (string) The ID of the related artifact.
+  - `relation`: (string) The type of relationship (e.g., `implements`, `tests`, `documents`, `illustrates`, `relates_to`).
+- **Returns:** A confirmation object with a `link_id`.
+
+### index_structural_graph
+- **Description:** Scans a code repository to map its architecture (imports, exports, calls).
+- **Parameters:**
+  - `repoPath`: (string) The local path to the repository.
+- **Returns:** A `graph_id` pointing to a Graph Descriptor in Drive.io.
+
+### index_semantic_folder
+- **Description:** Scans a generic folder (documents, images, etc.) to build a semantic map based on hierarchy and proximity.
+- **Parameters:**
+  - `folderPath`: (string) The local path to the folder.
+- **Returns:** A `graph_id` pointing to a Semantic Map in Drive.io.
+
+### retrieve_neighborhood
+- **Description:** Fetches a "knowledge cluster" centered around a specific clip.
+- **Parameters:**
+  - `id`: (string) The ID of the starting clip.
+  - `depth`: (number, optional) How many degrees of relationship to traverse. Default: 1.
+- **Returns:** A list of related clips and their relationship types.

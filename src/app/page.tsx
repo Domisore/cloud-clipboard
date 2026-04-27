@@ -74,10 +74,58 @@ export default function Home() {
             <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-6">
               <ShieldCheck className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-foreground mb-3">Framework Neutral</h3>
+            <h3 className="text-xl font-bold text-foreground mb-3">Structural Intelligence</h3>
             <p className="text-foreground-muted leading-relaxed">
-              Works seamlessly with LangGraph, AutoGen, CrewAI, and custom implementations. No lock-in.
+              Drive.io understands relationships. It doesn't just store files; it maps how your code, notes, and data connect.
             </p>
+          </div>
+        </div>
+
+        {/* New "Connect the Dots" Section for Normies */}
+        <div className="max-w-6xl mx-auto mb-32 px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
+                The Hard Drive with <br/> <span className="text-accent">Artificial Intuition.</span>
+              </h2>
+              <p className="text-lg text-foreground-muted mb-8 leading-relaxed">
+                Traditional storage is like a dumb closet—you throw things in and hope to find them later. Drive.io is like a personal researcher that remembers <strong>why</strong> you saved something and <strong>what</strong> it relates to.
+              </p>
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3">
+                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                  <p className="text-foreground-muted font-medium"><span className="text-foreground">Stop Organizing:</span> Files organize themselves based on your project context.</p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                  <p className="text-foreground-muted font-medium"><span className="text-foreground">Cross-File Memory:</span> Your AI assistant remembers relationships across different sessions.</p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                  <p className="text-foreground-muted font-medium"><span className="text-foreground">Skip the Search:</span> Find the right information by following the map, not by guessing filenames.</p>
+                </li>
+              </ul>
+            </div>
+            <div className="relative">
+              <div className="aspect-square rounded-[40px] bg-gradient-to-tr from-accent/20 to-blue-500/10 border border-white/5 flex items-center justify-center overflow-hidden">
+                {/* Visual representation of a Knowledge Graph (Static mockup) */}
+                <div className="relative w-64 h-64">
+                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-16 rounded-2xl bg-accent/20 border border-accent/40 flex items-center justify-center backdrop-blur-xl animate-pulse">
+                      <HardDrive className="w-8 h-8 text-accent" />
+                   </div>
+                   <div className="absolute bottom-0 left-0 w-14 h-14 rounded-2xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center" />
+                   <div className="absolute bottom-0 right-0 w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center" />
+                   <svg className="absolute inset-0 w-full h-full -z-10" viewBox="0 0 100 100">
+                      <line x1="50" y1="20" x2="15" y2="80" stroke="currentColor" strokeOpacity="0.2" strokeWidth="0.5" />
+                      <line x1="50" y1="20" x2="85" y2="80" stroke="currentColor" strokeOpacity="0.2" strokeWidth="0.5" />
+                   </svg>
+                </div>
+              </div>
+              <div className="absolute -bottom-6 -right-6 p-6 rounded-3xl bg-surface border border-border-color shadow-2xl backdrop-blur-xl max-w-[240px]">
+                 <p className="text-sm font-bold text-foreground mb-1">Semantic Match Found</p>
+                 <p className="text-xs text-foreground-muted">"Design Spec" relates to "Landing Page Code" via Architecture Map.</p>
+              </div>
+            </div>
           </div>
         </div>
 
