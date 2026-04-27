@@ -50,7 +50,7 @@ export function Header() {
                             className="w-full h-full object-cover"
                         />
                     </div>
-                    <span className="font-sans font-semibold text-sm tracking-tight text-foreground group-hover:text-white transition-colors">
+                    <span className="font-sans font-semibold text-sm tracking-tight text-foreground group-hover:text-accent transition-colors">
                         {isPclipPage ? "Pclip" : "Drive.io"}
                     </span>
                 </Link>
@@ -218,7 +218,7 @@ export function Header() {
                                 <div className="px-4 py-3 border-t border-border-color mt-2">
                                     <SignedOut>
                                         <SignInButton mode="modal" forceRedirectUrl={afterSignInUrl}>
-                                            <button className="w-full h-10 rounded-md text-sm font-bold bg-foreground text-background hover:bg-white/90 transition-colors">
+                                            <button className="w-full h-10 rounded-md text-sm font-bold bg-foreground text-background hover:bg-foreground/90 transition-colors">
                                                 Sign In
                                             </button>
                                         </SignInButton>
@@ -259,7 +259,7 @@ export function Header() {
 
                     <SignedOut>
                         <SignInButton mode="modal" forceRedirectUrl={afterSignInUrl}>
-                            <button className="h-9 px-4 rounded-md text-sm font-bold bg-foreground text-background hover:bg-white/90 transition-colors">
+                            <button className="h-9 px-4 rounded-md text-sm font-bold bg-foreground text-background hover:bg-foreground/90 transition-colors">
                                 Sign In
                             </button>
                         </SignInButton>
