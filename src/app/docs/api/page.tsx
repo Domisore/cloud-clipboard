@@ -26,7 +26,7 @@ export default function ApiDocsPage() {
                             </p>
                             <div className="bg-surface border border-border-color rounded-lg p-4 mb-4">
                                 <ol className="list-decimal list-inside text-foreground-muted space-y-2">
-                                    <li>Navigate to the <Link href="/dashboard" className="text-accent hover:underline">Dashboard</Link>.</li>
+                                    <li>Navigate to the <Link href="/dashboard" className="text-accent hover:underline">Developer Dashboard</Link>.</li>
                                     <li>Generate a new API Key (format: <code>sk_abc123...</code>).</li>
                                     <li>Send this key in the header of your requests: <code>Authorization: Bearer &lt;your_api_key&gt;</code></li>
                                 </ol>

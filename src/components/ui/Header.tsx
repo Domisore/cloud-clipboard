@@ -29,7 +29,7 @@ export function Header() {
         }
     }, []);
 
-    const isPclipPage = isPclipDomain || pathname?.startsWith('/clipboard') || pathname?.startsWith('/pclip') || (pathname && /^\/[a-zA-Z0-9]+$/.test(pathname) && !['/dashboard', '/contact', '/privacy', '/terms', '/docs', '/pricing', '/infrastructure', '/how-it-works'].includes(pathname));
+    const isPclipPage = isPclipDomain || pathname?.startsWith('/clipboard') || pathname?.startsWith('/pclip') || (pathname && /^\/[a-zA-Z0-9]+$/.test(pathname) && !['/dashboard', '/contact', '/privacy', '/terms', '/docs', '/pricing'].includes(pathname));
     
     // Smarter redirect: if on a Pclip landing page, go to the app (/clipboard). 
     // Otherwise stay on current path if it's a Pclip app page, or default to dashboard.
@@ -39,7 +39,7 @@ export function Header() {
         : "/dashboard";
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4 bg-white/70 backdrop-blur-md border-b border-border-color/50">
+        <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Logo */}
                 <Link href={isPclipPage ? "/clipboard" : "/"} className="flex items-center gap-2 group" suppressHydrationWarning>
@@ -50,7 +50,7 @@ export function Header() {
                             className="w-full h-full object-cover"
                         />
                     </div>
-                    <span className="font-sans font-semibold text-sm tracking-tight text-foreground group-hover:text-accent transition-colors">
+                    <span className="font-sans font-semibold text-sm tracking-tight text-foreground group-hover:text-white transition-colors">
                         {isPclipPage ? "Pclip" : "Drive.io"}
                     </span>
                 </Link>
@@ -119,19 +119,11 @@ export function Header() {
                     )}
 
                     <Link
-                        href="/infrastructure"
-                        className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
-                    >
-                        Infrastructure
-                    </Link>
-
-                    <Link
                         href={isPclipPage ? "/pclip/pricing" : "/pricing"}
                         className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
                     >
                         Pricing
                     </Link>
-
 
                     <Link
                         href="/contact"
@@ -192,20 +184,12 @@ export function Header() {
                                             How it works
                                         </Link>
                                         <Link
-                                            href="/infrastructure"
-                                            onClick={() => setIsMobileMenuOpen(false)}
-                                            className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
-                                        >
-                                            Infrastructure
-                                        </Link>
-                                        <Link
                                             href={isPclipPage ? "/pclip/pricing" : "/pricing"}
                                             onClick={() => setIsMobileMenuOpen(false)}
                                             className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
                                         >
                                             Pricing
                                         </Link>
-
                                     </>
                                 )}
                                 <Link
@@ -218,7 +202,7 @@ export function Header() {
                                 <div className="px-4 py-3 border-t border-border-color mt-2">
                                     <SignedOut>
                                         <SignInButton mode="modal" forceRedirectUrl={afterSignInUrl}>
-                                            <button className="w-full h-10 rounded-md text-sm font-bold bg-foreground text-background hover:bg-foreground/90 transition-colors">
+                                            <button className="w-full h-10 rounded-md text-sm font-bold bg-foreground text-background hover:bg-white/90 transition-colors">
                                                 Sign In
                                             </button>
                                         </SignInButton>
@@ -259,7 +243,7 @@ export function Header() {
 
                     <SignedOut>
                         <SignInButton mode="modal" forceRedirectUrl={afterSignInUrl}>
-                            <button className="h-9 px-4 rounded-md text-sm font-bold bg-foreground text-background hover:bg-foreground/90 transition-colors">
+                            <button className="h-9 px-4 rounded-md text-sm font-bold bg-foreground text-background hover:bg-white/90 transition-colors">
                                 Sign In
                             </button>
                         </SignInButton>

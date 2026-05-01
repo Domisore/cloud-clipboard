@@ -58,14 +58,14 @@ export default function ProtocolPage() {
                       <td className="px-4 py-4 text-foreground-muted text-xs">Mem0, Zep</td>
                     </tr>
                     <tr className="bg-accent/5">
-                      <td className="px-4 py-4 font-bold text-accent">Knowledge Graph</td>
-                      <td className="px-4 py-4 text-accent/90 text-xs font-semibold">Agents lose the "connective tissue" between scattered artifacts</td>
-                      <td className="px-4 py-4 text-accent/90 text-xs font-bold">Drive.io (Relational)</td>
+                      <td className="px-4 py-4 font-bold text-accent">Hard Drive</td>
+                      <td className="px-4 py-4 text-accent/90 text-xs font-semibold">Passing large files mid-run blows up token budgets</td>
+                      <td className="px-4 py-4 text-accent/90 text-xs font-bold">Drive.io</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-4 font-bold text-foreground">Hard Drive</td>
-                      <td className="px-4 py-4 text-foreground-muted text-xs font-semibold">Passing large files mid-run blows up token budgets</td>
-                      <td className="px-4 py-4 text-foreground-muted text-xs font-bold">Drive.io (L0)</td>
+                      <td className="px-4 py-4 font-bold text-foreground">Orchestration</td>
+                      <td className="px-4 py-4 text-foreground-muted text-xs">Coordinating agent tasks and dependencies</td>
+                      <td className="px-4 py-4 text-foreground-muted text-xs">LangGraph, CrewAI</td>
                     </tr>
                   </tbody>
                 </table>
@@ -92,25 +92,6 @@ export default function ProtocolPage() {
           <section id="benchmarks">
             <h2 className="text-3xl font-bold mb-8">Performance Benchmarks</h2>
             <TokenBenchmark />
-          </section>
-
-          <section id="knowledge-graph">
-            <h2 className="text-3xl font-bold mb-8">Knowledge Graph Protocol</h2>
-            <div className="p-8 rounded-3xl bg-surface/30 border border-border-color/50 backdrop-blur-sm space-y-6">
-              <p className="text-foreground-muted leading-relaxed">
-                Drive.io implements a relational metadata layer that treats stored artifacts as nodes in a graph. This allows agents to perform <strong>"Semantic Traversal"</strong>—finding related information based on project context rather than keyword search.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-3">
-                  <h4 className="font-bold text-accent text-sm uppercase tracking-widest">Structural RAG</h4>
-                  <p className="text-sm text-foreground-muted">Uses Tree-sitter and AST analysis to map code repositories. Agents can query neighbors, call-sites, and implementation details through a single graph pointer.</p>
-                </div>
-                <div className="space-y-3">
-                  <h4 className="font-bold text-accent text-sm uppercase tracking-widest">Multi-Modal Linking</h4>
-                  <p className="text-sm text-foreground-muted">Automatically links prose (READMEs), visuals (Diagrams), and code. The protocol supports bi-directional mapping between disparate file types.</p>
-                </div>
-              </div>
-            </div>
           </section>
 
           <section id="integration">
