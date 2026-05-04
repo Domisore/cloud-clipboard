@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { JetBrains_Mono, Inter } from "next/font/google";
+import { JetBrains_Mono, Inter, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "@/context/SessionContext";
 import { MonetizationWrapper } from "@/components/monetization/MonetizationWrapper";
@@ -15,6 +15,18 @@ const jetbrainsMono = JetBrains_Mono({
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ["400", "700"],
+  variable: "--font-ibm-plex-mono",
+  subsets: ["latin"],
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  weight: ["400", "700"],
+  variable: "--font-ibm-plex-sans",
   subsets: ["latin"],
 });
 
@@ -89,7 +101,7 @@ export default function RootLayout({
         `}
       </Script>
       <body
-        className={`${jetbrainsMono.variable} ${inter.variable} antialiased bg-background text-foreground font-sans`}
+        className={`${jetbrainsMono.variable} ${inter.variable} ${ibmPlexMono.variable} ${ibmPlexSans.variable} antialiased bg-background text-foreground font-sans`}
         suppressHydrationWarning
       >
         <ClerkProvider>
