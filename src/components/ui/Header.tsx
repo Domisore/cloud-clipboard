@@ -50,7 +50,7 @@ export function Header() {
                             className="w-full h-full object-cover"
                         />
                     </div>
-                    <span className="font-sans font-semibold text-sm tracking-tight text-foreground group-hover:text-white transition-colors">
+                    <span className="font-sans font-semibold text-sm tracking-tight text-foreground group-hover:text-accent transition-colors">
                         {isPclipPage ? "Pclip" : "Drive.io"}
                     </span>
                 </Link>
@@ -148,7 +148,7 @@ export function Header() {
                                     <Link
                                         href="/protocol"
                                         onClick={() => setIsMobileMenuOpen(false)}
-                                        className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                        className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-black/5 transition-colors"
                                     >
                                         Protocol
                                     </Link>
@@ -158,7 +158,7 @@ export function Header() {
                                         href="https://chromewebstore.google.com/detail/pclip-cloud-clipboard/dcdppgjojehkngjhcdklkdbalegbmkin?hl=en&authuser=0"
                                         target="_blank" rel="noopener noreferrer"
                                         onClick={() => setIsMobileMenuOpen(false)}
-                                        className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                        className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-black/5 transition-colors"
                                     >
                                         Extension
                                     </Link>
@@ -167,7 +167,7 @@ export function Header() {
                                     <>
                                         <button
                                             onClick={() => { setShowSessions(true); setIsMobileMenuOpen(false); }}
-                                            className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors flex items-center justify-between"
+                                            className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-black/5 transition-colors flex items-center justify-between"
                                         >
                                             <span>Sessions</span>
                                             {wallet.length > 0 && (
@@ -179,14 +179,14 @@ export function Header() {
                                         <Link
                                             href="/how-it-works"
                                             onClick={() => setIsMobileMenuOpen(false)}
-                                            className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                            className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-black/5 transition-colors"
                                         >
                                             How it works
                                         </Link>
                                         <Link
                                             href={isPclipPage ? "/pclip/pricing" : "/pricing"}
                                             onClick={() => setIsMobileMenuOpen(false)}
-                                            className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                            className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-black/5 transition-colors"
                                         >
                                             Pricing
                                         </Link>
@@ -195,21 +195,21 @@ export function Header() {
                                 <Link
                                     href="/contact"
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-white/5 transition-colors"
+                                    className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-black/5 transition-colors"
                                 >
                                     Contact
                                 </Link>
                                 <div className="px-4 py-3 border-t border-border-color mt-2">
                                     <SignedOut>
                                         <SignInButton mode="modal" forceRedirectUrl={afterSignInUrl}>
-                                            <button className="w-full h-10 rounded-md text-sm font-bold bg-foreground text-background hover:bg-white/90 transition-colors">
+                                            <button className="w-full h-10 rounded-md text-sm font-bold bg-foreground text-background hover:opacity-90 transition-opacity">
                                                 Sign In
                                             </button>
                                         </SignInButton>
                                     </SignedOut>
                                     <SignedIn>
                                         {!isPclipPage && (
-                                            <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-left py-2 text-base text-zinc-300 hover:text-white transition-colors block mb-3 border-b border-zinc-800/50 pb-3">
+                                            <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-left py-2 text-base text-foreground-muted hover:text-foreground transition-colors block mb-3 border-b border-border-color pb-3">
                                                 Developer Dashboard
                                             </Link>
                                         )}
@@ -243,17 +243,16 @@ export function Header() {
 
                     <SignedOut>
                         <SignInButton mode="modal" forceRedirectUrl={afterSignInUrl}>
-                            <button className="h-9 px-4 rounded-md text-sm font-bold bg-foreground text-background hover:bg-white/90 transition-colors">
+                            <button className="h-9 px-4 rounded-md text-sm font-bold bg-foreground text-background hover:opacity-90 transition-opacity">
                                 Sign In
                             </button>
                         </SignInButton>
                     </SignedOut>
                     <SignedIn>
-                        {!isPclipPage && (
-                            <Link href="/dashboard" className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-md text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors">
+                        {!isPclipPage && <Link href="/dashboard" className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-surface border border-border-color rounded-md text-sm font-medium text-foreground-muted hover:text-foreground hover:bg-surface-hover transition-colors">
                                 Dashboard
                             </Link>
-                        )}
+                        }
                         <UserButton
                             appearance={{
                                 elements: {
