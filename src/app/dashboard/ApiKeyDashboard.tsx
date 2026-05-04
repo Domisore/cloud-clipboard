@@ -194,39 +194,6 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
             
             <main className="flex-1 w-full max-w-6xl mx-auto pt-32 pb-20 px-6">
                 
-                {/* Dashboard Header */}
-                <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                    <div>
-                        <div className="flex items-center gap-3 mb-2">
-                            <span className="text-[10px] bg-orange-500/10 text-orange-500 border border-orange-500/20 px-2 py-0.5 rounded font-bold tracking-widest uppercase">
-                                Observability
-                            </span>
-                            {isBypass && <span className="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded border border-red-500/20 font-bold uppercase">Test Mode</span>}
-                        </div>
-                        <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight flex items-center gap-4">
-                            drive<span className="text-orange-500">.io</span>
-                            <span className="text-zinc-700 font-light ml-2">/ dashboard</span>
-                        </h1>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg">
-                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Live System Status</span>
-                        </div>
-                        {isLocal && (
-                            <button 
-                                onClick={handleSyncSubscription}
-                                disabled={isSyncing}
-                                className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-500 hover:text-white transition-all"
-                                title="Sync Status"
-                            >
-                                <RefreshCw size={14} className={isSyncing ? "animate-spin" : ""} />
-                            </button>
-                        )}
-                    </div>
-                </div>
-
                 {/* Tabs Navigation */}
                 <div className="flex border-b border-zinc-800 mb-8 sticky top-[72px] bg-[#080808]/80 backdrop-blur-md z-10">
                     {[
