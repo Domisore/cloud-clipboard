@@ -1,6 +1,6 @@
 import { redis } from "./redis";
 
-export type ActivityType = "CLIP_CREATED" | "HANDOFF_CREATED" | "HANDOFF_CONSUMED";
+export type ActivityType = "CLIP_CREATED" | "HANDOFF_CREATED" | "HANDOFF_CONSUMED" | "FILE_UPLOADED";
 
 export interface ActivityEntry {
     type: ActivityType;

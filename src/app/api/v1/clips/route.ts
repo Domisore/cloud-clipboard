@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     try {
         const body = await request.json();
-        const { content, title, isPrivate, burnAfterReading } = body;
+        const { content, title, isPrivate, burnAfterReading, filename, contentType } = body;
 
         if (!content) {
             return NextResponse.json(
@@ -43,6 +43,7 @@ export async function POST(request: Request) {
         // Authentication Check
         let userId = null;
         let apiKeyId = null;
+        let agentName = null;
 
         // 1. Check Bearer Token (Agent API Key)
         const authHeader = request.headers.get("Authorization");
@@ -53,6 +54,8 @@ export async function POST(request: Request) {
                 // @ts-ignore
                 userId = keyData.userId as string;
                 apiKeyId = `apikey:${token}`;
+                // @ts-ignore
+                agentName = keyData.name as string;
             }
         } else {
             // 2. Fallback to Clerk Session (Human Web App)
@@ -116,6 +119,9 @@ export async function POST(request: Request) {
         const id = nanoid(10); // Short but unique enough for now
         const createdAt = new Date().toISOString();
         const expiry = getClipExpiry(plan);
+        
+        const actualContentType = contentType || request.headers.get("Content-Type") || "text/plain";
+        const actualFilename = filename || title || `text-artifact-${id.substring(0, 5)}`;
 
         // Log activity with preview
         if (apiKeyId) {
@@ -130,7 +136,11 @@ export async function POST(request: Request) {
                 id: id,
                 preview: content.length > 100 ? content.substring(0, 100) + "..." : content,
                 metadata: { 
-                    title,
+                    title: actualFilename,
+                    filename: actualFilename,
+                    contentType: actualContentType,
+                    sizeBytes: contentSize,
+                    agentName: agentName,
                     expiresAt
                 }
             });
@@ -144,7 +154,11 @@ export async function POST(request: Request) {
             content: tiers.L2, // Full content
             abstract: tiers.L0,
             overview: tiers.L1,
-            title: title || 'Untitled Clip',
+            title: actualFilename,
+            filename: actualFilename,
+            contentType: actualContentType,
+            sizeBytes: contentSize,
+            agentName: agentName,
             isPrivate: !!isPrivate,
             burnAfterReading: !!burnAfterReading,
             createdAt,

@@ -31,11 +31,14 @@ export function PclipPromoBanner() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="w-full max-w-4xl mx-auto mb-8 px-4"
+                    className="w-full max-w-5xl mx-auto mb-40 px-4"
                 >
-                    <div className="relative overflow-hidden rounded-xl bg-surface border border-border-color shadow-sm p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 backdrop-blur-sm">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl font-black text-foreground mb-4 uppercase tracking-tighter italic">Integrated Experience</h2>
+                        <div className="h-1 w-20 bg-accent/20 mx-auto rounded-full" />
+                    </div>
 
-                        {/* Content */}
+                    <div className="relative overflow-hidden rounded-xl bg-surface border border-border-color shadow-sm p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 backdrop-blur-sm max-w-4xl mx-auto">
                         <div className="flex items-center gap-3 flex-1">
                             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                                 <span className="text-[10px] font-bold bg-muted/50 text-foreground-muted px-1.5 py-0.5 rounded uppercase tracking-wider w-fit">News</span>

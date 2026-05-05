@@ -9,6 +9,7 @@ import {
 import { Header } from '@/components/ui/Header';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArtifactLibrary } from './ArtifactLibrary';
 import { 
     LineChart, Line, AreaChart, Area, XAxis, YAxis, 
     Tooltip, ResponsiveContainer, CartesianGrid 
@@ -295,7 +296,7 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                                                 fontSize={10} 
                                                 tickLine={false} 
                                                 axisLine={false}
-                                                tickFormatter={(v) => `${v}`}
+                                                tickFormatter={(v: any) => `${v}`}
                                             />
                                             <Tooltip 
                                                 contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1f2937', borderRadius: '8px' }}
@@ -548,33 +549,7 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                                 <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Storage: Relay L0 Edge</p>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {allActivities.filter(a => a.type === 'CLIP_CREATED' || a.type === 'HANDOFF_CREATED').map((artifact, i) => (
-                                    <div key={i} className="p-6 bg-zinc-900/40 border border-zinc-800 rounded-2xl hover:border-orange-500/20 transition-all group">
-                                        <div className="flex items-start justify-between mb-4">
-                                            <div className="p-3 bg-black rounded-xl border border-zinc-800 group-hover:border-orange-500/30 transition-colors">
-                                                <Package size={20} className="text-orange-500" />
-                                            </div>
-                                            <span className="text-[9px] text-zinc-600 font-mono">{new Date(artifact.timestamp).toLocaleDateString()}</span>
-                                        </div>
-                                        <h4 className="text-white font-bold mb-2 truncate">Artifact_{artifact.id.substring(0, 6)}</h4>
-                                        <p className="text-xs text-zinc-500 mb-6 line-clamp-2 italic leading-relaxed">
-                                            {artifact.preview || "No preview available for this artifact."}
-                                        </p>
-                                        <div className="flex items-center justify-between pt-4 border-t border-zinc-800/50">
-                                            <span className="text-[9px] text-zinc-500 uppercase font-black tracking-widest">{artifact.agent}</span>
-                                            <button className="text-[10px] text-orange-500 font-bold hover:underline">View Source</button>
-                                        </div>
-                                    </div>
-                                ))}
-                                
-                                {allActivities.filter(a => a.type === 'CLIP_CREATED' || a.type === 'HANDOFF_CREATED').length === 0 && (
-                                    <div className="col-span-full p-20 text-center border border-dashed border-zinc-800 rounded-2xl">
-                                        <Package size={48} className="mx-auto text-zinc-800 mb-4" />
-                                        <p className="text-zinc-500 font-bold">No artifacts in the registry</p>
-                                    </div>
-                                )}
-                            </div>
+                            <ArtifactLibrary activities={allActivities} isLoading={isActivityLoading} />
                         </motion.div>
                     )}
                 </AnimatePresence>

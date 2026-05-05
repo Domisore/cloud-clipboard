@@ -39,6 +39,8 @@ export async function POST(request: Request) {
 
         // Authentication and Plan Check
         let userId = null;
+        let apiKeyId = null;
+        let agentName = null;
         const clerkUser = await currentUser();
         
         if (clerkUser) {
@@ -52,6 +54,9 @@ export async function POST(request: Request) {
                 if (keyData) {
                     // @ts-ignore
                     userId = keyData.userId as string;
+                    apiKeyId = `apikey:${token}`;
+                    // @ts-ignore
+                    agentName = keyData.name as string;
                 }
             }
         }
@@ -88,6 +93,7 @@ export async function POST(request: Request) {
         // --- NEW: TIERED RETRIEVAL GENERATION ---
         let abstract = "Summary unavailable.";
         let overview = "Overview unavailable.";
+        let contentPreview = "";
         
         try {
             // Fetch first 100KB from R2 for summarization
@@ -100,12 +106,43 @@ export async function POST(request: Request) {
             const content = await response.Body?.transformToString();
             
             if (content) {
-                const tiers = await generateTiers(content, contentType);
+                contentPreview = content.length > 100 ? content.substring(0, 100) + "..." : content;
+                const tiers = await generateTiers(content);
                 abstract = tiers.L0;
                 overview = tiers.L1;
             }
         } catch (e) {
             console.error("[TIER_GEN_ERROR] Failed to fetch/summarize file:", e);
+        }
+
+        // Log activity
+        if (apiKeyId) {
+            const token = apiKeyId.replace("apikey:", "");
+            await redis.hincrby(apiKeyId, "usage", 1);
+            
+            const expiresAt = Date.now() + expiry * 1000;
+            
+            // Need to import logActivity at the top of the file if not already there!
+            // I will add the import below if it fails.
+            try {
+                // @ts-ignore - dynamic import to avoid breaking if not at top level
+                const { logActivity } = await import('@/lib/activity');
+                await logActivity(token, {
+                    type: "FILE_UPLOADED",
+                    id: id,
+                    preview: contentPreview || "File content...",
+                    metadata: { 
+                        title: scrubbedFilename,
+                        filename: scrubbedFilename,
+                        contentType: contentType,
+                        sizeBytes: size,
+                        agentName: agentName,
+                        expiresAt
+                    }
+                });
+            } catch (err) {
+                console.error("Failed to log activity:", err);
+            }
         }
 
         // Save metadata to Redis with tiered TTL
