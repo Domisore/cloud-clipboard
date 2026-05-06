@@ -111,10 +111,10 @@ export function Header() {
 
                     {!isPclipPage && (
                         <Link
-                            href="/protocol"
+                            href="/developers"
                             className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
                         >
-                            Protocol
+                            Developers
                         </Link>
                     )}
 
@@ -146,11 +146,11 @@ export function Header() {
                             <div className="absolute top-full right-0 mt-2 w-48 bg-surface border border-border-color rounded-lg shadow-xl py-2 flex flex-col gap-1 animate-in fade-in zoom-in-95 duration-200">
                                 {!isPclipPage && (
                                     <Link
-                                        href="/protocol"
+                                        href="/developers"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                         className="w-full text-left px-4 py-3 text-base text-foreground hover:bg-black/5 transition-colors"
                                     >
-                                        Protocol
+                                        Developers
                                     </Link>
                                 )}
                                 {isPclipPage && (

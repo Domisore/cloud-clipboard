@@ -47,7 +47,7 @@ export default async function Home() {
               Start for Free <ArrowRight className="w-6 h-6" />
             </Link>
             <Link
-              href="/protocol"
+              href="/developers"
               className="w-full sm:w-auto px-12 py-6 rounded-[2rem] bg-white border border-border text-foreground font-black text-xl hover:bg-muted/50 transition-all flex items-center justify-center gap-2"
             >
               View Docs

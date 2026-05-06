@@ -56,8 +56,8 @@ export default function ContactPage() {
                     </div>
 
                     {/* Minimal Support Info */}
-                    <div className="mt-12 text-center text-sm text-foreground-muted">
-                        <p>Prefer direct email? Reach our support at <span className="text-white font-mono">support@drive.io</span></p>
+                    <div className="mt-12 text-center text-lg text-foreground-muted">
+                        <p>Prefer direct email? Reach our support at <a href="mailto:clientrelations@branelogic.com" className="text-gray-400 font-mono hover:text-gray-400 hover:underline transition-colors">deji@branelogic.com</a></p>
                     </div>
                 </div>
             </main>
