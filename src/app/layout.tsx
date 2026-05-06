@@ -38,22 +38,22 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Drive.io | Reduce LLM Token Costs with Multi-Agent Data Relays",
-  description: "Slash LLM token usage for LangGraph, CrewAI, and AutoGen. Secure, neutral artifact relays for multi-agent handoffs with persistent, ephemeral storage.",
-  applicationName: "Pclip",
+  title: "Drive.io | The Hard Drive for AI Agents",
+  description: "Give your AI agents a secure place to store files, share documents, and remember past conversations across platforms like Cursor, LangGraph, and AutoGen.",
+  applicationName: "Drive.io",
   other: {
     "llms": "/llms.txt",
     "skill": "/skill.md",
     "ai-discovery": "/ai.txt"
   },
   authors: [{ name: "Brane Technologies", url: "https://bigbrane.com" }],
-  keywords: ["AI Agents", "Agent Swarm", "LLM Storage", "Agentic Workflow", "Programmatic File Sharing", "Data Persistence Layer", "Y Combinator", "Autonomous Agents", "Moltbot", "OpenClaw"],
+  keywords: ["AI Agents", "Agent Hard Drive", "Agentic Workspace", "Universal Storage", "AI Memory", "Data Persistence", "Autonomous Agents", "Moltbot", "Cursor AI", "LangGraph"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://drive.io'),
   openGraph: {
-    title: "drive.io | Data Persistence for the Agent Swarm",
-    description: "The fastest way to programmatically move files and context between autonomous agents. Neutral, cross-framework artifact relay.",
+    title: "Drive.io | Universal Storage for AI Assistants",
+    description: "The fastest way to programmatically move files and context between autonomous agents. Give your AI a dedicated hard drive.",
     url: "https://drive.io",
-    siteName: "drive.io",
+    siteName: "Drive.io",
     images: [
       {
         url: "/icon.png",
@@ -66,14 +66,14 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "drive.io | S3 for AI Agents",
-    description: "Bypass human-centric rate limits. Generate instantly accessible storage URLs directly from standard agent outputs.",
+    title: "Drive.io | The Hard Drive for AI Agents",
+    description: "Stop pasting the same text into chat windows—just give your AI a hard drive.",
     images: ["/icon.png"],
   },
   manifest: "/manifest.json",
   icons: {
     icon: "/icon.png",
-    apple: "/pclip-192x192.png", // Explicit Apple Touch Icon for iOS PWA defaults
+    apple: "/icon-192x192.png", 
   },
 };
 
