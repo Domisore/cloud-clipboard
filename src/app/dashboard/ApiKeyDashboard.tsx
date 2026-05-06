@@ -306,8 +306,8 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                             {/* Stats Grid */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 {[
-                                    { label: 'Relays (24h)', value: stats.totalRelays.toLocaleString(), sub: 'vs baseline', color: 'orange' },
-                                    { label: 'Tokens Saved', value: `${stats.tokensSaved.toFixed(1)}k`, sub: 'Relay optimization', color: 'emerald' },
+                                    { label: 'Read/Writes (24h)', value: stats.totalRelays.toLocaleString(), sub: 'vs baseline', color: 'orange' },
+                                    { label: 'Tokens Saved', value: `${stats.tokensSaved.toFixed(1)}k`, sub: 'Storage optimization', color: 'emerald' },
                                     { label: 'Active Agents', value: stats.activeAgents, sub: 'Connected fleets', color: 'blue' },
                                     { label: 'Avg Latency', value: `${stats.avgLatency}ms`, sub: 'P50 Response', color: 'purple' }
                                 ].map((stat, i) => (
@@ -326,14 +326,14 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                                     <div>
                                         <h3 className="text-white font-bold flex items-center gap-2">
                                             <Activity size={18} className="text-orange-500" />
-                                            Relay Activity Flow
+                                            Read/Write Flow
                                         </h3>
                                         <p className="text-xs text-zinc-500 mt-1">Token savings vs raw processing overhead</p>
                                     </div>
                                     <div className="flex gap-4">
                                         <div className="flex items-center gap-2">
                                             <div className="w-2 h-2 rounded-full bg-orange-500" />
-                                            <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-tighter">Relays</span>
+                                            <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-tighter">Read/Writes</span>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <div className="w-2 h-2 rounded-full bg-emerald-500" />
@@ -427,7 +427,7 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                                         Quick Start
                                     </h3>
                                     <p className="text-[11px] text-zinc-500 leading-relaxed">
-                                        Use your keys to authenticate headless agents. All handoffs are relayed through the L0 edge for O(1) retrieval.
+                                        Use your keys to authenticate headless agents. All data is saved through the L0 edge for O(1) retrieval.
                                     </p>
                                 </div>
                             </div>
@@ -451,7 +451,7 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                                     <div className="p-16 border border-dashed border-zinc-800 rounded-2xl text-center flex flex-col items-center">
                                         <Terminal size={48} className="text-zinc-800 mb-6" />
                                         <h3 className="text-zinc-400 font-bold mb-2">No agents found in this cluster</h3>
-                                        <p className="text-xs text-zinc-600 max-w-xs">Provision a new key on the left to start relaying agentic artifacts.</p>
+                                        <p className="text-xs text-zinc-600 max-w-xs">Provision a new key on the left to start saving agentic artifacts.</p>
                                     </div>
                                 ) : (
                                     <div className="space-y-3">
@@ -501,7 +501,7 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                                                             </div>
                                                             <div className="w-1 h-1 rounded-full bg-zinc-800" />
                                                             <div className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">
-                                                                Relay ID: {key.id.substring(0, 8)}
+                                                                Key ID: {key.id.substring(0, 8)}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -509,7 +509,7 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                                                     <div className="flex items-center gap-8 self-start sm:self-center border-l border-zinc-800/50 pl-8">
                                                         <div className="text-right">
                                                             <div className="text-2xl font-black text-white leading-none">{key.usage || 0}</div>
-                                                            <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-[0.2em] mt-1">Relays</div>
+                                                            <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-[0.2em] mt-1">Read/Writes</div>
                                                         </div>
                                                         <button 
                                                             onClick={() => setKeyToDelete(rawKey)}
@@ -538,7 +538,7 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                             <div className="flex items-center justify-between mb-2">
                                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
                                     <Clock size={22} className="text-zinc-600" />
-                                    Relay Event Log
+                                    Read/Write Event Log
                                 </h2>
                                 <div className="flex items-center gap-4">
                                     <span className="text-[10px] text-zinc-500 font-bold uppercase">Syncing real-time</span>
@@ -618,7 +618,7 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                                     <Package size={22} className="text-zinc-600" />
                                     Artifact Registry
                                 </h2>
-                                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Storage: Relay L0 Edge</p>
+                                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Storage: L0 Edge</p>
                             </div>
 
                             <ArtifactLibrary activities={allActivities} isLoading={isActivityLoading} />
@@ -639,7 +639,7 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                             <div>
                                 <h3 className="text-xl font-bold text-white mb-2">Revoke Agent?</h3>
                                 <p className="text-sm text-zinc-400 leading-relaxed">
-                                    You are about to revoke this agent's access. Any active swarms using this key will immediately lose connectivity to the relay.
+                                    You are about to revoke this agent's access. Any active swarms using this key will immediately lose connectivity to the hard drive.
                                 </p>
                             </div>
                         </div>
