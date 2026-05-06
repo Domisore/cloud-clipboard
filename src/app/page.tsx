@@ -9,7 +9,16 @@ import { CodeTabs } from "@/components/ui/CodeTabs";
 import { ProcessFlow } from "@/components/ui/ProcessFlow";
 import { ArrowRight, HardDrive, Zap, ShieldCheck, Database, Share2, Cpu, FileText, FileJson, Search } from "lucide-react";
 
-export default function Home() {
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+
+export default async function Home() {
+  const { userId } = await auth();
+  
+  if (userId) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="min-h-screen flex flex-col font-sans selection:bg-accent/30 selection:text-foreground">
       <Header />

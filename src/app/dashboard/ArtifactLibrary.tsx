@@ -164,7 +164,9 @@ export function ArtifactLibrary({ activities, isLoading = false }: ArtifactLibra
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
                                             <h3 className="font-bold text-white text-sm truncate">
-                                                {artifact.metadata?.filename || `artifact-${artifact.id.substring(0, 5)}`}
+                                                {artifact.metadata?.filename && !artifact.metadata.filename.startsWith('text-artifact-') 
+                                                    ? artifact.metadata.filename 
+                                                    : 'Unnamed Artifact'}
                                             </h3>
                                             {artifact.metadata?.agentName && (
                                                 <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-[10px] uppercase font-bold tracking-wider hidden sm:inline-block">

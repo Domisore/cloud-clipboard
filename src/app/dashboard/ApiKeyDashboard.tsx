@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { 
     Terminal, Key, Plus, Copy, CheckCircle2, Trash2, Eye, EyeOff, 
     AlertTriangle, RefreshCw, Activity, X, Trash, 
-    Layers, Package, BarChart3, Clock, Zap
+    Layers, Package, BarChart3, Clock, Zap, ChevronLeft, ChevronRight, Menu
 } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
 import { useRouter } from 'next/navigation';
@@ -32,7 +32,9 @@ interface ActivityEvent {
 }
 
 export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?: boolean; plan?: string }) {
-    const [activeTab, setActiveTab] = useState<"overview" | "agents" | "activity" | "artifacts">("overview");
+    const [activeTab, setActiveTab] = useState<"overview" | "artifacts" | "agents" | "activity">("overview");
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [keys, setKeys] = useState<ApiKey[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
@@ -190,39 +192,109 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
     }, []);
 
     return (
-        <div className="min-h-screen flex flex-col font-mono bg-[#080808] text-zinc-300 selection:bg-orange-500/30">
+        <div className="min-h-screen flex font-mono bg-[#080808] text-zinc-300 selection:bg-orange-500/30 pt-[72px]">
             <Header />
             
-            <main className="flex-1 w-full max-w-6xl mx-auto pt-32 pb-20 px-6">
-                
-                {/* Tabs Navigation */}
-                <div className="flex border-b border-zinc-800 mb-8 sticky top-[72px] bg-[#080808]/80 backdrop-blur-md z-10">
+            {/* Left Navigation Sidebar */}
+            <aside 
+                className={`fixed left-0 top-[72px] bottom-0 z-40 bg-[#0c0c0d] border-r border-zinc-800 transition-all duration-300 hidden md:flex flex-col ${
+                    isSidebarCollapsed ? 'w-16' : 'w-64'
+                }`}
+            >
+                <div className="flex-1 py-6 flex flex-col gap-2 px-3">
                     {[
                         { id: 'overview', label: 'Overview', icon: BarChart3 },
+                        { id: 'artifacts', label: 'Artifacts', icon: Package },
                         { id: 'agents', label: 'Agents', icon: Key },
-                        { id: 'activity', label: 'Activity', icon: Clock },
-                        { id: 'artifacts', label: 'Artifacts', icon: Package }
-                    ].map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id as any)}
-                            className={`flex items-center gap-2 px-6 py-4 text-[11px] font-bold uppercase tracking-widest transition-all relative ${
-                                activeTab === tab.id ? 'text-white' : 'text-zinc-500 hover:text-zinc-300'
-                            }`}
-                        >
-                            <tab.icon size={14} />
-                            {tab.label}
-                            {activeTab === tab.id && (
-                                <motion.div 
-                                    layoutId="activeTab"
-                                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"
-                                />
-                            )}
-                        </button>
-                    ))}
+                        { id: 'activity', label: 'Activity', icon: Clock }
+                    ].map((tab) => {
+                        const isActive = activeTab === tab.id;
+                        return (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id as any)}
+                                className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-bold tracking-wide transition-all relative ${
+                                    isActive 
+                                        ? 'bg-orange-500/10 text-white' 
+                                        : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900'
+                                } ${isSidebarCollapsed ? 'justify-center' : 'justify-start'}`}
+                                title={isSidebarCollapsed ? tab.label : undefined}
+                            >
+                                <tab.icon size={18} className={isActive ? "text-orange-500" : ""} />
+                                {!isSidebarCollapsed && <span>{tab.label}</span>}
+                                {isActive && !isSidebarCollapsed && (
+                                    <motion.div 
+                                        layoutId="activeTabVert"
+                                        className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-orange-500 rounded-r-full"
+                                    />
+                                )}
+                            </button>
+                        );
+                    })}
                 </div>
 
-                <AnimatePresence mode="wait">
+                {/* Collapse Toggle */}
+                <div className="p-3 border-t border-zinc-800">
+                    <button 
+                        onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                        className={`w-full flex items-center p-2 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900 transition-colors ${
+                            isSidebarCollapsed ? 'justify-center' : 'justify-end'
+                        }`}
+                    >
+                        {isSidebarCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+                    </button>
+                </div>
+            </aside>
+            
+            {/* Main Content Area */}
+            <main className={`flex-1 w-full transition-all duration-300 p-6 md:p-8 lg:p-12 ${
+                isSidebarCollapsed ? 'md:ml-16' : 'md:ml-64'
+            }`}>
+                <div className="max-w-6xl mx-auto">
+                    {/* Mobile Menu Toggle (Visible only on small screens) */}
+                    <div className="md:hidden flex items-center justify-between mb-8 pb-4 border-b border-zinc-800">
+                        <h1 className="text-xl font-bold text-white uppercase tracking-wider">{activeTab}</h1>
+                        <button 
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-400"
+                        >
+                            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                        </button>
+                    </div>
+
+                    {/* Mobile Dropdown Menu */}
+                    <AnimatePresence>
+                        {isMobileMenuOpen && (
+                            <motion.div 
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="md:hidden overflow-hidden mb-8 border border-zinc-800 rounded-xl bg-[#0c0c0d]"
+                            >
+                                <div className="p-2 flex flex-col gap-1">
+                                    {[
+                                        { id: 'overview', label: 'Overview', icon: BarChart3 },
+                                        { id: 'artifacts', label: 'Artifacts', icon: Package },
+                                        { id: 'agents', label: 'Agents', icon: Key },
+                                        { id: 'activity', label: 'Activity', icon: Clock }
+                                    ].map((tab) => (
+                                        <button
+                                            key={tab.id}
+                                            onClick={() => { setActiveTab(tab.id as any); setIsMobileMenuOpen(false); }}
+                                            className={`flex items-center gap-3 p-3 rounded-lg text-sm font-bold transition-colors ${
+                                                activeTab === tab.id ? 'bg-orange-500/10 text-orange-500' : 'text-zinc-500 hover:bg-zinc-900'
+                                            }`}
+                                        >
+                                            <tab.icon size={16} />
+                                            {tab.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    <AnimatePresence mode="wait">
                     {activeTab === 'overview' && (
                         <motion.div 
                             key="overview"
@@ -553,6 +625,7 @@ export function ApiKeyDashboard({ isBypass = false, plan = "free" }: { isBypass?
                         </motion.div>
                     )}
                 </AnimatePresence>
+                </div>
             </main>
 
             {/* Modals - Same logic as before but with updated styling */}
