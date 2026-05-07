@@ -25,18 +25,18 @@ const tiers = [
         featured: false,
     },
     {
-        name: "Developer",
+        name: "Founder's Plan",
         price: "$19",
         unit: "/month",
-        description: "Early access rate. Includes direct access to the founding team — bug reports, feature requests, and integration questions get a real response.",
+        description: "Join as an early investor and partner. You're not just a client—you get direct access to our core team to shape the direction, features, and ultimate outcome of the product.",
         features: [
             { icon: HardDrive, text: "10 GB Storage" },
             { icon: Clock, text: "30-Day Link Expiry" },
             { icon: Infinity, text: "Unlimited Clips" },
             { icon: Shield, text: "100 MB Max File Size" },
-            { icon: Zap, text: "Priority Founding Team Access" },
+            { icon: Zap, text: "Direct Influence on Roadmap" },
         ],
-        buttonText: "Upgrade to Developer",
+        buttonText: "Become a Founder",
         href: "#",
         featured: true,
         priceId: "price_1TC7nU2au3jtvYgfJgEcRumO",
@@ -150,7 +150,7 @@ export function Pricing() {
                                 ))}
                             </ul>
 
-                            {tier.name === "Developer" ? (
+                            {tier.name === "Founder's Plan" ? (
                                 <button
                                     onClick={() => handleCheckout(tier.priceId!)}
                                     disabled={isLoading !== null}
