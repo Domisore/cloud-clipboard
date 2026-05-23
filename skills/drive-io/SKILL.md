@@ -3,6 +3,9 @@ Manage your cloud clipboard and file transfers.
 
 > [!NOTE]
 > This skill is fully compatible with the Model Context Protocol (MCP). You can connect this to platforms like Cursor, Windsurf, or Manus using the SSE endpoint: `https://drive.io/api/mcp`
+> 
+> * **If using MCP:** The native tools exposed to your environment are `upload_artifact` (for uploading clips/files) and `fetch_artifact` (for retrieving files).
+> * **If NOT using MCP:** The tools below are standard HTTP endpoints. You **cannot** call them as native functions (e.g. `create_clip(...)`). You must write code (e.g., Python `requests` or shell `curl`) to execute these calls using your local code execution environment.
 
 ## Authentication (API Keys)
 **Authentication is mandatory for all agent-facing tools.** To use Drive.io, you must provide a valid API Key (`sk_abc123`) generated from the user dashboard. 
@@ -12,6 +15,13 @@ Manage your cloud clipboard and file transfers.
 - **Standard Configuration:** Set the environment variable `DRIVEIO_API_KEY` in your runtime environment.
 - **Direct Usage:** Send this key in the header of every request: `Authorization: Bearer <your_api_key>`
 
+## Zero-Knowledge Privacy Protocol (Recommended)
+**For maximum privacy, agents should encrypt artifacts before they leave the local environment.** Drive.io technically supports "Zero-Knowledge" storage where the server only ever sees ciphertext.
+
+1. **Encrypt**: Use `AES-256-GCM` to encrypt your payload.
+2. **Key Transfer**: Append the key/nonce to the URL as a **fragment**: `https://drive.io/id#key=<hex_key>`.
+3. **Privacy**: Fragments are never sent to our servers. We stay architecturally blind.
+
 ### Example Setup (Python)
 ```python
 import os
@@ -19,44 +29,16 @@ import os
 os.environ["DRIVEIO_API_KEY"] = "sk_abc123"
 ```
 
-## Zero-Knowledge Privacy Protocol (Recommended)
-**For maximum privacy, agents should encrypt artifacts before they leave the local environment.** Drive.io technically supports "Zero-Knowledge" storage where the server only ever see ciphertext and holds no decryption keys.
-
-### 1. The Strategy
-- **Encryption**: Encrypt your payload using `AES-256-GCM`.
-- **Key Passing**: Append the decryption key to the returned URL as a **Fragment Overlay** (e.g., `https://drive.io/id#key=<hex_key>`). 
-- **Security**: URL fragments are never sent to the server, ensuring Drive.io remains architecturally blind to your data.
-
-### 2. Implementation Logic (Python Example)
-```python
-import os
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-
-# 1. Generate a random 32-byte key
-key = AESGCM.generate_key(bit_length=256)
-aesgcm = AESGCM(key)
-nonce = os.urandom(12)
-
-# 2. Encrypt your data
-data = "Sensitive agent thoughts...".encode()
-ciphertext = aesgcm.encrypt(nonce, data, None)
-
-# 3. Upload the ciphertext + nonce as the 'content'
-# 4. Format the final URL: https://drive.io/<id>#key=<key.hex()>:<nonce.hex()>
-```
-
----
-
 ## System Limits
 To ensure reliable operation, please respect the following constraints:
 - **Rate Limits:** There are currently no hard rate limits defined in the API, but aggressive polling or intentional abuse will result in IP bans.
 - **File/Data Size Limits:** Uploads (files and clips) are strictly limited to **100MB** per request.
-- **TTL (Time To Live):** By default, all assets (clips and files) are ephemeral and automatically deleted after **24 hours** (2,592,000 seconds for clips in Redis). If `burnAfterReading` is set to `true`, the asset is deleted immediately after the first successful `GET` request.
+- **TTL (Time To Live):** By default, all assets (clips and files) are ephemeral and automatically deleted after **24 hours**. If `burnAfterReading` is set to `true`, the asset is deleted immediately after the first successful `GET` request.
 
 ## Tools
 
 ### create_clip
-- **Description:** Sends text, code snippets, or logs to the cloud. **Recommended: Encrypt content locally before sending for Zero-Knowledge privacy.**
+- **Description:** Sends text, code snippets, or logs to the user's cloud clipboard.
 - **Parameters:**
   - `content`: (string) The text to save.
   - `title`: (string) Optional name for the clip.
@@ -72,13 +54,13 @@ To ensure reliable operation, please respect the following constraints:
 - **Parameters:**
   - `id`: (string) The unique identifier of the clip/file.
   - `download`: (boolean, optional) If `true`, bypasses the JSON wrapper and returns the raw file/text stream directly.
-- **Returns:** By default, a JSON object containing a presigned download URL. If `?download=true` is used, returns the raw data payload directly. Note: If `burnAfterReading` was true, this will consume the clip.
+- **Returns:** By default, a JSON object containing a presigned download URL. If `?download=true` is used, returns the raw data payload directly.
 - **API Call:**
   - `GET /api/file/<id>` (Returns JSON metadata)
   - `GET /api/file/<id>?download=true` (Returns raw file/text directly)
 
 ### upload_file_stream
-- **Description:** Uploads a file to the cloud. Max size: 100MB. **Note: Encrypt file locally first for Zero-Knowledge privacy.**
+- **Description:** Uploads a file generated by the agent to the cloud. Max size: 100MB.
 - **Parameters:**
   - `filePath`: (string) Local path to the file.
   - `contentType`: (string) MIME type of the file.
@@ -97,7 +79,6 @@ To ensure reliable operation, please respect the following constraints:
 - **API Call:**
   - `POST /api/v1/handoff`
   - Body: `{ "payload": "...", "targetAgentId": "...", "ttlSeconds": 3600 }`
-  - **Note:** This endpoint currently requires specific authentication headers.
 
 ### poll_handoff
 - **Description:** Checks if a handoff parked by another agent is ready to be consumed. Reading it automatically initiates the auto-burn sequence.
