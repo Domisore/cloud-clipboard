@@ -39,18 +39,18 @@ export function Header() {
         : "/dashboard";
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4">
+        <header className={`fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4 ${isLandingPage ? 'bg-black/10 backdrop-blur-md border-b border-white/[0.04]' : ''}`}>
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Logo */}
                 <Link href={isPclipPage ? "/clipboard" : "/"} className="flex items-center gap-2 group" suppressHydrationWarning>
-                    <div className="w-8 h-8 rounded-lg bg-surface border border-border-color flex items-center justify-center group-hover:border-accent/50 transition-colors shadow-sm overflow-hidden">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors shadow-sm overflow-hidden border ${isLandingPage ? 'bg-zinc-900 border-zinc-800 group-hover:border-accent/40' : 'bg-surface border-border-color group-hover:border-accent/50'}`}>
                         <img
                             src={isPclipPage ? "/pclip-192x192.png" : "/icon-192x192.png"}
                             alt={isPclipPage ? "Pclip Logo" : "Drive.io Logo"}
                             className="w-full h-full object-cover"
                         />
                     </div>
-                    <span className="font-sans font-semibold text-sm tracking-tight text-foreground group-hover:text-accent transition-colors">
+                    <span className={`font-sans font-semibold text-sm tracking-tight transition-colors ${isLandingPage ? 'text-zinc-200 group-hover:text-accent' : 'text-foreground group-hover:text-accent'}`}>
                         {isPclipPage ? "Pclip" : "Drive.io"}
                     </span>
                 </Link>
@@ -112,7 +112,7 @@ export function Header() {
                     {!isPclipPage && (
                         <Link
                             href="/developers"
-                            className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+                            className={`hidden md:block text-sm font-medium transition-colors ${isLandingPage ? 'text-zinc-400 hover:text-zinc-200' : 'text-foreground-muted hover:text-foreground'}`}
                         >
                             Developers
                         </Link>
@@ -120,14 +120,14 @@ export function Header() {
 
                     <Link
                         href={isPclipPage ? "/pclip/pricing" : "/pricing"}
-                        className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+                        className={`hidden md:block text-sm font-medium transition-colors ${isLandingPage ? 'text-zinc-400 hover:text-zinc-200' : 'text-foreground-muted hover:text-foreground'}`}
                     >
                         Pricing
                     </Link>
 
                     <Link
                         href="/contact"
-                        className="hidden md:block text-sm font-medium text-foreground-muted hover:text-foreground transition-colors"
+                        className={`hidden md:block text-sm font-medium transition-colors ${isLandingPage ? 'text-zinc-400 hover:text-zinc-200' : 'text-foreground-muted hover:text-foreground'}`}
                     >
                         Contact
                     </Link>
@@ -214,7 +214,7 @@ export function Header() {
                                             </Link>
                                         )}
                                         <div className="flex items-center gap-2">
-                                            <UserButton />
+                                            <UserButton afterSignOutUrl="/" />
                                             <span className="text-sm font-medium">Account</span>
                                         </div>
                                     </SignedIn>
@@ -243,20 +243,21 @@ export function Header() {
 
                     <SignedOut>
                         <SignInButton mode="modal" forceRedirectUrl={afterSignInUrl}>
-                            <button className="h-9 px-4 rounded-md text-sm font-bold bg-foreground text-background hover:opacity-90 transition-opacity">
+                            <button className={`h-9 px-4 rounded-md text-sm font-bold transition-opacity hover:opacity-90 ${isLandingPage ? 'bg-white text-zinc-950 hover:bg-zinc-200' : 'bg-foreground text-background'}`}>
                                 Sign In
                             </button>
                         </SignInButton>
                     </SignedOut>
                     <SignedIn>
-                        {!isPclipPage && <Link href="/dashboard" className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-surface border border-border-color rounded-md text-sm font-medium text-foreground-muted hover:text-foreground hover:bg-surface-hover transition-colors">
+                        {!isPclipPage && <Link href="/dashboard" className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors border ${isLandingPage ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-zinc-100 hover:bg-zinc-800' : 'bg-surface border-border-color text-foreground-muted hover:text-foreground hover:bg-surface-hover'}`}>
                                 Dashboard
                             </Link>
                         }
                         <UserButton
+                            afterSignOutUrl="/"
                             appearance={{
                                 elements: {
-                                    avatarBox: "w-9 h-9 border border-border-color"
+                                    avatarBox: `w-9 h-9 border ${isLandingPage ? 'border-zinc-800' : 'border-border-color'}`
                                 }
                             }}
                         />

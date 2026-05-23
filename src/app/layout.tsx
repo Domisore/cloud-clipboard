@@ -104,7 +104,7 @@ export default function RootLayout({
         className={`${jetbrainsMono.variable} ${inter.variable} ${ibmPlexMono.variable} ${ibmPlexSans.variable} antialiased bg-background text-foreground font-sans`}
         suppressHydrationWarning
       >
-        <ClerkProvider>
+        <ClerkProvider afterSignOutUrl="/">
           <MonetizationWrapper>
             <SessionProvider>
               {children}

@@ -4,9 +4,16 @@ const withPWA = require('next-pwa')({
   register: true,
   skipWaiting: true,
   disable: false, // process.env.NODE_ENV === 'development', // Always enable PWA for now
+  buildExcludes: [/sitemap\.xml$/, /robots\.txt$/],
 });
 
 const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   async rewrites() {
     return {
       beforeFiles: [

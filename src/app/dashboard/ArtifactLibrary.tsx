@@ -66,9 +66,18 @@ export function ArtifactLibrary({ activities, isLoading = false }: ArtifactLibra
         return <FileType size={18} className="text-purple-400" />;
     };
 
+    const [now, setNow] = useState<number>(0);
+
+    useEffect(() => {
+        setNow(Date.now());
+        const interval = setInterval(() => setNow(Date.now()), 15000);
+        return () => clearInterval(interval);
+    }, []);
+
     const formatRelativeTime = (timestamp: number) => {
-        const diff = Math.floor((Date.now() - timestamp) / 1000);
-        if (diff < 60) return `${diff}s ago`;
+        const currentNow = now || 1716391485000;
+        const diff = Math.floor((currentNow - timestamp) / 1000);
+        if (diff < 60) return `${Math.max(0, diff)}s ago`;
         if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
         if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
         return `${Math.floor(diff / 86400)}d ago`;
