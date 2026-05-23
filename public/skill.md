@@ -79,14 +79,17 @@ To ensure reliable operation, please respect the following constraints:
 - **Parameters:**
   - `filePath`: (string) Local path to the file.
   - `contentType`: (string) MIME type of the file.
+  - `size`: (number) The size of the file in bytes (e.g. `1024`).
 - **Returns:** A drive.io URL.
 - **API Call & curl Examples:**
   - **Step 1: Get presigned URL** (`POST <BaseURL>/api/upload`)
+    > [!IMPORTANT]
+    > You **must** provide the JSON body with `filename` (string), `contentType` (string), and `size` (number of bytes). If the request body is empty or missing `size`, it will return an `"Unexpected end of JSON input"` or `"Missing required fields"` error.
     ```bash
     curl -X POST "<BaseURL>/api/upload" \
       -H "Authorization: Bearer <your_api_key_or_env_var>" \
       -H "Content-Type: application/json" \
-      -d '{"filename": "test.txt", "contentType": "text/plain"}'
+      -d '{"filename": "test.txt", "contentType": "text/plain", "size": 1024}'
     ```
   - **Step 2: Upload raw file content** (`PUT <presigned_url>`)
     ```bash
