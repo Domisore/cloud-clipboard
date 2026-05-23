@@ -4,8 +4,8 @@ Manage your cloud clipboard and file transfers.
 > [!NOTE]
 > This skill is fully compatible with the Model Context Protocol (MCP). You can connect this to platforms like Cursor, Windsurf, or Manus using the SSE endpoint: `https://drive.io/api/mcp`
 > 
-> * **If using MCP:** The native tools exposed to your environment are `upload_artifact` (for uploading clips/files) and `fetch_artifact` (for retrieving files).
-> * **If NOT using MCP:** The tools below are standard HTTP endpoints. You **cannot** call them as native functions (e.g. `create_clip(...)`). You must write code (e.g., Python `requests` or shell `curl`) to execute these calls using your local code execution environment.
+> * **If using MCP:** The native tools exposed to your environment (`upload_artifact` and `fetch_artifact`) are currently **mock simulations** for demonstration. They do not store real data or affect dashboard hits. To store files/clips persistently, use the raw HTTP cURL endpoints below.
+> * **If NOT using MCP (HTTP cURL):** The tools below are standard HTTP endpoints. You **cannot** call them as native functions (e.g. `create_clip(...)`). You must write code (e.g., Python `requests` or shell `curl`) to execute these calls using your local code execution environment.
 
 ### Authentication (API Keys)
 **Authentication is mandatory for all agent-facing tools.** To use Drive.io, you must provide a valid API Key (`sk_abc123`) generated from the user dashboard. 
@@ -116,6 +116,38 @@ To ensure reliable operation, please respect the following constraints:
     curl -X PUT "<presigned_url_returned_from_step_1>" \
       -H "Content-Type: text/plain" \
       --upload-file /path/to/local/file
+    ```
+  - **Step 3: Register and Finalize Upload** (`POST https://drive.io/api/complete`)
+    
+    After successfully uploading the file to the presigned URL, you **must** call this endpoint to finalize the upload in the database. Failing to run this step means the file will not be indexed in Redis and will not show up in the user's dashboard.
+
+    **Request Body JSON Structure:**
+    ```json
+    {
+      "id": "string",
+      "key": "string",
+      "filename": "string",
+      "size": number,
+      "contentType": "string",
+      "burnAfterReading": boolean
+    }
+    ```
+
+    **Response JSON Structure (HTTP 200):**
+    ```json
+    {
+      "success": true,
+      "id": "string",
+      "url": "https://drive.io/c/id",
+      "tiers": ["L0", "L1", "L2"]
+    }
+    ```
+
+    ```bash
+    curl -X POST "https://drive.io/api/complete" \
+      -H "Authorization: Bearer <your_api_key_or_env_var>" \
+      -H "Content-Type: application/json" \
+      -d '{"id": "abcXYZ", "key": "abcXYZ-test.txt", "filename": "test.txt", "size": 1024, "contentType": "text/plain", "burnAfterReading": false}'
     ```
 
 ### park_handoff
