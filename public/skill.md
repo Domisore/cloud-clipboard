@@ -7,13 +7,19 @@ Manage your cloud clipboard and file transfers.
 > * **If using MCP:** The native tools exposed to your environment are `upload_artifact` (for uploading clips/files) and `fetch_artifact` (for retrieving files).
 > * **If NOT using MCP:** The tools below are standard HTTP endpoints. You **cannot** call them as native functions (e.g. `create_clip(...)`). You must write code (e.g., Python `requests` or shell `curl`) to execute these calls using your local code execution environment.
 
-## Authentication (API Keys)
+### Authentication (API Keys)
 **Authentication is mandatory for all agent-facing tools.** To use Drive.io, you must provide a valid API Key (`sk_abc123`) generated from the user dashboard. 
 
 - **Requirement:** If unauthenticated, requests will fail with a message: *"Please tell the user to create an account at https://drive.io/dashboard to get an API key."* You should present this message clearly to the user.
-- **Generate a Key:** The human user must navigate to `https://drive.io/dashboard` to generate an API Key.
-- **Standard Configuration:** Set the environment variable `DRIVEIO_API_KEY` in your runtime environment.
-- **Direct Usage:** Send this key in the header of every request: `Authorization: Bearer <your_api_key>`
+- **Generate a Key:** The human user must navigate to `https://drive.io/dashboard` (or `http://localhost:3000/dashboard` in development) to generate an API Key.
+- **Direct Usage:** Provide this key in the `Authorization: Bearer <your_api_key>` header of every API call. Replace `<your_api_key_or_env_var>` with your actual key string (e.g. `dr_live_abc123...`) if you cannot set environment variables.
+
+## Base URLs
+Configure the correct Base URL depending on your runtime environment:
+- **Local Development:** `http://localhost:3000`
+- **Production Deployment:** `https://drive.io`
+
+*Note: In the curl commands below, replace `<BaseURL>` with either `http://localhost:3000` or `https://drive.io` depending on your setup.*
 
 ## Zero-Knowledge Privacy Protocol (Recommended)
 **For maximum privacy, agents should encrypt artifacts before they leave the local environment.** Drive.io technically supports "Zero-Knowledge" storage where the server only ever sees ciphertext.
@@ -44,14 +50,10 @@ To ensure reliable operation, please respect the following constraints:
   - `download`: (boolean, optional) If `true`, returns the raw content stream directly instead of JSON.
 - **Returns:** JSON metadata or raw content.
 - **API Call & curl Examples:**
-  - **Endpoint:** `GET /api/file/<id>`
-  - **Local Dev curl:**
+  - **Endpoint:** `GET <BaseURL>/api/file/<id>`
+  - **curl Command:**
     ```bash
-    curl -H "Authorization: Bearer $DRIVEIO_API_KEY" "http://localhost:3000/api/file/<id>"
-    ```
-  - **Production curl:**
-    ```bash
-    curl -H "Authorization: Bearer $DRIVEIO_API_KEY" "https://drive.io/api/file/<id>"
+    curl -H "Authorization: Bearer <your_api_key_or_env_var>" "<BaseURL>/api/file/<id>"
     ```
 
 ### create_clip
@@ -63,18 +65,11 @@ To ensure reliable operation, please respect the following constraints:
   - `burnAfterReading`: (boolean, optional) If true, the clip is deleted after 1 view.
 - **Returns:** A drive.io URL and an ID.
 - **API Call & curl Examples:**
-  - **Endpoint:** `POST /api/v1/clips`
-  - **Local Dev curl:**
+  - **Endpoint:** `POST <BaseURL>/api/v1/clips`
+  - **curl Command:**
     ```bash
-    curl -X POST "http://localhost:3000/api/v1/clips" \
-      -H "Authorization: Bearer $DRIVEIO_API_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{"content": "Your content here", "title": "Clip Title", "isPrivate": true, "burnAfterReading": false}'
-    ```
-  - **Production curl:**
-    ```bash
-    curl -X POST "https://drive.io/api/v1/clips" \
-      -H "Authorization: Bearer $DRIVEIO_API_KEY" \
+    curl -X POST "<BaseURL>/api/v1/clips" \
+      -H "Authorization: Bearer <your_api_key_or_env_var>" \
       -H "Content-Type: application/json" \
       -d '{"content": "Your content here", "title": "Clip Title", "isPrivate": true, "burnAfterReading": false}'
     ```
@@ -86,17 +81,10 @@ To ensure reliable operation, please respect the following constraints:
   - `contentType`: (string) MIME type of the file.
 - **Returns:** A drive.io URL.
 - **API Call & curl Examples:**
-  - **Step 1: Get presigned URL** (`POST /api/upload`)
+  - **Step 1: Get presigned URL** (`POST <BaseURL>/api/upload`)
     ```bash
-    # Local Dev:
-    curl -X POST "http://localhost:3000/api/upload" \
-      -H "Authorization: Bearer $DRIVEIO_API_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{"filename": "test.txt", "contentType": "text/plain"}'
-    
-    # Production:
-    curl -X POST "https://drive.io/api/upload" \
-      -H "Authorization: Bearer $DRIVEIO_API_KEY" \
+    curl -X POST "<BaseURL>/api/upload" \
+      -H "Authorization: Bearer <your_api_key_or_env_var>" \
       -H "Content-Type: application/json" \
       -d '{"filename": "test.txt", "contentType": "text/plain"}'
     ```
@@ -115,18 +103,11 @@ To ensure reliable operation, please respect the following constraints:
   - `ttlSeconds`: (number, optional) Expiry in seconds. Default 3600.
 - **Returns:** A `handoff_id` and `PENDING` status.
 - **API Call & curl Examples:**
-  - **Endpoint:** `POST /api/v1/handoff`
-  - **Local Dev curl:**
+  - **Endpoint:** `POST <BaseURL>/api/v1/handoff`
+  - **curl Command:**
     ```bash
-    curl -X POST "http://localhost:3000/api/v1/handoff" \
-      -H "Authorization: Bearer $DRIVEIO_API_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{"payload": "Handoff payload content", "targetAgentId": "agent_abc", "ttlSeconds": 3600}'
-    ```
-  - **Production curl:**
-    ```bash
-    curl -X POST "https://drive.io/api/v1/handoff" \
-      -H "Authorization: Bearer $DRIVEIO_API_KEY" \
+    curl -X POST "<BaseURL>/api/v1/handoff" \
+      -H "Authorization: Bearer <your_api_key_or_env_var>" \
       -H "Content-Type: application/json" \
       -d '{"payload": "Handoff payload content", "targetAgentId": "agent_abc", "ttlSeconds": 3600}'
     ```
@@ -137,12 +118,8 @@ To ensure reliable operation, please respect the following constraints:
   - `id`: (string) The `handoff_id` returned from `park_handoff`.
 - **Returns:** The payload data and marks it as `CONSUMED`.
 - **API Call & curl Examples:**
-  - **Endpoint:** `GET /api/v1/handoff?id=<handoff_id>`
-  - **Local Dev curl:**
+  - **Endpoint:** `GET <BaseURL>/api/v1/handoff?id=<handoff_id>`
+  - **curl Command:**
     ```bash
-    curl -H "Authorization: Bearer $DRIVEIO_API_KEY" "http://localhost:3000/api/v1/handoff?id=<handoff_id>"
-    ```
-  - **Production curl:**
-    ```bash
-    curl -H "Authorization: Bearer $DRIVEIO_API_KEY" "https://drive.io/api/v1/handoff?id=<handoff_id>"
+    curl -H "Authorization: Bearer <your_api_key_or_env_var>" "<BaseURL>/api/v1/handoff?id=<handoff_id>"
     ```
