@@ -19,7 +19,7 @@ Configure the correct Base URL depending on your runtime environment:
 - **Local Development:** `http://localhost:3000`
 - **Production Deployment:** `https://drive.io`
 
-*Note: In the curl commands below, replace `<BaseURL>` with either `http://localhost:3000` or `https://drive.io` depending on your setup.*
+*Note: The curl commands below default to the production URL `https://drive.io`. If you are developing locally, you can replace `https://drive.io` with `http://localhost:3000`.*
 
 ## Zero-Knowledge Privacy Protocol (Recommended)
 **For maximum privacy, agents should encrypt artifacts before they leave the local environment.** Drive.io technically supports "Zero-Knowledge" storage where the server only ever sees ciphertext.
@@ -50,10 +50,10 @@ To ensure reliable operation, please respect the following constraints:
   - `download`: (boolean, optional) If `true`, returns the raw content stream directly instead of JSON.
 - **Returns:** JSON metadata or raw content.
 - **API Call & curl Examples:**
-  - **Endpoint:** `GET <BaseURL>/api/file/<id>`
+  - **Endpoint:** `GET https://drive.io/api/file/<id>`
   - **curl Command:**
     ```bash
-    curl -H "Authorization: Bearer <your_api_key_or_env_var>" "<BaseURL>/api/file/<id>"
+    curl -H "Authorization: Bearer <your_api_key_or_env_var>" "https://drive.io/api/file/<id>"
     ```
 
 ### create_clip
@@ -65,10 +65,10 @@ To ensure reliable operation, please respect the following constraints:
   - `burnAfterReading`: (boolean, optional) If true, the clip is deleted after 1 view.
 - **Returns:** A drive.io URL and an ID.
 - **API Call & curl Examples:**
-  - **Endpoint:** `POST <BaseURL>/api/v1/clips`
+  - **Endpoint:** `POST https://drive.io/api/v1/clips`
   - **curl Command:**
     ```bash
-    curl -X POST "<BaseURL>/api/v1/clips" \
+    curl -X POST "https://drive.io/api/v1/clips" \
       -H "Authorization: Bearer <your_api_key_or_env_var>" \
       -H "Content-Type: application/json" \
       -d '{"content": "Your content here", "title": "Clip Title", "isPrivate": true, "burnAfterReading": false}'
@@ -82,11 +82,11 @@ To ensure reliable operation, please respect the following constraints:
   - `size`: (number) The size of the file in bytes (e.g. `1024`).
 - **Returns:** A drive.io URL.
 - **API Call & curl Examples:**
-  - **Step 1: Get presigned URL** (`POST <BaseURL>/api/upload`)
+  - **Step 1: Get presigned URL** (`POST https://drive.io/api/upload`)
     > [!IMPORTANT]
     > You **must** provide the JSON body with `filename` (string), `contentType` (string), and `size` (number of bytes). If the request body is empty or missing `size`, it will return an `"Unexpected end of JSON input"` or `"Missing required fields"` error.
     ```bash
-    curl -X POST "<BaseURL>/api/upload" \
+    curl -X POST "https://drive.io/api/upload" \
       -H "Authorization: Bearer <your_api_key_or_env_var>" \
       -H "Content-Type: application/json" \
       -d '{"filename": "test.txt", "contentType": "text/plain", "size": 1024}'
@@ -106,10 +106,10 @@ To ensure reliable operation, please respect the following constraints:
   - `ttlSeconds`: (number, optional) Expiry in seconds. Default 3600.
 - **Returns:** A `handoff_id` and `PENDING` status.
 - **API Call & curl Examples:**
-  - **Endpoint:** `POST <BaseURL>/api/v1/handoff`
+  - **Endpoint:** `POST https://drive.io/api/v1/handoff`
   - **curl Command:**
     ```bash
-    curl -X POST "<BaseURL>/api/v1/handoff" \
+    curl -X POST "https://drive.io/api/v1/handoff" \
       -H "Authorization: Bearer <your_api_key_or_env_var>" \
       -H "Content-Type: application/json" \
       -d '{"payload": "Handoff payload content", "targetAgentId": "agent_abc", "ttlSeconds": 3600}'
@@ -121,8 +121,8 @@ To ensure reliable operation, please respect the following constraints:
   - `id`: (string) The `handoff_id` returned from `park_handoff`.
 - **Returns:** The payload data and marks it as `CONSUMED`.
 - **API Call & curl Examples:**
-  - **Endpoint:** `GET <BaseURL>/api/v1/handoff?id=<handoff_id>`
+  - **Endpoint:** `GET https://drive.io/api/v1/handoff?id=<handoff_id>`
   - **curl Command:**
     ```bash
-    curl -H "Authorization: Bearer <your_api_key_or_env_var>" "<BaseURL>/api/v1/handoff?id=<handoff_id>"
+    curl -H "Authorization: Bearer <your_api_key_or_env_var>" "https://drive.io/api/v1/handoff?id=<handoff_id>"
     ```
