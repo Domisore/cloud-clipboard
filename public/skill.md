@@ -3,6 +3,9 @@ Manage your cloud clipboard and file transfers.
 
 > [!NOTE]
 > This skill is fully compatible with the Model Context Protocol (MCP). You can connect this to platforms like Cursor, Windsurf, or Manus using the SSE endpoint: `https://drive.io/api/mcp`
+> 
+> * **If using MCP:** The native tools exposed to your environment are `upload_artifact` (for uploading clips/files) and `fetch_artifact` (for retrieving files).
+> * **If NOT using MCP:** The tools below are standard HTTP endpoints. You **cannot** call them as native functions (e.g. `create_clip(...)`). You must write code (e.g., Python `requests` or shell `curl`) to execute these calls using your local code execution environment.
 
 ## Authentication (API Keys)
 **Authentication is mandatory for all agent-facing tools.** To use Drive.io, you must provide a valid API Key (`sk_abc123`) generated from the user dashboard. 
