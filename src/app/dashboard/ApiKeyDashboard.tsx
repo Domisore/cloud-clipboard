@@ -199,8 +199,41 @@ export function ApiKeyDashboard({ isBypass = false, plan: initialPlan = "free" }
                 return [];
             });
 
-            const results = await Promise.all(activitiesPromises);
-            const flatActivities = results.flat().sort((a, b) => b.timestamp - a.timestamp);
+            // Fetch user Clerk files (human uploads)
+            const userFilesPromise = (async () => {
+                try {
+                    const res = await fetch('/api/user/files');
+                    if (res.ok) {
+                        const data = await res.json();
+                        const files = data.files || [];
+                        return files.map((file: any) => ({
+                            id: file.id,
+                            type: file.contentType ? "FILE_UPLOADED" : "CLIP_CREATED",
+                            timestamp: file.uploadedAt || Date.now(),
+                            preview: file.abstract || file.overview || "No preview available.",
+                            metadata: {
+                                title: file.filename,
+                                filename: file.filename,
+                                contentType: file.contentType || "text/plain",
+                                sizeBytes: file.size,
+                                agentName: "Human / Web App",
+                                expiresAt: (file.uploadedAt || Date.now()) + 86400 * 1000
+                            },
+                            agent: "Human / Web App"
+                        }));
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch user files", e);
+                }
+                return [];
+            })();
+
+            const [agentResults, userFiles] = await Promise.all([
+                Promise.all(activitiesPromises),
+                userFilesPromise
+            ]);
+
+            const flatActivities = [...agentResults.flat(), ...userFiles].sort((a, b) => b.timestamp - a.timestamp);
             setAllActivities(flatActivities);
         } catch (error) {
             console.error("Failed to fetch all activities", error);
