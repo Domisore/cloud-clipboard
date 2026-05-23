@@ -92,6 +92,15 @@ To ensure reliable operation, please respect the following constraints:
       "size": number
     }
     ```
+
+    **Response JSON Structure (HTTP 200):**
+    ```json
+    {
+      "url": "https://...",
+      "id": "string",
+      "key": "string"
+    }
+    ```
     
     > [!IMPORTANT]
     > You **must** provide the JSON body with exactly `filename` (string), `contentType` (string), and `size` (number of bytes). If the request body is empty, missing, or any field is omitted, it will return an `"Unexpected end of JSON input"` or `"Missing required fields"` error.
