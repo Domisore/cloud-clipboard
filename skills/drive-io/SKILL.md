@@ -37,6 +37,23 @@ To ensure reliable operation, please respect the following constraints:
 
 ## Tools
 
+### retrieve_clip
+- **Description:** Fetches data back from Drive.io using the `id` returned from `create_clip` or file uploads.
+- **Parameters:**
+  - `id`: (string) The unique identifier of the clip/file.
+  - `download`: (boolean, optional) If `true`, returns the raw content stream directly instead of JSON.
+- **Returns:** JSON metadata or raw content.
+- **API Call & curl Examples:**
+  - **Endpoint:** `GET /api/file/<id>`
+  - **Local Dev curl:**
+    ```bash
+    curl -H "Authorization: Bearer $DRIVEIO_API_KEY" "http://localhost:3000/api/file/<id>"
+    ```
+  - **Production curl:**
+    ```bash
+    curl -H "Authorization: Bearer $DRIVEIO_API_KEY" "https://drive.io/api/file/<id>"
+    ```
+
 ### create_clip
 - **Description:** Sends text, code snippets, or logs to the cloud clipboard.
 - **Parameters:**
@@ -60,23 +77,6 @@ To ensure reliable operation, please respect the following constraints:
       -H "Authorization: Bearer $DRIVEIO_API_KEY" \
       -H "Content-Type: application/json" \
       -d '{"content": "Your content here", "title": "Clip Title", "isPrivate": true, "burnAfterReading": false}'
-    ```
-
-### retrieve_clip
-- **Description:** Fetches data back from Drive.io using the `id` returned from `create_clip` or file uploads.
-- **Parameters:**
-  - `id`: (string) The unique identifier of the clip/file.
-  - `download`: (boolean, optional) If `true`, returns the raw content stream directly instead of JSON.
-- **Returns:** JSON metadata or raw content.
-- **API Call & curl Examples:**
-  - **Endpoint:** `GET /api/file/<id>`
-  - **Local Dev curl:**
-    ```bash
-    curl -H "Authorization: Bearer $DRIVEIO_API_KEY" "http://localhost:3000/api/file/<id>"
-    ```
-  - **Production curl:**
-    ```bash
-    curl -H "Authorization: Bearer $DRIVEIO_API_KEY" "https://drive.io/api/file/<id>"
     ```
 
 ### upload_file_stream
