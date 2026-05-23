@@ -83,8 +83,19 @@ To ensure reliable operation, please respect the following constraints:
 - **Returns:** A drive.io URL.
 - **API Call & curl Examples:**
   - **Step 1: Get presigned URL** (`POST https://drive.io/api/upload`)
+    
+    **Request Body JSON Structure:**
+    ```json
+    {
+      "filename": "string",
+      "contentType": "string",
+      "size": number
+    }
+    ```
+    
     > [!IMPORTANT]
-    > You **must** provide the JSON body with `filename` (string), `contentType` (string), and `size` (number of bytes). If the request body is empty or missing `size`, it will return an `"Unexpected end of JSON input"` or `"Missing required fields"` error.
+    > You **must** provide the JSON body with exactly `filename` (string), `contentType` (string), and `size` (number of bytes). If the request body is empty, missing, or any field is omitted, it will return an `"Unexpected end of JSON input"` or `"Missing required fields"` error.
+    
     ```bash
     curl -X POST "https://drive.io/api/upload" \
       -H "Authorization: Bearer <your_api_key_or_env_var>" \
