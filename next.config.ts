@@ -8,6 +8,7 @@ const withPWA = require('next-pwa')({
 });
 
 const nextConfig = {
+  turbopack: {},
   typescript: {
     ignoreBuildErrors: true,
   },
