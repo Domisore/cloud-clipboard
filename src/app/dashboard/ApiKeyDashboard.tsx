@@ -4,7 +4,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { 
     Globe, BookOpen, Key, LayoutDashboard, Tag, Brain, Webhook, Download, Settings, CreditCard, 
     ChevronRight, ChevronLeft, Menu, X, ExternalLink, Shield, Sparkles, Copy, CheckCircle2, Trash2, Eye, EyeOff, AlertTriangle, 
-    RefreshCw, Search, Plus, ArrowRight, Clock, Database, Send, Check, DownloadCloud, PlayCircle, BarChart3, ChevronDown, Cpu, Sparkle
+    RefreshCw, Search, Plus, ArrowRight, Clock, Database, Send, Check, DownloadCloud, PlayCircle, BarChart3, ChevronDown, Cpu, Sparkle,
+    FolderOpen
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -206,21 +207,24 @@ export function ApiKeyDashboard({ isBypass = false, plan: initialPlan = "free" }
                     if (res.ok) {
                         const data = await res.json();
                         const files = data.files || [];
-                        return files.map((file: any) => ({
-                            id: file.id,
-                            type: file.contentType ? "FILE_UPLOADED" : "CLIP_CREATED",
-                            timestamp: file.uploadedAt || Date.now(),
-                            preview: file.abstract || file.overview || "No preview available.",
-                            metadata: {
-                                title: file.filename,
-                                filename: file.filename,
-                                contentType: file.contentType || "text/plain",
-                                sizeBytes: file.size,
-                                agentName: "Human / Web App",
-                                expiresAt: (file.uploadedAt || Date.now()) + 86400 * 1000
-                            },
-                            agent: "Human / Web App"
-                        }));
+                        return files.map((file: any) => {
+                            const ts = file.uploadedAt || (file.createdAt ? new Date(file.createdAt).getTime() : Date.now());
+                            return {
+                                id: file.id,
+                                type: file.contentType ? "FILE_UPLOADED" : "CLIP_CREATED",
+                                timestamp: ts,
+                                preview: file.abstract || file.overview || "No preview available.",
+                                metadata: {
+                                    title: file.filename || file.title || "Unnamed Artifact",
+                                    filename: file.filename || file.title || "Unnamed Artifact",
+                                    contentType: file.contentType || "text/plain",
+                                    sizeBytes: file.size || file.sizeBytes || 0,
+                                    agentName: file.agentName || "Human / Web App",
+                                    expiresAt: ts + 86400 * 1000
+                                },
+                                agent: file.agentName || "Human / Web App"
+                            };
+                        });
                     }
                 } catch (e) {
                     console.error("Failed to fetch user files", e);
@@ -517,7 +521,7 @@ export function ApiKeyDashboard({ isBypass = false, plan: initialPlan = "free" }
                 { id: "overview", label: "Dashboard", icon: LayoutDashboard },
                 { id: "requests", label: "Requests", icon: Clock },
                 { id: "entities", label: "Entities", icon: Tag },
-                { id: "memories", label: "Memories", icon: Brain },
+                { id: "artifacts", label: "Artifact Library", icon: FolderOpen },
                 { id: "webhooks", label: "Webhooks", icon: Webhook },
                 { id: "exports", label: "Memory Exports", icon: Download },
             ]
@@ -1419,10 +1423,10 @@ console.log(results);`}
                                 </motion.div>
                             )}
 
-                            {/* TAB: MEMORIES (ARTIFACT LIBRARY) */}
-                            {activeTab === 'memories' && (
+                            {/* TAB: ARTIFACT LIBRARY */}
+                            {activeTab === 'artifacts' && (
                                 <motion.div 
-                                    key="memories"
+                                    key="artifacts"
                                     initial={{ opacity: 0, scale: 0.98 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 1.02 }}

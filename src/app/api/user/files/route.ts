@@ -25,9 +25,16 @@ export async function GET() {
         // Actually, let's use a pipeline or just Promise.all
         // We try primarily file:{id}, if missing, fallback to clip:{id} via multi-get or separate gets
         const promises = fileIds.map(async id => {
-            let data = await redis.get(`file:${id}`);
+            let data: any = await redis.get(`file:${id}`);
             if (!data) {
                 data = await redis.get(`clip:${id}`);
+            }
+            if (typeof data === 'string') {
+                try {
+                    data = JSON.parse(data);
+                } catch (e) {
+                    // Fallback if parsing fails
+                }
             }
             return data;
         });
