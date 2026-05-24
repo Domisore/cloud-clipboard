@@ -5,11 +5,12 @@ import {
     Globe, BookOpen, Key, LayoutDashboard, Tag, Brain, Webhook, Download, Settings, CreditCard, 
     ChevronRight, ChevronLeft, Menu, X, ExternalLink, Shield, Sparkles, Copy, CheckCircle2, Trash2, Eye, EyeOff, AlertTriangle, 
     RefreshCw, Search, Plus, ArrowRight, Clock, Database, Send, Check, DownloadCloud, PlayCircle, BarChart3, ChevronDown, Cpu, Sparkle,
-    FolderOpen
+    FolderOpen, Network
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArtifactLibrary } from './ArtifactLibrary';
+import { KnowledgeGraphView } from './KnowledgeGraphView';
 import { 
     AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, BarChart, Bar
 } from 'recharts';
@@ -522,6 +523,7 @@ export function ApiKeyDashboard({ isBypass = false, plan: initialPlan = "free" }
                 { id: "requests", label: "Requests", icon: Clock },
                 { id: "entities", label: "Entities", icon: Tag },
                 { id: "artifacts", label: "Artifact Library", icon: FolderOpen },
+                { id: "graphify", label: "Knowledge Graph", icon: Network },
                 { id: "webhooks", label: "Webhooks", icon: Webhook },
                 { id: "exports", label: "Memory Exports", icon: Download },
             ]
@@ -1437,6 +1439,19 @@ console.log(results);`}
                                         <p className="text-slate-500 mt-1">Browse semantic clips, compiled files, and markdown layouts saved by active LLM loops.</p>
                                     </div>
                                     <ArtifactLibrary activities={allActivities} isLoading={isActivityLoading} />
+                                </motion.div>
+                            )}
+
+                            {/* TAB: KNOWLEDGE GRAPH */}
+                            {activeTab === 'graphify' && (
+                                <motion.div 
+                                    key="graphify"
+                                    initial={{ opacity: 0, scale: 0.98 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 1.02 }}
+                                    className="flex flex-col gap-6"
+                                >
+                                    <KnowledgeGraphView />
                                 </motion.div>
                             )}
 
