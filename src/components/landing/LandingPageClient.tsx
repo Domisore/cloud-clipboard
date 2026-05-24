@@ -5,7 +5,7 @@ import Link from "next/link";
 import { 
   ArrowRight, Check, Copy, Terminal, Play, 
   Cpu, Database, Sparkles, Code2, Shield, 
-  Activity, Zap, Server, RefreshCw 
+  Activity, Zap, Server, RefreshCw, ChevronLeft, ChevronRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/ui/Header";
@@ -23,12 +23,49 @@ const INTEGRATIONS = [
   { name: "Vercel AI SDK", type: "Integration" }
 ];
 
+const SLIDES = [
+  {
+    title: "Interactive Knowledge Graph",
+    description: "Traverse AST nodes, import structures, and agent access histories dynamically.",
+    image: "/dark-mode-banner.png",
+    tags: ["Graphify", "Visualization"]
+  },
+  {
+    title: "Developer Admin Console",
+    description: "Manage secure API keys, analyze request latencies, and debug memory triggers.",
+    image: "/dashboard-screenshot.png",
+    tags: ["Developer Portal", "Analytics"]
+  },
+  {
+    title: "Multi-Agent Data Flow",
+    description: "Coherent memory consolidation, syncing workspace context across server and terminal clients.",
+    image: "/agent_data_flow_labeled.png",
+    tags: ["Architecture", "Context Sync"]
+  },
+  {
+    title: "Browser Sync Extension",
+    description: "Capture, view, and paste clips directly into your workspace from the Google Chrome extension.",
+    image: "/chrome-extension/screenshot-1.jpg",
+    tags: ["Browser Addon", "Client Sync"]
+  }
+];
+
 export function LandingPageClient() {
   const [copiedInstall, setCopiedInstall] = useState(false);
   const [activeTab, setActiveTab] = useState<"python" | "typescript" | "curl">("python");
   const [isRunning, setIsRunning] = useState(false);
   const [consoleLogs, setConsoleLogs] = useState<string[]>([]);
   const [consoleState, setConsoleState] = useState<"idle" | "running" | "done">("idle");
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(() => {
+      setActiveSlide(prev => (prev + 1) % SLIDES.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isPaused]);
 
   const copyInstallCommand = () => {
     navigator.clipboard.writeText("npm i @drive-io/sdk");
@@ -312,6 +349,127 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Screenshot Showcase Carousel */}
+        <div 
+          className="max-w-5xl mx-auto w-full mb-36 relative z-10"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-extrabold text-white mb-3">
+              Designed for developer velocity
+            </h2>
+            <p className="text-zinc-400 max-w-xl mx-auto">
+              A premium visual suite to manage memories, sync local files, and map connections.
+            </p>
+          </div>
+
+          <div className="relative bg-zinc-950/45 border border-zinc-800 rounded-3xl overflow-hidden p-3 md:p-6 shadow-2xl backdrop-blur-md">
+            
+            {/* Slide content container */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+              
+              {/* Slide Media Pane */}
+              <div className="lg:col-span-8 relative aspect-[16/10] bg-zinc-900/50 rounded-2xl overflow-hidden border border-zinc-800 flex items-center justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.img 
+                    key={activeSlide}
+                    src={SLIDES[activeSlide].image}
+                    alt={SLIDES[activeSlide].title}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.02 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="w-full h-full object-cover"
+                  />
+                </AnimatePresence>
+
+                {/* Navigation Arrows on Hover/Overlay */}
+                <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 hover:opacity-100 transition-opacity">
+                  <button 
+                    onClick={() => setActiveSlide(prev => (prev - 1 + SLIDES.length) % SLIDES.length)}
+                    className="p-2 rounded-full bg-zinc-900/80 border border-zinc-700 hover:border-zinc-500 text-white transition-all focus:outline-none cursor-pointer"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button 
+                    onClick={() => setActiveSlide(prev => (prev + 1) % SLIDES.length)}
+                    className="p-2 rounded-full bg-zinc-900/80 border border-zinc-700 hover:border-zinc-500 text-white transition-all focus:outline-none cursor-pointer"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Slide Detail Pane */}
+              <div className="lg:col-span-4 flex flex-col justify-center px-2 md:px-4">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeSlide}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex flex-col gap-4"
+                  >
+                    <div className="flex flex-wrap gap-2">
+                      {SLIDES[activeSlide].tags.map((tag, idx) => (
+                        <span key={idx} className="px-2.5 py-0.8 text-[10px] font-bold font-mono tracking-wider text-purple-400 bg-purple-950/40 border border-purple-900/50 rounded-md uppercase">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <h3 className="text-xl font-bold text-white tracking-tight">
+                      {SLIDES[activeSlide].title}
+                    </h3>
+                    
+                    <p className="text-sm text-zinc-400 leading-relaxed font-medium">
+                      {SLIDES[activeSlide].description}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Progress Indicators & Buttons */}
+                <div className="flex items-center gap-4 mt-8 pt-6 border-t border-zinc-900">
+                  <div className="flex gap-2">
+                    {SLIDES.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveSlide(idx)}
+                        className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                          activeSlide === idx ? 'w-6 bg-purple-500' : 'w-2 bg-zinc-800 hover:bg-zinc-750'
+                        }`}
+                        title={`Go to slide ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="ml-auto flex gap-2">
+                    <button 
+                      onClick={() => setActiveSlide(prev => (prev - 1 + SLIDES.length) % SLIDES.length)}
+                      className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-850 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                      title="Previous Slide"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => setActiveSlide(prev => (prev + 1) % SLIDES.length)}
+                      className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-850 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                      title="Next Slide"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
           </div>
         </div>
 
