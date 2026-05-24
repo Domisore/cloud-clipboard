@@ -1451,7 +1451,7 @@ console.log(results);`}
                                     exit={{ opacity: 0, scale: 1.02 }}
                                     className="flex flex-col gap-6"
                                 >
-                                    <KnowledgeGraphView />
+                                    <KnowledgeGraphView namespace={selectedOrg} />
                                 </motion.div>
                             )}
 

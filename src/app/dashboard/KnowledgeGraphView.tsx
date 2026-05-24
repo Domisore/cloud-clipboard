@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { 
     Search, Filter, Activity, Database, FileText, Code, Cpu, 
-    Network, HelpCircle, Shield, Info, ArrowRight, ExternalLink
+    Network, HelpCircle, Shield, Info, ArrowRight, ExternalLink, RefreshCw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -162,15 +162,108 @@ const INITIAL_EDGES: Edge[] = [
     { source: "node_7", target: "node_5", relationship: "finalizes via" }
 ];
 
-export function KnowledgeGraphView() {
+interface KnowledgeGraphViewProps {
+    namespace?: string;
+}
+
+export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphViewProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [typeFilter, setTypeFilter] = useState("all");
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>("node_3");
     const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 
+    // Live Graph State
+    const [nodes, setNodes] = useState<Node[]>([]);
+    const [edges, setEdges] = useState<Edge[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isIngesting, setIsIngesting] = useState(false);
+
+    // Fetch latest graph from Redis
+    useEffect(() => {
+        async function fetchGraph() {
+            setIsLoading(true);
+            try {
+                const res = await fetch(`/api/graphify/latest?namespace=${encodeURIComponent(namespace)}`);
+                if (!res.ok) {
+                    throw new Error(`Failed to load graph data: ${res.statusText}`);
+                }
+                const data = await res.json();
+                if (data && data.nodes && data.edges) {
+                    setNodes(data.nodes);
+                    setEdges(data.edges);
+                    if (data.nodes.length > 0 && !data.nodes.some((n: any) => n.id === selectedNodeId)) {
+                        setSelectedNodeId(data.nodes[0].id);
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to load graph, using local fallback:", e);
+                setNodes(INITIAL_NODES);
+                setEdges(INITIAL_EDGES);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchGraph();
+    }, [namespace]);
+
+    // Handle Simulated Ingestion action
+    const handleRunSimulation = async () => {
+        setIsIngesting(true);
+        try {
+            // Generate a simulated code node hooked into our WebDAV API node
+            const newId = `sim_node_${Date.now()}`;
+            const newNode: Node = {
+                id: newId,
+                label: `SimulatedAgentNode_${Math.floor(Math.random() * 1000)}.ts`,
+                type: "code",
+                group: "API",
+                x: 200 + Math.floor(Math.random() * 200),
+                y: 100 + Math.floor(Math.random() * 250),
+                description: "A dynamic agent logic executor compiled and saved live via Graphify DB ingestion.",
+                properties: { language: "TypeScript", role: "Dynamic Agent Hook", latency: "12ms" }
+            };
+            const newEdge = {
+                source: newId,
+                target: "node_3", // Connect to WebDAV node
+                relationship: "triggers"
+            };
+
+            const updatedNodes = [...nodes, newNode];
+            const updatedEdges = [...edges, newEdge];
+
+            const res = await fetch("/api/graphify/ingest", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    namespace,
+                    graph: {
+                        nodes: updatedNodes,
+                        edges: updatedEdges
+                    }
+                })
+            });
+
+            if (!res.ok) {
+                throw new Error("Failed to post graph simulation to database");
+            }
+
+            setNodes(updatedNodes);
+            setEdges(updatedEdges);
+            setSelectedNodeId(newId);
+            alert("Ingestion Successful! A new simulated agent node has been added to the database and compiled live on your SVG canvas.");
+        } catch (e: any) {
+            console.error("Simulation failed:", e);
+            alert("Ingestion Simulation failed: " + e.message);
+        } finally {
+            setIsIngesting(false);
+        }
+    };
+
     // Filter nodes
     const filteredNodes = useMemo(() => {
-        return INITIAL_NODES.filter(node => {
+        return nodes.filter(node => {
             const matchesSearch = searchQuery === "" || 
                 node.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 node.group.toLowerCase().includes(searchQuery.toLowerCase());
@@ -178,33 +271,33 @@ export function KnowledgeGraphView() {
             const matchesType = typeFilter === "all" || node.type === typeFilter;
             return matchesSearch && matchesType;
         });
-    }, [searchQuery, typeFilter]);
+    }, [nodes, searchQuery, typeFilter]);
 
     // Selected node metadata
     const selectedNode = useMemo(() => {
-        return INITIAL_NODES.find(n => n.id === selectedNodeId) || null;
-    }, [selectedNodeId]);
+        return nodes.find(n => n.id === selectedNodeId) || null;
+    }, [selectedNodeId, nodes]);
 
     // Incoming & Outgoing Edges for Selection
     const nodeRelationships = useMemo(() => {
         if (!selectedNodeId) return { incoming: [], outgoing: [] };
         
-        const incoming = INITIAL_EDGES
+        const incoming = edges
             .filter(e => e.target === selectedNodeId)
             .map(e => ({
-                node: INITIAL_NODES.find(n => n.id === e.source),
+                node: nodes.find(n => n.id === e.source),
                 relationship: e.relationship
             })).filter(item => item.node);
 
-        const outgoing = INITIAL_EDGES
+        const outgoing = edges
             .filter(e => e.source === selectedNodeId)
             .map(e => ({
-                node: INITIAL_NODES.find(n => n.id === e.target),
+                node: nodes.find(n => n.id === e.target),
                 relationship: e.relationship
             })).filter(item => item.node);
 
         return { incoming, outgoing };
-    }, [selectedNodeId]);
+    }, [selectedNodeId, nodes, edges]);
 
     const getIconForType = (type: string) => {
         if (type === 'code') return <Code size={16} className="text-blue-500" />;
@@ -234,6 +327,25 @@ export function KnowledgeGraphView() {
                 </div>
 
                 <div className="flex items-center gap-3 w-full md:w-auto">
+                    {/* Simulation trigger */}
+                    <button
+                        onClick={handleRunSimulation}
+                        disabled={isIngesting || isLoading}
+                        className="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    >
+                        {isIngesting ? (
+                            <>
+                                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                <span>Ingesting...</span>
+                            </>
+                        ) : (
+                            <>
+                                <Cpu className="w-3.5 h-3.5" />
+                                <span>Run Ingest Simulation</span>
+                            </>
+                        )}
+                    </button>
+
                     {/* Search */}
                     <div className="relative w-full md:w-64">
                         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -260,6 +372,7 @@ export function KnowledgeGraphView() {
                             <option value="external">Infrastructure</option>
                         </select>
                     </div>
+
                 </div>
             </div>
 
@@ -303,108 +416,115 @@ export function KnowledgeGraphView() {
 
                     {/* SVG Graphic Canvas */}
                     <div className="flex-1 w-full h-full flex items-center justify-center relative select-none">
-                        <svg className="w-full h-full min-h-[420px]" viewBox="0 0 620 540">
-                            <defs>
-                                <marker id="arrow" viewBox="0 0 10 10" refX="18" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569" />
-                                </marker>
-                                <marker id="arrow-active" viewBox="0 0 10 10" refX="18" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" />
-                                </marker>
-                            </defs>
+                        {isLoading ? (
+                            <div className="flex flex-col items-center gap-3 text-slate-400">
+                                <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
+                                <span className="text-xs font-mono">Syncing graph indexes...</span>
+                            </div>
+                        ) : (
+                            <svg className="w-full h-full min-h-[420px]" viewBox="0 0 620 540">
+                                <defs>
+                                    <marker id="arrow" viewBox="0 0 10 10" refX="18" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569" />
+                                    </marker>
+                                    <marker id="arrow-active" viewBox="0 0 10 10" refX="18" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" />
+                                    </marker>
+                                </defs>
 
-                            {/* Draw Edges */}
-                            {INITIAL_EDGES.map((edge, idx) => {
-                                const sourceNode = INITIAL_NODES.find(n => n.id === edge.source);
-                                const targetNode = INITIAL_NODES.find(n => n.id === edge.target);
+                                {/* Draw Edges */}
+                                {edges.map((edge, idx) => {
+                                    const sourceNode = nodes.find(n => n.id === edge.source);
+                                    const targetNode = nodes.find(n => n.id === edge.target);
 
-                                if (!sourceNode || !targetNode) return null;
+                                    if (!sourceNode || !targetNode) return null;
 
-                                const isLinkedToSelected = selectedNodeId === edge.source || selectedNodeId === edge.target;
-                                const isLinkedToHovered = hoveredNodeId === edge.source || hoveredNodeId === edge.target;
-                                const isActive = isLinkedToSelected || isLinkedToHovered;
+                                    const isLinkedToSelected = selectedNodeId === edge.source || selectedNodeId === edge.target;
+                                    const isLinkedToHovered = hoveredNodeId === edge.source || hoveredNodeId === edge.target;
+                                    const isActive = isLinkedToSelected || isLinkedToHovered;
 
-                                return (
-                                    <g key={idx}>
-                                        <line 
-                                            x1={sourceNode.x} 
-                                            y1={sourceNode.y} 
-                                            x2={targetNode.x} 
-                                            y2={targetNode.y} 
-                                            stroke={isActive ? "#3b82f6" : "#334155"} 
-                                            strokeWidth={isActive ? 2 : 1}
-                                            strokeDasharray={isActive ? "none" : "3,3"}
-                                            markerEnd={isActive ? "url(#arrow-active)" : "url(#arrow)"}
-                                            className="transition-all duration-300"
-                                        />
-                                        {/* Optional relationship text on hover */}
-                                        {isLinkedToHovered && (
-                                            <text 
-                                                x={(sourceNode.x + targetNode.x) / 2} 
-                                                y={(sourceNode.y + targetNode.y) / 2 - 6}
-                                                fill="#60a5fa"
-                                                fontSize="9"
-                                                fontFamily="monospace"
-                                                fontWeight="bold"
-                                                textAnchor="middle"
-                                            >
-                                                {edge.relationship}
-                                            </text>
-                                        )}
-                                    </g>
-                                );
-                            })}
+                                    return (
+                                        <g key={idx}>
+                                            <line 
+                                                x1={sourceNode.x} 
+                                                y1={sourceNode.y} 
+                                                x2={targetNode.x} 
+                                                y2={targetNode.y} 
+                                                stroke={isActive ? "#3b82f6" : "#334155"} 
+                                                strokeWidth={isActive ? 2 : 1}
+                                                strokeDasharray={isActive ? "none" : "3,3"}
+                                                markerEnd={isActive ? "url(#arrow-active)" : "url(#arrow)"}
+                                                className="transition-all duration-300"
+                                            />
+                                            {/* Optional relationship text on hover */}
+                                            {isLinkedToHovered && (
+                                                <text 
+                                                    x={(sourceNode.x + targetNode.x) / 2} 
+                                                    y={(sourceNode.y + targetNode.y) / 2 - 6}
+                                                    fill="#60a5fa"
+                                                    fontSize="9"
+                                                    fontFamily="monospace"
+                                                    fontWeight="bold"
+                                                    textAnchor="middle"
+                                                >
+                                                    {edge.relationship}
+                                                </text>
+                                            )}
+                                        </g>
+                                    );
+                                })}
 
-                            {/* Draw Nodes */}
-                            {filteredNodes.map((node) => {
-                                const isSelected = selectedNodeId === node.id;
-                                const isHovered = hoveredNodeId === node.id;
-                                const isMatchedInSearch = searchQuery !== "" && node.label.toLowerCase().includes(searchQuery.toLowerCase());
-                                const groupColor = getHexColorForGroup(node.group);
+                                {/* Draw Nodes */}
+                                {filteredNodes.map((node) => {
+                                    const isSelected = selectedNodeId === node.id;
+                                    const isHovered = hoveredNodeId === node.id;
+                                    const isMatchedInSearch = searchQuery !== "" && node.label.toLowerCase().includes(searchQuery.toLowerCase());
+                                    const groupColor = getHexColorForGroup(node.group);
 
-                                return (
-                                    <g 
-                                        key={node.id} 
-                                        transform={`translate(${node.x}, ${node.y})`}
-                                        className="cursor-pointer"
-                                        onClick={() => setSelectedNodeId(node.id)}
-                                        onMouseEnter={() => setHoveredNodeId(node.id)}
-                                        onMouseLeave={() => setHoveredNodeId(null)}
-                                    >
-                                        {/* Outer selection ring */}
-                                        <circle 
-                                            r={16} 
-                                            fill="transparent" 
-                                            stroke={isSelected ? "#3b82f6" : isHovered ? "#60a5fa" : "transparent"} 
-                                            strokeWidth={2}
-                                            className="transition-all duration-200"
-                                        />
-
-                                        {/* Core circle */}
-                                        <circle 
-                                            r={10} 
-                                            fill={groupColor}
-                                            className={`transition-transform duration-200 ${
-                                                isHovered || isSelected ? 'scale-125' : ''
-                                            } ${isMatchedInSearch ? 'animate-ping opacity-75' : ''}`}
-                                        />
-
-                                        {/* Text label */}
-                                        <text 
-                                            y={-22} 
-                                            textAnchor="middle"
-                                            fill={isSelected ? "#ffffff" : isHovered ? "#93c5fd" : "#94a3b8"}
-                                            fontSize="10"
-                                            fontWeight={isSelected || isHovered ? "bold" : "normal"}
-                                            fontFamily="monospace"
-                                            className="transition-colors duration-200 bg-slate-950 px-1"
+                                    return (
+                                        <g 
+                                            key={node.id} 
+                                            transform={`translate(${node.x}, ${node.y})`}
+                                            className="cursor-pointer"
+                                            onClick={() => setSelectedNodeId(node.id)}
+                                            onMouseEnter={() => setHoveredNodeId(node.id)}
+                                            onMouseLeave={() => setHoveredNodeId(null)}
                                         >
-                                            {node.label.split('/').pop()}
-                                        </text>
-                                    </g>
-                                );
-                            })}
-                        </svg>
+                                            {/* Outer selection ring */}
+                                            <circle 
+                                                r={16} 
+                                                fill="transparent" 
+                                                stroke={isSelected ? "#3b82f6" : isHovered ? "#60a5fa" : "transparent"} 
+                                                strokeWidth={2}
+                                                className="transition-all duration-200"
+                                            />
+
+                                            {/* Core circle */}
+                                            <circle 
+                                                r={10} 
+                                                fill={groupColor}
+                                                className={`transition-transform duration-200 ${
+                                                    isHovered || isSelected ? 'scale-125' : ''
+                                                } ${isMatchedInSearch ? 'animate-ping opacity-75' : ''}`}
+                                            />
+
+                                            {/* Text label */}
+                                            <text 
+                                                y={-22} 
+                                                textAnchor="middle"
+                                                fill={isSelected ? "#ffffff" : isHovered ? "#93c5fd" : "#94a3b8"}
+                                                fontSize="10"
+                                                fontWeight={isSelected || isHovered ? "bold" : "normal"}
+                                                fontFamily="monospace"
+                                                className="transition-colors duration-200 bg-slate-950 px-1"
+                                            >
+                                                {node.label.split('/').pop()}
+                                            </text>
+                                        </g>
+                                    );
+                                })}
+                            </svg>
+                        )}
                     </div>
                 </div>
 
@@ -490,7 +610,7 @@ export function KnowledgeGraphView() {
                                         <Shield size={12} className="text-emerald-500" /> Standard Node Access Allowed
                                     </span>
                                     <button 
-                                        onClick={() => alert(`Node pointer: drive://graph/acme/nodes/${selectedNode.id}`)}
+                                        onClick={() => alert(`Node pointer: drive://graph/${namespace}/nodes/${selectedNode.id}`)}
                                         className="flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:underline"
                                     >
                                         <span>Copy Graph Pointer</span>
