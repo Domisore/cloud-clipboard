@@ -45,7 +45,7 @@ const SLIDES = [
   {
     title: "Automated Tag & Approval Ledger",
     description: "Enable automated bots (like security scanners or campaign planners) to publish status tags directly on your workspace files for easy auditing.",
-    image: "/chrome-extension/screenshot-1.jpg",
+    image: "/dashboard-screenshot.png",
     tags: ["Compliance Tags", "Asset Audits"]
   }
 ];
