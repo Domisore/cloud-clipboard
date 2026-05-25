@@ -5,7 +5,7 @@ import Link from "next/link";
 import { 
   ArrowRight, Check, Copy, Terminal, Play, 
   Cpu, Database, Sparkles, Code2, Shield, 
-  Activity, Zap, Server, RefreshCw, ChevronLeft, ChevronRight
+  Activity, Zap, Server, RefreshCw, ChevronLeft, ChevronRight, X
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/ui/Header";
@@ -58,6 +58,17 @@ export function LandingPageClient() {
   const [consoleState, setConsoleState] = useState<"idle" | "running" | "done">("idle");
   const [activeSlide, setActiveSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedImage(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => {
     if (isPaused) return;
@@ -220,10 +231,19 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-campaign&id=sr
               
               {/* Slide Media Pane */}
               <div 
-                className="lg:col-span-8 relative aspect-[16/10] bg-zinc-900/50 rounded-2xl overflow-hidden border border-zinc-800 flex items-center justify-center"
+                className="lg:col-span-8 relative aspect-[16/10] bg-zinc-900/50 rounded-2xl overflow-hidden border border-zinc-800 flex items-center justify-center cursor-zoom-in group/media"
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
+                onClick={() => setSelectedImage(SLIDES[activeSlide].image)}
               >
+                {/* Hover indicator overlay */}
+                <div className="absolute inset-0 bg-black/25 opacity-0 group-hover/media:opacity-100 transition-opacity flex items-center justify-center pointer-events-none z-10">
+                  <div className="px-3 py-1.5 rounded-lg bg-zinc-900/90 border border-zinc-750 text-xs font-semibold text-white flex items-center gap-1.5 shadow-lg">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                    Click to enlarge
+                  </div>
+                </div>
+
                 <AnimatePresence mode="wait">
                   <motion.img 
                     key={activeSlide}
@@ -625,6 +645,44 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-campaign&id=sr
         </div>
 
       </main>
+ 
+      {/* Image Modal Overlay */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/85 backdrop-blur-md z-[100] flex items-center justify-center p-4 md:p-10 cursor-zoom-out"
+            onClick={() => setSelectedImage(null)}
+          >
+            {/* Close Button */}
+            <button 
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-6 right-6 p-2 rounded-full bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white transition-all focus:outline-none cursor-pointer z-10"
+              title="Close modal (Esc)"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Modal Image Wrapper with motion for scale */}
+            <motion.div
+              initial={{ scale: 0.95, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 10 }}
+              transition={{ type: "spring", damping: 25, stiffness: 350 }}
+              className="relative max-w-5xl max-h-[85vh] overflow-hidden rounded-2xl border border-zinc-850 shadow-2xl bg-zinc-950 flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the image itself
+            >
+              <img 
+                src={selectedImage}
+                alt="Enlarged workspace view"
+                className="w-full h-full object-contain max-h-[85vh]"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Footer container */}
       <Footer />
