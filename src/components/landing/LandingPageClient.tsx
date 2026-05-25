@@ -199,21 +199,6 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-campaign&id=sr
               Read SDK Reference
             </Link>
           </div>
-
-          {/* Quick Copy Command */}
-          <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-lg bg-zinc-950 border border-zinc-850 text-xs font-mono text-zinc-300 max-w-md mx-auto justify-between w-full sm:w-auto">
-            <div className="flex items-center gap-2">
-              <Terminal className="w-3.5 h-3.5 text-purple-400" />
-              <span>npm install @drive-io/sdk</span>
-            </div>
-            <button 
-              onClick={copyInstallCommand}
-              className="p-1 text-zinc-400 hover:text-zinc-200 transition-colors focus:outline-none"
-              title="Copy to clipboard"
-            >
-              {copiedInstall ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
-            </button>
-          </div>
         </div>
 
         {/* Interactive Code / Output Terminal Playground */}
@@ -361,8 +346,23 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-campaign&id=sr
         </div>
 
         {/* Interactive Code / Output Terminal Playground */}
-        <div className="max-w-5xl mx-auto w-full mb-32 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-zinc-950/60 border border-zinc-850 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md">
+        <div className="max-w-5xl mx-auto w-full mb-32 relative z-10 flex flex-col items-center gap-6">
+          {/* Quick Copy Command */}
+          <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-lg bg-zinc-950 border border-zinc-850 text-xs font-mono text-zinc-300 max-w-md justify-between w-full sm:w-auto">
+            <div className="flex items-center gap-2">
+              <Terminal className="w-3.5 h-3.5 text-purple-400" />
+              <span>npm install @drive-io/sdk</span>
+            </div>
+            <button 
+              onClick={copyInstallCommand}
+              className="p-1 text-zinc-400 hover:text-zinc-200 transition-colors focus:outline-none"
+              title="Copy to clipboard"
+            >
+              {copiedInstall ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-zinc-950/60 border border-zinc-850 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md w-full">
             
             {/* Left Side: Code Editor */}
             <div className="lg:col-span-7 border-b lg:border-b-0 lg:border-r border-zinc-850 flex flex-col">
