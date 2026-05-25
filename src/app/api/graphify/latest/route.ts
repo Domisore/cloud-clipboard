@@ -212,12 +212,19 @@ export async function GET(request: Request) {
 
         const { searchParams } = new URL(request.url);
         const namespace = searchParams.get("namespace");
+        const versionParam = searchParams.get("version") || "latest";
 
         if (!namespace) {
             return NextResponse.json({ error: "Missing parameter: namespace" }, { status: 400, headers });
         }
 
-        const graphData = await redis.get(`graph:${userId}:${namespace}:latest`);
+        const redisKey = versionParam === "latest" 
+            ? "latest" 
+            : versionParam.startsWith("v") 
+                ? versionParam 
+                : `v${versionParam}`;
+
+        const graphData = await redis.get(`graph:${userId}:${namespace}:${redisKey}`);
         let graph: any = DEFAULT_MOCK_GRAPH;
 
         if (graphData) {

@@ -179,11 +179,35 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
     const [isIngesting, setIsIngesting] = useState(false);
     const [jobStatus, setJobStatus] = useState<string | null>(null);
 
+    // Versioning & Annotations state
+    const [versions, setVersions] = useState<any[]>([]);
+    const [selectedVersion, setSelectedVersion] = useState<string>("latest");
+    const [selectedNodeDetails, setSelectedNodeDetails] = useState<any | null>(null);
+    const [isLoadingNode, setIsLoadingNode] = useState(false);
+    const [newAnnotationContent, setNewAnnotationContent] = useState("");
+    const [isSubmittingAnnotation, setIsSubmittingAnnotation] = useState(false);
+    const [isRestoringVersion, setIsRestoringVersion] = useState(false);
+
+    // Fetch version list
+    async function fetchVersions() {
+        try {
+            const res = await fetch(`/api/graphify/versions?namespace=${encodeURIComponent(namespace)}`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.versions) {
+                    setVersions(data.versions);
+                }
+            }
+        } catch (e) {
+            console.error("Failed to fetch versions:", e);
+        }
+    }
+
     // Fetch latest graph from Redis
     async function fetchGraph() {
         setIsLoading(true);
         try {
-            const res = await fetch(`/api/graphify/latest?namespace=${encodeURIComponent(namespace)}`);
+            const res = await fetch(`/api/graphify/latest?namespace=${encodeURIComponent(namespace)}&version=${selectedVersion}`);
             if (!res.ok) {
                 throw new Error(`Failed to load graph data: ${res.statusText}`);
             }
@@ -206,7 +230,118 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
 
     useEffect(() => {
         fetchGraph();
-    }, [namespace]);
+        fetchVersions();
+    }, [namespace, selectedVersion]);
+
+    // Fetch selected node details (including annotations)
+    useEffect(() => {
+        if (!selectedNodeId) {
+            setSelectedNodeDetails(null);
+            return;
+        }
+
+        async function fetchNodeDetails() {
+            setIsLoadingNode(true);
+            try {
+                const res = await fetch(`/api/graphify/node?namespace=${encodeURIComponent(namespace)}&id=${selectedNodeId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.target) {
+                        setSelectedNodeDetails(data.target);
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to fetch node details:", e);
+            } finally {
+                setIsLoadingNode(false);
+            }
+        }
+
+        // Fast local fallback to avoid layout shift
+        const localNode = nodes.find(n => n.id === selectedNodeId);
+        if (localNode) {
+            setSelectedNodeDetails(localNode);
+        }
+
+        fetchNodeDetails();
+    }, [selectedNodeId, namespace, nodes]);
+
+    // Handle Annotation Submission
+    const handleAddAnnotation = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!selectedNodeId || !newAnnotationContent.trim()) return;
+
+        setIsSubmittingAnnotation(true);
+        try {
+            const res = await fetch("/api/graphify/node", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    namespace,
+                    nodeId: selectedNodeId,
+                    content: newAnnotationContent,
+                    agentId: "dashboard-user",
+                    annotationType: "finding"
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setSelectedNodeDetails((prev: any) => {
+                    if (!prev) return null;
+                    const currentAnnotations = prev.annotations || [];
+                    return {
+                        ...prev,
+                        annotations: [data.annotation, ...currentAnnotations]
+                    };
+                });
+                setNewAnnotationContent("");
+            } else {
+                alert("Failed to add annotation");
+            }
+        } catch (err) {
+            console.error("Failed to submit annotation:", err);
+            alert("Error submitting annotation");
+        } finally {
+            setIsSubmittingAnnotation(false);
+        }
+    };
+
+    // Handle restoring an older version as active
+    const handleRestoreActiveVersion = async () => {
+        if (selectedVersion === "latest") return;
+        
+        setIsRestoringVersion(true);
+        try {
+            const res = await fetch("/api/graphify/versions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    namespace,
+                    version: selectedVersion.replace("v", "")
+                })
+            });
+
+            if (res.ok) {
+                alert(`Successfully restored version ${selectedVersion} as the active latest graph.`);
+                setSelectedVersion("latest");
+                await fetchVersions();
+                await fetchGraph();
+            } else {
+                const errData = await res.json();
+                alert("Failed to restore version: " + (errData.error || "Unknown error"));
+            }
+        } catch (err: any) {
+            console.error("Restoring version failed:", err);
+            alert("Error restoring version: " + err.message);
+        } finally {
+            setIsRestoringVersion(false);
+        }
+    };
 
     // Handle Simulated Ingestion action via background queue
     const handleRunSimulation = async () => {
@@ -335,7 +470,7 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
                     <p className="text-xs text-slate-400 font-semibold mt-0.5">Interactive code structural map compiled by Graphify.</p>
                 </div>
 
-                <div className="flex items-center gap-3 w-full md:w-auto">
+                <div className="flex items-center gap-3 w-full md:w-auto flex-wrap">
                     {/* Simulation trigger */}
                     <button
                         onClick={handleRunSimulation}
@@ -362,6 +497,43 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
                             </>
                         )}
                     </button>
+
+                    {/* Version Selector Dropdown */}
+                    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-slate-600 hover:bg-slate-100/50 transition-all">
+                        <Database size={12} className="text-slate-400" />
+                        <select 
+                            value={selectedVersion}
+                            onChange={(e) => setSelectedVersion(e.target.value)}
+                            className="bg-transparent text-[11px] font-bold text-slate-700 focus:outline-none cursor-pointer pr-1"
+                        >
+                            <option value="latest">Latest Active Graph</option>
+                            {versions.map((v: any, idx: number) => {
+                                if (v.isRestore) {
+                                    return (
+                                        <option key={idx} value={`v${v.version}`}>
+                                            v{v.version} (Restored {new Date(v.uploadedAt).toLocaleDateString()})
+                                        </option>
+                                    );
+                                }
+                                return (
+                                    <option key={idx} value={`v${v.version}`}>
+                                        v{v.version} ({v.nodeCount} nodes, {new Date(v.uploadedAt).toLocaleDateString()})
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
+
+                    {/* Restore Active Version Button */}
+                    {selectedVersion !== "latest" && (
+                        <button
+                            onClick={handleRestoreActiveVersion}
+                            disabled={isRestoringVersion}
+                            className="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                        >
+                            {isRestoringVersion ? "Restoring..." : "Restore as Active"}
+                        </button>
+                    )}
 
                     {/* Search */}
                     <div className="relative w-full md:w-64">
@@ -560,15 +732,15 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
                                 <div className="border-b border-slate-100 pb-4">
                                     <div className="flex items-center gap-2">
                                         <div className="p-1.5 bg-slate-50 border border-slate-100 rounded-lg">
-                                            {getIconForType(selectedNode.type)}
+                                            {getIconForType(selectedNodeDetails?.type || selectedNode.type)}
                                         </div>
                                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 uppercase tracking-wide">
-                                            {selectedNode.group}
+                                            {selectedNodeDetails?.group || selectedNode.group}
                                         </span>
                                     </div>
-                                    <h3 className="text-lg font-black text-slate-900 mt-2 font-mono truncate">{selectedNode.label}</h3>
+                                    <h3 className="text-lg font-black text-slate-900 mt-2 font-mono truncate">{selectedNodeDetails?.label || selectedNode.label}</h3>
                                     <p className="text-slate-400 text-xs mt-1.5 font-semibold leading-relaxed">
-                                        {selectedNode.description}
+                                        {selectedNodeDetails?.description || selectedNode.description}
                                     </p>
                                 </div>
 
@@ -576,10 +748,10 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
                                 <div>
                                     <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Properties</h4>
                                     <div className="grid grid-cols-1 gap-2.5">
-                                        {Object.entries(selectedNode.properties).map(([key, val]) => (
+                                        {Object.entries(selectedNodeDetails?.properties || selectedNode.properties).map(([key, val]) => (
                                             <div key={key} className="flex justify-between items-center text-xs border-b border-slate-50 pb-1.5">
                                                 <span className="text-slate-400 font-mono capitalize">{key.replace('_', ' ')}</span>
-                                                <span className="text-slate-700 font-bold max-w-[180px] truncate">{val}</span>
+                                                <span className="text-slate-700 font-bold max-w-[180px] truncate">{String(val)}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -588,7 +760,7 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
                                 {/* Traversal Links (Incoming / Outgoing) */}
                                 <div>
                                     <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Graph Relationships</h4>
-                                    <div className="flex flex-col gap-2 max-h-36 overflow-y-auto pr-1">
+                                    <div className="flex flex-col gap-2 max-h-28 overflow-y-auto pr-1">
                                         {nodeRelationships.incoming.map((rel: any, idx) => (
                                             <div 
                                                 key={`in-${idx}`}
@@ -621,6 +793,48 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
                                     </div>
                                 </div>
 
+                                {/* Node Annotations from Agents */}
+                                <div className="border-t border-slate-100 pt-4">
+                                    <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Agent Annotations</h4>
+                                    <div className="flex flex-col gap-2 max-h-28 overflow-y-auto pr-1 mb-3">
+                                        {isLoadingNode ? (
+                                            <div className="text-center py-2 text-[10px] text-slate-400 font-mono">Loading annotations...</div>
+                                        ) : selectedNodeDetails?.annotations && selectedNodeDetails.annotations.length > 0 ? (
+                                            selectedNodeDetails.annotations.map((ann: any, idx: number) => (
+                                                <div key={ann.id || idx} className="p-2 rounded-lg bg-slate-50 border border-slate-100 flex flex-col gap-1 text-[11px] leading-relaxed">
+                                                    <div className="flex justify-between items-center text-[9px] font-bold">
+                                                        <span className="text-blue-600 truncate max-w-[120px]">@{ann.agentId}</span>
+                                                        <span className="text-slate-400 font-normal">Conf: {(ann.confidence * 100).toFixed(0)}%</span>
+                                                    </div>
+                                                    <p className="text-slate-600 font-medium">{ann.content}</p>
+                                                    <span className="text-[8px] text-slate-400 text-right">{new Date(ann.createdAt).toLocaleDateString()}</span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <span className="text-slate-400 text-[11px] font-semibold text-center block py-1">No annotations registered.</span>
+                                        )}
+                                    </div>
+
+                                    {/* Add Annotation Form */}
+                                    <form onSubmit={handleAddAnnotation} className="flex items-center gap-2">
+                                        <input 
+                                            type="text"
+                                            placeholder="Write annotation finding..."
+                                            value={newAnnotationContent}
+                                            onChange={(e) => setNewAnnotationContent(e.target.value)}
+                                            disabled={isSubmittingAnnotation}
+                                            className="flex-1 bg-slate-50 hover:bg-slate-100/50 focus:bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-500 transition-all font-semibold"
+                                        />
+                                        <button 
+                                            type="submit"
+                                            disabled={isSubmittingAnnotation || !newAnnotationContent.trim()}
+                                            className="px-3 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer"
+                                        >
+                                            {isSubmittingAnnotation ? "Saving..." : "Add"}
+                                        </button>
+                                    </form>
+                                </div>
+
                                 {/* Traversal/Query actions */}
                                 <div className="border-t border-slate-100 pt-4 flex items-center justify-between mt-auto">
                                     <span className="text-[10px] text-slate-400 font-semibold flex items-center gap-1.5">
@@ -634,7 +848,6 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
                                         <ExternalLink size={12} />
                                     </button>
                                 </div>
-
                             </motion.div>
                         ) : (
                             <div className="flex-1 flex flex-col items-center justify-center text-center text-slate-400 gap-3">

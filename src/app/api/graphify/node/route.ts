@@ -161,8 +161,24 @@ export async function GET(request: Request) {
         const resultNodes = graph.nodes.filter((n: any) => visitedIds.has(n.id));
         const resultEdges = graph.edges.filter((e: any) => visitedIds.has(e.source) && visitedIds.has(e.target));
 
+        // Fetch annotations for the target node
+        const annotationsRaw = await redis.lrange(`graph:${userId}:${namespace}:node:${targetId}:annotations`, 0, -1);
+        const annotations = annotationsRaw.map((v) => {
+            if (typeof v === "string") {
+                try {
+                    return JSON.parse(v);
+                } catch (e) {
+                    return v;
+                }
+            }
+            return v;
+        });
+
         return NextResponse.json({
-            target: targetNode,
+            target: {
+                ...targetNode,
+                annotations
+            },
             nodes: resultNodes,
             edges: resultEdges
         }, { status: 200, headers });
@@ -170,5 +186,67 @@ export async function GET(request: Request) {
     } catch (error: any) {
         console.error("Graphify node fetch error:", error);
         return NextResponse.json({ error: error.message || "Failed to fetch node" }, { status: 500, headers });
+    }
+}
+
+// POST Handler (Add Node Annotation)
+export async function POST(request: Request) {
+    const origin = request.headers.get('origin');
+    const headers = corsHeaders(origin);
+
+    try {
+        // 1. Authenticate user
+        let userId: string | null = null;
+        try {
+            const session = await auth();
+            userId = session.userId;
+        } catch (e) {
+            // Not authenticated via Clerk session
+        }
+
+        if (!userId) {
+            userId = await getUserIdFromAuth(request);
+        }
+
+        if (!userId) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers });
+        }
+
+        // 2. Parse request body
+        const body = await request.json();
+        const { namespace, nodeId, agentId, annotationType, content, confidence, references } = body;
+
+        if (!namespace) {
+            return NextResponse.json({ error: "Missing parameter: namespace" }, { status: 400, headers });
+        }
+        if (!nodeId) {
+            return NextResponse.json({ error: "Missing parameter: nodeId" }, { status: 400, headers });
+        }
+        if (!content) {
+            return NextResponse.json({ error: "Missing parameter: content" }, { status: 400, headers });
+        }
+
+        // 3. Create annotation payload
+        const annotation = {
+            id: `ann_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+            agentId: agentId || "user-direct",
+            annotationType: annotationType || "finding",
+            content,
+            confidence: confidence !== undefined ? parseFloat(confidence) : 1.0,
+            references: references || [],
+            createdAt: Date.now()
+        };
+
+        // 4. Save to Redis
+        await redis.lpush(`graph:${userId}:${namespace}:node:${nodeId}:annotations`, JSON.stringify(annotation));
+
+        return NextResponse.json({
+            success: true,
+            annotation
+        }, { status: 200, headers });
+
+    } catch (error: any) {
+        console.error("Graphify node annotate error:", error);
+        return NextResponse.json({ error: error.message || "Failed to add annotation" }, { status: 500, headers });
     }
 }
