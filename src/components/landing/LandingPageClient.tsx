@@ -26,27 +26,27 @@ const INTEGRATIONS = [
 const SLIDES = [
   {
     title: "Interactive Knowledge Graph",
-    description: "Traverse AST nodes, import structures, and agent access histories dynamically.",
+    description: "Visualize parsed codebase AST structures, follow relationship edges, inspect node annotations, and trace historical graph versions in real-time.",
     image: "/dark-mode-banner.png",
-    tags: ["Graphify", "Visualization"]
+    tags: ["Graphify", "Visualizer"]
   },
   {
-    title: "Developer Admin Console",
-    description: "Manage secure API keys, analyze request latencies, and debug memory triggers.",
+    title: "AI Copilot Canvas Control",
+    description: "Allow autonomous agents to interactively pan, query, and highlight selected code components on the graph as they fetch codebase context.",
     image: "/dashboard-screenshot.png",
-    tags: ["Developer Portal", "Analytics"]
+    tags: ["Agent Workspace", "Canvas Control"]
   },
   {
-    title: "Multi-Agent Data Flow",
-    description: "Coherent memory consolidation, syncing workspace context across server and terminal clients.",
+    title: "Token-Saving Tiered Retrieval",
+    description: "Optimize prompts using tiered context delivery: fetch lightweight L0 metadata, structured L1 index summaries, or full L2 source files.",
     image: "/agent_data_flow_labeled.png",
-    tags: ["Architecture", "Context Sync"]
+    tags: ["Optimization", "Context Tiers"]
   },
   {
-    title: "Browser Sync Extension",
-    description: "Capture, view, and paste clips directly into your workspace from the Google Chrome extension.",
+    title: "Agent Annotation Ledger",
+    description: "Enable automated validation bots (e.g. security scanners, schedule managers) to publish annotations directly on file nodes for human audit.",
     image: "/chrome-extension/screenshot-1.jpg",
-    tags: ["Browser Addon", "Client Sync"]
+    tags: ["Compliance", "Annotations"]
   }
 ];
 
@@ -74,58 +74,53 @@ export function LandingPageClient() {
   };
 
   const codeSnippets = {
-    python: `from drive import Drive
+    python: `from drive import DriveClient
 
-# 1. Initialize client
-client = Drive(api_key="dr_live_8x2j9k...")
+# 1. Connect to workspace graph namespace
+client = DriveClient(api_key="dr_live_8x2j9k...", namespace="acme-billing")
 
-# 2. Add memory context
-client.memories.add(
-    user_id="user_129",
-    content="Prefers writing code in TypeScript, dark mode UI"
+# 2. Query latest graph structural index (L1 Tier)
+graph = client.graphify.latest(tier="L1")
+print(f"Loaded {len(graph.nodes)} AST components.")
+
+# 3. Traverse 1-hop dependencies of a core service
+auth_dependencies = client.graphify.query_node(
+    node_id="src/auth.ts",
+    depth=1,
+    include_annotations=True
 )
 
-# 3. Retrieve memory semantically
-context = client.memories.search(
-    query="What is the user's preferred stack?",
-    limit=1
-)
-print(context)`,
-    typescript: `import { Drive } from "@drive-io/sdk";
+for edge in auth_dependencies.edges:
+    print(f"Dependency: {edge.target} annotated with {edge.annotations}")`,
+    typescript: `import { DriveClient } from "@drive-io/sdk";
 
-// 1. Initialize client
-const client = new Drive({
-  apiKey: "dr_live_8x2j9k..."
+// 1. Connect to workspace graph namespace
+const client = new DriveClient({
+  apiKey: "dr_live_8x2j9k...",
+  namespace: "acme-billing"
 });
 
-// 2. Add memory context
-await client.memories.add({
-  userId: "user_129",
-  content: "Prefers writing code in TypeScript, dark mode UI"
+// 2. Query latest graph structural index (L1 Tier)
+const graph = await client.graphify.latest({ tier: "L1" });
+console.log(\`Loaded \${graph.nodes.length} AST components.\`);
+
+// 3. Traverse 1-hop dependencies of a core service
+const authDependencies = await client.graphify.queryNode({
+  nodeId: "src/auth.ts",
+  depth: 1,
+  includeAnnotations: true
 });
 
-// 3. Retrieve memory semantically
-const context = await client.memories.search({
-  query: "What is the user's preferred stack?",
-  limit: 1
-});
-console.log(context);`,
-    curl: `# 1. Ingest memory context
-curl -X POST "https://api.drive.io/v1/memories" \\
-  -H "Authorization: Bearer dr_live_8x2j9k..." \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "user_id": "user_129",
-    "content": "Prefers writing code in TypeScript, dark mode UI"
-  }'
+authDependencies.edges.forEach(edge => {
+  console.log(\`Dependency: \${edge.target} [\${JSON.stringify(edge.annotations)}]\`);
+});`,
+    curl: `# 1. Fetch latest graph structure summaries (L1 Tier)
+curl -X GET "https://api.drive.io/v1/graphify/latest?namespace=acme-billing&tier=L1" \\
+  -H "Authorization: Bearer dr_live_8x2j9k..."
 
-# 2. Search memories semantically
-curl -X POST "https://api.drive.io/v1/memories/search" \\
-  -H "Authorization: Bearer dr_live_8x2j9k..." \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "query": "What is the user's preferred stack?"
-  }'`
+# 2. Query node dependencies and metadata at 1-hop depth
+curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src/auth.ts&depth=1&annotations=true" \\
+  -H "Authorization: Bearer dr_live_8x2j9k..."`
   };
 
   const handleRunCode = () => {
@@ -135,13 +130,14 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
     setConsoleLogs([]);
 
     const steps = [
-      { delay: 400, text: "> Initializing connection to drive.io..." },
-      { delay: 1000, text: "> Authorization header verified successfully." },
-      { delay: 1500, text: "> Ingesting raw context: \"Prefers writing code in TypeScript, dark mode UI\"" },
-      { delay: 2200, text: "✓ Context analyzed, distilled and indexed successfully. (21ms)" },
-      { delay: 2800, text: "> Querying similarity index: \"What is the user's preferred stack?\"" },
-      { delay: 3400, text: "✓ 1 relevant memory retrieved (cosine distance: 0.9412)" },
-      { delay: 3800, text: "[\n  {\n    \"id\": \"mem_01j4k92\",\n    \"content\": \"Prefers writing code in TypeScript, dark mode UI\",\n    \"score\": 0.9412,\n    \"timestamp\": 1716391485\n  }\n]" }
+      { delay: 400, text: "> Initializing connection to Graphify on namespace 'acme-billing'..." },
+      { delay: 900, text: "✓ Connection established. Graph store loaded successfully (142 nodes, 389 edges)." },
+      { delay: 1500, text: "> Running circular import & dependency loop audit..." },
+      { delay: 2200, text: "⚠ Found 1 circular loop: src/app/webdav/[[...path]]/route.ts <=> src/lib/redis.ts" },
+      { delay: 2800, text: "> Analyzing node centrality hotspots..." },
+      { delay: 3300, text: "✓ 3 dependency hotspots ranked by Eigenvector centrality score:" },
+      { delay: 3700, text: "[\n  { \"node\": \"src/lib/redis.ts\", \"centrality\": 0.94, \"inDegree\": 18, \"outDegree\": 4 },\n  { \"node\": \"src/lib/r2.ts\", \"centrality\": 0.81, \"inDegree\": 12, \"outDegree\": 2 },\n  { \"node\": \"src/app/api/upload/route.ts\", \"centrality\": 0.74, \"inDegree\": 1, \"outDegree\": 15 }\n]" },
+      { delay: 4100, text: "✓ L1 index summaries traversed (Saved 23,160 tokens vs. raw L2 file query; 96.5% cost reduction)" }
     ];
 
     steps.forEach((step, index) => {
@@ -173,18 +169,18 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
           {/* Micro-badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-medium tracking-wide mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
-            Universal Memory Layer for AI Agents
+            Graph-Structured Context Storage for Autonomous Agents
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6 leading-[1.1]">
-            Persistent memory <br className="hidden sm:block" />
+            Graphify your agent's workspace. <br className="hidden sm:block" />
             <span className="bg-gradient-to-r from-purple-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">
-              for your AI assistants.
+              Traverse ASTs & query dependencies.
             </span>
           </h1>
 
           <p className="text-lg text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Give your AI tools a permanent, secure place to store documents, remember user preferences, and share context across workflows. Connect with a single line of code.
+            Give your AI assistants a structured map of your codebase. Instead of bloated vector context dumps, let LLMs query file relationships, traverse AST nodes, and pull tiered summaries (L0/L1/L2) at 1/10th the token cost.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -232,7 +228,7 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
                   <div className="w-2.5 h-2.5 rounded-full bg-zinc-800" />
                   <div className="w-2.5 h-2.5 rounded-full bg-zinc-850" />
                   <div className="w-2.5 h-2.5 rounded-full bg-zinc-900" />
-                  <span className="text-[11px] text-zinc-500 font-mono ml-2">drive_agent_config.py</span>
+                  <span className="text-[11px] text-zinc-500 font-mono ml-2">graphify_client.py</span>
                 </div>
                 {/* SDK Language Switcher */}
                 <div className="flex gap-1.5">
@@ -308,6 +304,8 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
                       className={
                         log.startsWith("✓") 
                           ? "text-green-400 font-medium" 
+                          : log.startsWith("⚠")
+                          ? "text-yellow-400 font-medium animate-pulse"
                           : log.startsWith("[") || log.startsWith(" ") || log.startsWith("]")
                           ? "text-zinc-400 font-mono text-[11px] whitespace-pre" 
                           : "text-zinc-400"
@@ -360,10 +358,10 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
         >
           <div className="text-center mb-12">
             <h2 className="text-3xl font-extrabold text-white mb-3">
-              Designed for developer velocity
+              Comprehensive context visualizer
             </h2>
             <p className="text-zinc-400 max-w-xl mx-auto">
-              A premium visual suite to manage memories, sync local files, and map connections.
+              A premium visual suite to traverse codebase structures, audit node annotations, and view version diffs.
             </p>
           </div>
 
@@ -477,10 +475,10 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
         <div className="max-w-5xl mx-auto w-full mb-36 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-extrabold text-white mb-3">
-              Memory as an API
+              Graph Store Built for AI Scale
             </h2>
             <p className="text-zinc-400 max-w-xl mx-auto">
-              Drop-in state management for AI. Skip setting up vector databases and writing parser microservices.
+              Drop-in codebase structure mapping and multi-hop traversal. Skip writing vector chunking pipelines or complex parser microservices.
             </p>
           </div>
 
@@ -491,9 +489,9 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
                 <Database className="w-5 h-5 text-purple-400" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-zinc-200 mb-2">Long-Term Persistence</h3>
+                <h3 className="text-base font-bold text-zinc-200 mb-2">Multi-Hop Traversal</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">
-                  Automatically consolidate past user messages and agent activities. Let your agent learn and recall guidelines across session boundaries.
+                  Follow call trees, component hierarchies, and import loops. Let your AI agents traverse node relationship edges directly instead of relying on flat keyword similarity searches.
                 </p>
               </div>
             </div>
@@ -504,9 +502,9 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
                 <Sparkles className="w-5 h-5 text-purple-400" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-zinc-200 mb-2">Semantic Extraction</h3>
+                <h3 className="text-base font-bold text-zinc-200 mb-2">Tiered Token Optimization</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">
-                  Drive automatically summarizes, de-duplicates, and extracts core facts and user preferences from unstructured text streams.
+                  Fetch L0 metadata summaries or L1 indices to keep agent prompts lean, conserving up to 90% in token overhead. Fetch full L2 source content only when debugging or editing is required.
                 </p>
               </div>
             </div>
@@ -517,9 +515,9 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
                 <Code2 className="w-5 h-5 text-purple-400" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-zinc-200 mb-2">Multi-Agent Knowledge Sync</h3>
+                <h3 className="text-base font-bold text-zinc-200 mb-2">Interactive Visualizer Canvas</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">
-                  Allow multiple distinct agents (coding assistant, database agent, support bot) to access and modify a unified memory tree safely.
+                  Enable agents and human developers to co-pilot. Highlight circular dependency warnings and node hotspots visually while panning the codebase representation dynamically.
                 </p>
               </div>
             </div>
@@ -530,9 +528,9 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
                 <Shield className="w-5 h-5 text-purple-400" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-zinc-200 mb-2">Developer Instrumentation</h3>
+                <h3 className="text-base font-bold text-zinc-200 mb-2">Version History & Rollbacks</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">
-                  Inspect memories, review search similarity metrics, provision secure API keys, and configure real-time webhooks in your dashboard.
+                  Track and compare codebase state graphs across indexing runs. Safely roll back workspace structures and review node annotations to audit automated compliance changes.
                 </p>
               </div>
             </div>
@@ -560,9 +558,9 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
                 <div className="flex-1 w-px bg-zinc-900 my-2" />
               </div>
               <div className="pb-4">
-                <h3 className="text-sm font-bold text-zinc-200 mb-1">Generate API Credentials</h3>
+                <h3 className="text-sm font-bold text-zinc-200 mb-1">Index Your Workspace Structure</h3>
                 <p className="text-xs text-zinc-500">
-                  Create a developer account and grab your API access key from the [Developer Console](file:///Users/deji.omisore/projects/cloud-clipboard/src/app/dashboard/ApiKeyDashboard.tsx).
+                  Initialize the Graphify daemon CLI to automatically parse project folders, identify AST nodes, imports, and map file relations into the cloud graph ledger.
                 </p>
               </div>
             </div>
@@ -576,9 +574,9 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
                 <div className="flex-1 w-px bg-zinc-900 my-2" />
               </div>
               <div className="pb-4">
-                <h3 className="text-sm font-bold text-zinc-200 mb-1">Upload files or ingest memories</h3>
+                <h3 className="text-sm font-bold text-zinc-200 mb-1">Query Multi-Hop Relations</h3>
                 <p className="text-xs text-zinc-500">
-                  Push files, logs, or plain text messages into the Drive API. Let our pipeline handle compression and embedding generation dynamically.
+                  Pass graph traversal requests from your agent framework. Fetch tiered L0 metadata summaries, run-time dependencies, or specific nodes without blowing context budgets.
                 </p>
               </div>
             </div>
@@ -591,9 +589,9 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
                 </div>
               </div>
               <div>
-                <h3 className="text-sm font-bold text-zinc-200 mb-1">Search semantically</h3>
+                <h3 className="text-sm font-bold text-zinc-200 mb-1">Audit Node Annotations</h3>
                 <p className="text-xs text-zinc-500">
-                  Query the store from your agent's system prompt. Retrieve relevant context instantly to keep conversations coherent.
+                  Enable agents (e.g. build bots or security checkers) to log annotations to the graph. Easily confirm that files carry the required safety tokens before proceeding.
                 </p>
               </div>
             </div>
@@ -607,10 +605,10 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
             <div className="absolute inset-0 bg-radial-gradient from-purple-900/10 via-transparent to-transparent opacity-60 pointer-events-none" />
             
             <h2 className="text-3xl font-extrabold text-white mb-4">
-              Ready to give your agents memory?
+              Ready to graphify your workspace?
             </h2>
             <p className="text-zinc-400 max-w-md mx-auto mb-8 text-sm leading-relaxed">
-              Provision a secure, ultra-low latency memory store for your AI assistants today. Start for free, upgrade as you scale.
+              Provision a secure, ultra-low latency graph store for your AI assistants and agents today. Start for free, upgrade as you scale.
             </p>
 
             <div className="flex justify-center gap-4">
@@ -618,7 +616,7 @@ curl -X POST "https://api.drive.io/v1/memories/search" \\
                 href="/dashboard"
                 className="px-6 py-2.5 rounded-lg bg-purple-600 text-white font-semibold text-xs hover:bg-purple-500 transition-colors flex items-center gap-1.5"
               >
-                Sign Up Now
+                Get Started for Free
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
