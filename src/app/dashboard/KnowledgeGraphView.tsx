@@ -177,87 +177,96 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
     const [edges, setEdges] = useState<Edge[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isIngesting, setIsIngesting] = useState(false);
+    const [jobStatus, setJobStatus] = useState<string | null>(null);
 
     // Fetch latest graph from Redis
-    useEffect(() => {
-        async function fetchGraph() {
-            setIsLoading(true);
-            try {
-                const res = await fetch(`/api/graphify/latest?namespace=${encodeURIComponent(namespace)}`);
-                if (!res.ok) {
-                    throw new Error(`Failed to load graph data: ${res.statusText}`);
-                }
-                const data = await res.json();
-                if (data && data.nodes && data.edges) {
-                    setNodes(data.nodes);
-                    setEdges(data.edges);
-                    if (data.nodes.length > 0 && !data.nodes.some((n: any) => n.id === selectedNodeId)) {
-                        setSelectedNodeId(data.nodes[0].id);
-                    }
-                }
-            } catch (e) {
-                console.error("Failed to load graph, using local fallback:", e);
-                setNodes(INITIAL_NODES);
-                setEdges(INITIAL_EDGES);
-            } finally {
-                setIsLoading(false);
+    async function fetchGraph() {
+        setIsLoading(true);
+        try {
+            const res = await fetch(`/api/graphify/latest?namespace=${encodeURIComponent(namespace)}`);
+            if (!res.ok) {
+                throw new Error(`Failed to load graph data: ${res.statusText}`);
             }
+            const data = await res.json();
+            if (data && data.nodes && data.edges) {
+                setNodes(data.nodes);
+                setEdges(data.edges);
+                if (data.nodes.length > 0 && !data.nodes.some((n: any) => n.id === selectedNodeId)) {
+                    setSelectedNodeId(data.nodes[0].id);
+                }
+            }
+        } catch (e) {
+            console.error("Failed to load graph, using local fallback:", e);
+            setNodes(INITIAL_NODES);
+            setEdges(INITIAL_EDGES);
+        } finally {
+            setIsLoading(false);
         }
+    }
+
+    useEffect(() => {
         fetchGraph();
     }, [namespace]);
 
-    // Handle Simulated Ingestion action
+    // Handle Simulated Ingestion action via background queue
     const handleRunSimulation = async () => {
         setIsIngesting(true);
+        setJobStatus("initiating");
         try {
-            // Generate a simulated code node hooked into our WebDAV API node
-            const newId = `sim_node_${Date.now()}`;
-            const newNode: Node = {
-                id: newId,
-                label: `SimulatedAgentNode_${Math.floor(Math.random() * 1000)}.ts`,
-                type: "code",
-                group: "API",
-                x: 200 + Math.floor(Math.random() * 200),
-                y: 100 + Math.floor(Math.random() * 250),
-                description: "A dynamic agent logic executor compiled and saved live via Graphify DB ingestion.",
-                properties: { language: "TypeScript", role: "Dynamic Agent Hook", latency: "12ms" }
-            };
-            const newEdge = {
-                source: newId,
-                target: "node_3", // Connect to WebDAV node
-                relationship: "triggers"
-            };
-
-            const updatedNodes = [...nodes, newNode];
-            const updatedEdges = [...edges, newEdge];
-
-            const res = await fetch("/api/graphify/ingest", {
+            const res = await fetch("/api/graphify/queue", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    namespace,
-                    graph: {
-                        nodes: updatedNodes,
-                        edges: updatedEdges
-                    }
-                })
+                body: JSON.stringify({ namespace })
             });
 
             if (!res.ok) {
-                throw new Error("Failed to post graph simulation to database");
+                throw new Error("Failed to queue Graphify compilation job");
             }
 
-            setNodes(updatedNodes);
-            setEdges(updatedEdges);
-            setSelectedNodeId(newId);
-            alert("Ingestion Successful! A new simulated agent node has been added to the database and compiled live on your SVG canvas.");
+            const { jobId, status } = await res.json();
+            setJobStatus(status || "queued");
+
+            // Poll status
+            let finished = false;
+            let attempts = 0;
+            const maxAttempts = 60; // 5 minutes max (5s * 60)
+            
+            while (!finished && attempts < maxAttempts) {
+                await new Promise(r => setTimeout(r, 5000));
+                attempts++;
+                
+                try {
+                    const statusRes = await fetch(`/api/graphify/queue?jobId=${jobId}`);
+                    if (!statusRes.ok) continue;
+                    
+                    const job = await statusRes.json();
+                    setJobStatus(job.status);
+                    
+                    if (job.status === "complete") {
+                        finished = true;
+                        // Refresh graph
+                        await fetchGraph();
+                        alert("Graph compilation completed successfully! The interactive canvas has been updated.");
+                    } else if (job.status === "failed") {
+                        finished = true;
+                        throw new Error(job.error || "Compilation job failed on worker daemon");
+                    }
+                } catch (pollErr) {
+                    console.error("Polling job status failed:", pollErr);
+                }
+            }
+
+            if (!finished) {
+                throw new Error("Job polling timed out.");
+            }
         } catch (e: any) {
             console.error("Simulation failed:", e);
-            alert("Ingestion Simulation failed: " + e.message);
+            alert("Ingestion/Compilation failed: " + e.message);
         } finally {
             setIsIngesting(false);
+            setJobStatus(null);
         }
     };
 
@@ -336,7 +345,15 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
                         {isIngesting ? (
                             <>
                                 <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                                <span>Ingesting...</span>
+                                <span>
+                                    {jobStatus === "queued" 
+                                        ? "Queued..." 
+                                        : jobStatus === "processing" 
+                                            ? "Compiling..." 
+                                            : jobStatus === "initiating" 
+                                                ? "Enqueuing..."
+                                                : "Ingesting..."}
+                                </span>
                             </>
                         ) : (
                             <>
