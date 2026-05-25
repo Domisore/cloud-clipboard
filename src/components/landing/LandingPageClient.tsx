@@ -217,139 +217,6 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-campaign&id=sr
         </div>
 
         {/* Interactive Code / Output Terminal Playground */}
-        <div className="max-w-5xl mx-auto w-full mb-32 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-zinc-950/60 border border-zinc-850 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md">
-            
-            {/* Left Side: Code Editor */}
-            <div className="lg:col-span-7 border-b lg:border-b-0 lg:border-r border-zinc-850 flex flex-col">
-              {/* Tab Header */}
-              <div className="flex items-center justify-between px-4 py-3 bg-zinc-950 border-b border-zinc-850">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-800" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-850" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-900" />
-                  <span className="text-[11px] text-zinc-500 font-mono ml-2">workspace_client.py</span>
-                </div>
-                {/* SDK Language Switcher */}
-                <div className="flex gap-1.5">
-                  <button 
-                    onClick={() => setActiveTab("python")}
-                    className={`px-2.5 py-1 text-[11px] font-mono rounded ${activeTab === "python" ? "bg-zinc-900 text-purple-400 font-semibold" : "text-zinc-500 hover:text-zinc-300"}`}
-                  >
-                    python
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab("typescript")}
-                    className={`px-2.5 py-1 text-[11px] font-mono rounded ${activeTab === "typescript" ? "bg-zinc-900 text-purple-400 font-semibold" : "text-zinc-500 hover:text-zinc-300"}`}
-                  >
-                    typescript
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab("curl")}
-                    className={`px-2.5 py-1 text-[11px] font-mono rounded ${activeTab === "curl" ? "bg-zinc-900 text-purple-400 font-semibold" : "text-zinc-500 hover:text-zinc-300"}`}
-                  >
-                    curl
-                  </button>
-                </div>
-              </div>
-
-              {/* Code Area */}
-              <div className="p-5 flex-1 font-mono text-[12px] leading-relaxed text-zinc-300 overflow-x-auto select-text min-h-[300px]">
-                <pre>{codeSnippets[activeTab]}</pre>
-              </div>
-            </div>
-
-            {/* Right Side: Output Terminal */}
-            <div className="lg:col-span-5 flex flex-col bg-zinc-950">
-              {/* Terminal Header */}
-              <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-850">
-                <div className="flex items-center gap-2">
-                  <Server className="w-3.5 h-3.5 text-zinc-500" />
-                  <span className="text-[11px] font-mono text-zinc-400">Response Console</span>
-                </div>
-
-                {/* Run Button */}
-                <button
-                  onClick={handleRunCode}
-                  disabled={isRunning}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-semibold transition-colors ${
-                    isRunning 
-                      ? "bg-zinc-900 text-zinc-500 cursor-not-allowed" 
-                      : "bg-purple-600 text-white hover:bg-purple-500"
-                  }`}
-                >
-                  {isRunning ? (
-                    <RefreshCw className="w-3 h-3 animate-spin" />
-                  ) : (
-                    <Play className="w-3 h-3 fill-current" />
-                  )}
-                  {isRunning ? "Running..." : "Run Code"}
-                </button>
-              </div>
-
-              {/* Log Output Area */}
-              <div className="p-5 flex-1 font-mono text-[11.5px] leading-relaxed text-zinc-300 min-h-[300px] flex flex-col justify-between overflow-y-auto">
-                <div className="space-y-2">
-                  {consoleState === "idle" && (
-                    <div className="text-zinc-600 italic">
-                      Click "Run Code" to simulate SDK actions.
-                    </div>
-                  )}
-                  
-                  {consoleLogs.map((log, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, x: -5 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className={
-                        log.startsWith("✓") 
-                          ? "text-green-400 font-medium" 
-                          : log.startsWith("⚠")
-                          ? "text-yellow-400 font-medium animate-pulse"
-                          : log.startsWith("[") || log.startsWith(" ") || log.startsWith("]")
-                          ? "text-zinc-400 font-mono text-[11px] whitespace-pre" 
-                          : "text-zinc-400"
-                      }
-                    >
-                      {log}
-                    </motion.div>
-                  ))}
-                </div>
-
-                {consoleState === "done" && (
-                  <div className="pt-4 border-t border-zinc-900 text-[10px] text-zinc-500 flex items-center justify-between">
-                    <span>STATUS: 200 OK</span>
-                    <span>RTT: 21ms</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* Integration ecosystem list */}
-        <div className="max-w-4xl mx-auto w-full text-center mb-36 relative z-10">
-          <p className="text-xs font-mono uppercase tracking-[0.2em] text-zinc-500 mb-8">
-            Works with any AI agent, orchestrator, or model stack
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {INTEGRATIONS.map((integration, idx) => (
-              <div 
-                key={idx}
-                className="flex flex-col items-center justify-center p-4 rounded-xl bg-zinc-950 border border-zinc-900 hover:border-zinc-800 transition-colors group"
-              >
-                <span className="text-sm font-semibold text-zinc-300 group-hover:text-white transition-colors">
-                  {integration.name}
-                </span>
-                <span className="text-[10px] text-zinc-600 font-mono mt-1">
-                  {integration.type}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Screenshot Showcase Carousel */}
         <div 
           className="max-w-5xl mx-auto w-full mb-36 relative z-10"
@@ -466,6 +333,140 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-campaign&id=sr
 
               </div>
 
+            </div>
+
+          </div>
+        </div>
+
+        {/* Integration ecosystem list */}
+        <div className="max-w-4xl mx-auto w-full text-center mb-36 relative z-10">
+          <p className="text-xs font-mono uppercase tracking-[0.2em] text-zinc-500 mb-8">
+            Works with any AI agent, orchestrator, or model stack
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {INTEGRATIONS.map((integration, idx) => (
+              <div 
+                key={idx}
+                className="flex flex-col items-center justify-center p-4 rounded-xl bg-zinc-950 border border-zinc-900 hover:border-zinc-800 transition-colors group"
+              >
+                <span className="text-sm font-semibold text-zinc-300 group-hover:text-white transition-colors">
+                  {integration.name}
+                </span>
+                <span className="text-[10px] text-zinc-600 font-mono mt-1">
+                  {integration.type}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Interactive Code / Output Terminal Playground */}
+        <div className="max-w-5xl mx-auto w-full mb-32 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-zinc-950/60 border border-zinc-850 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md">
+            
+            {/* Left Side: Code Editor */}
+            <div className="lg:col-span-7 border-b lg:border-b-0 lg:border-r border-zinc-850 flex flex-col">
+              {/* Tab Header */}
+              <div className="flex items-center justify-between px-4 py-3 bg-zinc-950 border-b border-zinc-850">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-800" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-850" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-900" />
+                  <span className="text-[11px] text-zinc-500 font-mono ml-2">workspace_client.py</span>
+                </div>
+                {/* SDK Language Switcher */}
+                <div className="flex gap-1.5">
+                  <button 
+                    onClick={() => setActiveTab("python")}
+                    className={`px-2.5 py-1 text-[11px] font-mono rounded ${activeTab === "python" ? "bg-zinc-900 text-purple-400 font-semibold" : "text-zinc-500 hover:text-zinc-300"}`}
+                  >
+                    python
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab("typescript")}
+                    className={`px-2.5 py-1 text-[11px] font-mono rounded ${activeTab === "typescript" ? "bg-zinc-900 text-purple-400 font-semibold" : "text-zinc-500 hover:text-zinc-300"}`}
+                  >
+                    typescript
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab("curl")}
+                    className={`px-2.5 py-1 text-[11px] font-mono rounded ${activeTab === "curl" ? "bg-zinc-900 text-purple-400 font-semibold" : "text-zinc-500 hover:text-zinc-300"}`}
+                  >
+                    curl
+                  </button>
+                </div>
+              </div>
+
+              {/* Code Area */}
+              <div className="p-5 flex-1 font-mono text-[12px] leading-relaxed text-zinc-300 overflow-x-auto select-text min-h-[300px]">
+                <pre>{codeSnippets[activeTab]}</pre>
+              </div>
+            </div>
+
+            {/* Right Side: Output Terminal */}
+            <div className="lg:col-span-5 flex flex-col bg-zinc-950">
+              {/* Terminal Header */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-850">
+                <div className="flex items-center gap-2">
+                  <Server className="w-3.5 h-3.5 text-zinc-500" />
+                  <span className="text-[11px] font-mono text-zinc-400">Response Console</span>
+                </div>
+
+                {/* Run Button */}
+                <button
+                  onClick={handleRunCode}
+                  disabled={isRunning}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-semibold transition-colors ${
+                    isRunning 
+                      ? "bg-zinc-900 text-zinc-500 cursor-not-allowed" 
+                      : "bg-purple-600 text-white hover:bg-purple-500"
+                  }`}
+                >
+                  {isRunning ? (
+                    <RefreshCw className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <Play className="w-3 h-3 fill-current" />
+                  )}
+                  {isRunning ? "Running..." : "Run Code"}
+                </button>
+              </div>
+
+              {/* Log Output Area */}
+              <div className="p-5 flex-1 font-mono text-[11.5px] leading-relaxed text-zinc-300 min-h-[300px] flex flex-col justify-between overflow-y-auto">
+                <div className="space-y-2">
+                  {consoleState === "idle" && (
+                    <div className="text-zinc-600 italic">
+                      Click "Run Code" to simulate SDK actions.
+                    </div>
+                  )}
+                  
+                  {consoleLogs.map((log, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -5 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className={
+                        log.startsWith("✓") 
+                          ? "text-green-400 font-medium" 
+                          : log.startsWith("⚠")
+                          ? "text-yellow-400 font-medium animate-pulse"
+                          : log.startsWith("[") || log.startsWith(" ") || log.startsWith("]")
+                          ? "text-zinc-400 font-mono text-[11px] whitespace-pre" 
+                          : "text-zinc-400"
+                      }
+                    >
+                      {log}
+                    </motion.div>
+                  ))}
+                </div>
+
+                {consoleState === "done" && (
+                  <div className="pt-4 border-t border-zinc-900 text-[10px] text-zinc-500 flex items-center justify-between">
+                    <span>STATUS: 200 OK</span>
+                    <span>RTT: 21ms</span>
+                  </div>
+                )}
+              </div>
             </div>
 
           </div>
