@@ -203,11 +203,7 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-campaign&id=sr
 
         {/* Interactive Code / Output Terminal Playground */}
         {/* Screenshot Showcase Carousel */}
-        <div 
-          className="max-w-5xl mx-auto w-full mb-36 relative z-10"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
+        <div className="max-w-5xl mx-auto w-full mb-36 relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-extrabold text-white mb-3">
               Comprehensive Workspace Viewer
@@ -223,7 +219,11 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-campaign&id=sr
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
               
               {/* Slide Media Pane */}
-              <div className="lg:col-span-8 relative aspect-[16/10] bg-zinc-900/50 rounded-2xl overflow-hidden border border-zinc-800 flex items-center justify-center">
+              <div 
+                className="lg:col-span-8 relative aspect-[16/10] bg-zinc-900/50 rounded-2xl overflow-hidden border border-zinc-800 flex items-center justify-center"
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+              >
                 <AnimatePresence mode="wait">
                   <motion.img 
                     key={activeSlide}
