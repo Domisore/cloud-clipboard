@@ -218,18 +218,37 @@ export async function GET(request: Request) {
         }
 
         const graphData = await redis.get(`graph:${userId}:${namespace}:latest`);
+        let graph: any = DEFAULT_MOCK_GRAPH;
 
-        if (!graphData) {
-            // Fallback to mock graph structure
-            return NextResponse.json(DEFAULT_MOCK_GRAPH, { status: 200, headers });
+        if (graphData) {
+            if (typeof graphData === "string") {
+                graph = JSON.parse(graphData);
+            } else {
+                graph = graphData;
+            }
         }
 
-        let parsedGraph = graphData;
-        if (typeof graphData === "string") {
-            parsedGraph = JSON.parse(graphData);
+        const tier = searchParams.get("tier") || "L2";
+
+        if (tier === "L0") {
+            const l0Summary = {
+                namespace,
+                nodeCount: graph.nodes.length,
+                edgeCount: graph.edges.length,
+                groups: Array.from(new Set(graph.nodes.map((n: any) => n.group))),
+                topNodes: graph.nodes.slice(0, 5).map((n: any) => ({ id: n.id, label: n.label, type: n.type }))
+            };
+            return NextResponse.json(l0Summary, { status: 200, headers });
         }
 
-        return NextResponse.json(parsedGraph, { status: 200, headers });
+        if (tier === "L1") {
+            const l1Nodes = graph.nodes.filter((n: any) => n.group === 'API' || n.group === 'Database' || n.group === 'UI');
+            const l1NodeIds = new Set(l1Nodes.map((n: any) => n.id));
+            const l1Edges = graph.edges.filter((e: any) => l1NodeIds.has(e.source) && l1NodeIds.has(e.target));
+            return NextResponse.json({ nodes: l1Nodes, edges: l1Edges }, { status: 200, headers });
+        }
+
+        return NextResponse.json(graph, { status: 200, headers });
     } catch (error: any) {
         console.error("Graphify fetch error:", error);
         return NextResponse.json({ error: error.message || "Failed to fetch graph" }, { status: 500, headers });
