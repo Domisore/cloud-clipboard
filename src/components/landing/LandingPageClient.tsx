@@ -37,10 +37,10 @@ const SLIDES = [
     tags: ["Smart Workspace", "Interactive Canvas"]
   },
   {
-    title: "Smart Cost-Saving Summaries",
-    description: "Send only the necessary details to your AI tools. Feed them lightweight metadata, key index summaries, or full files depending on the task.",
+    title: "Stacked Workspace Architecture",
+    description: "Understand how your data moves: from raw Source Files and LLM Wikis, up to a Graphify Semantic Layer, ending in drive.io's interactive Search, Traversal, and Reporting dashboard.",
     image: "/tiered-context-layers.png",
-    tags: ["Cost Optimization", "Smart Summaries"]
+    tags: ["Architecture", "Data Flow"]
   },
   {
     title: "Automated Tag & Approval Ledger",
@@ -502,9 +502,9 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-campaign&id=sr
                 <Sparkles className="w-5 h-5 text-purple-400" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-zinc-200 mb-2">Smart Cost-Saving Summaries</h3>
+                <h3 className="text-base font-bold text-zinc-200 mb-2">Stacked Data Flow Tiers</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">
-                  Use tiered summaries (L0 metadata summaries or L1 indices) to keep AI prompts tiny. Save up to 90% in AI usage billing, reading full files only when edits are required.
+                  Organize your workspace in three clear tiers: connect raw file formats, index them in a semantic relations graph, and query or report on them using a real-time dashboard.
                 </p>
               </div>
             </div>
@@ -574,9 +574,9 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-campaign&id=sr
                 <div className="flex-1 w-px bg-zinc-900 my-2" />
               </div>
               <div className="pb-4">
-                <h3 className="text-sm font-bold text-zinc-200 mb-1">Query Connections Instantly</h3>
+                <h3 className="text-sm font-bold text-zinc-200 mb-1">Query & Traverse Connections</h3>
                 <p className="text-xs text-zinc-500">
-                  Let your team members or AI assistants query file connections, find related assets, and view quick summaries without loading bloated documents.
+                  Let your team members or AI assistants query links, traverse file relationships, and run compliance reports directly on the semantic layer.
                 </p>
               </div>
             </div>
