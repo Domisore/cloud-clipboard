@@ -39,7 +39,7 @@ const SLIDES = [
   {
     title: "Smart Cost-Saving Summaries",
     description: "Send only the necessary details to your AI tools. Feed them lightweight metadata, key index summaries, or full files depending on the task.",
-    image: "/agent_data_flow_labeled.png",
+    image: "/tiered-context-layers.png",
     tags: ["Cost Optimization", "Smart Summaries"]
   },
   {
