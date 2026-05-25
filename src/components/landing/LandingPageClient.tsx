@@ -27,7 +27,7 @@ const SLIDES = [
   {
     title: "Interactive Workspace Visualizer",
     description: "See your files and how they connect in real-time. Track file notes, verification tags, and historical version rollbacks easily.",
-    image: "/dark-mode-banner.png",
+    image: "/workspace-visualizer.png",
     tags: ["Visual Map", "File Relations"]
   },
   {
@@ -45,7 +45,7 @@ const SLIDES = [
   {
     title: "Automated Tag & Approval Ledger",
     description: "Enable automated bots (like security scanners or campaign planners) to publish status tags directly on your workspace files for easy auditing.",
-    image: "/dashboard-screenshot.png",
+    image: "/workspace-visualizer.png",
     tags: ["Compliance Tags", "Asset Audits"]
   }
 ];
