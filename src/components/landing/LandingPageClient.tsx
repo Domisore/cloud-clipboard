@@ -25,28 +25,28 @@ const INTEGRATIONS = [
 
 const SLIDES = [
   {
-    title: "Interactive Knowledge Graph",
-    description: "Visualize parsed codebase AST structures, follow relationship edges, inspect node annotations, and trace historical graph versions in real-time.",
+    title: "Interactive Workspace Visualizer",
+    description: "See your files and how they connect in real-time. Track file notes, verification tags, and historical version rollbacks easily.",
     image: "/dark-mode-banner.png",
-    tags: ["Graphify", "Visualizer"]
+    tags: ["Visual Map", "File Relations"]
   },
   {
-    title: "AI Copilot Canvas Control",
-    description: "Allow autonomous agents to interactively pan, query, and highlight selected code components on the graph as they fetch codebase context.",
+    title: "AI Canvas Controller",
+    description: "Let your team and AI assistants chat with your workspace. Ask the AI to point out files, highlight linked documents, and pan the view dynamically.",
     image: "/dashboard-screenshot.png",
-    tags: ["Agent Workspace", "Canvas Control"]
+    tags: ["Smart Workspace", "Interactive Canvas"]
   },
   {
-    title: "Token-Saving Tiered Retrieval",
-    description: "Optimize prompts using tiered context delivery: fetch lightweight L0 metadata, structured L1 index summaries, or full L2 source files.",
+    title: "Smart Cost-Saving Summaries",
+    description: "Send only the necessary details to your AI tools. Feed them lightweight metadata, key index summaries, or full files depending on the task.",
     image: "/agent_data_flow_labeled.png",
-    tags: ["Optimization", "Context Tiers"]
+    tags: ["Cost Optimization", "Smart Summaries"]
   },
   {
-    title: "Agent Annotation Ledger",
-    description: "Enable automated validation bots (e.g. security scanners, schedule managers) to publish annotations directly on file nodes for human audit.",
+    title: "Automated Tag & Approval Ledger",
+    description: "Enable automated bots (like security scanners or campaign planners) to publish status tags directly on your workspace files for easy auditing.",
     image: "/chrome-extension/screenshot-1.jpg",
-    tags: ["Compliance", "Annotations"]
+    tags: ["Compliance Tags", "Asset Audits"]
   }
 ];
 
@@ -76,50 +76,50 @@ export function LandingPageClient() {
   const codeSnippets = {
     python: `from drive import DriveClient
 
-# 1. Connect to workspace graph namespace
-client = DriveClient(api_key="dr_live_8x2j9k...", namespace="acme-billing")
+# 1. Connect to your team workspace (e.g. acme-campaign)
+client = DriveClient(api_key="dr_live_8x2j9k...", namespace="acme-campaign")
 
-# 2. Query latest graph structural index (L1 Tier)
-graph = client.graphify.latest(tier="L1")
-print(f"Loaded {len(graph.nodes)} AST components.")
+# 2. Get quick summaries of files (Saves 90%+ on AI token bills)
+workspace_summary = client.graphify.latest(tier="L1")
+print(f"Connected! Loaded {len(workspace_summary.nodes)} workspace files.")
 
-# 3. Traverse 1-hop dependencies of a core service
-auth_dependencies = client.graphify.query_node(
-    node_id="src/auth.ts",
+# 3. Find files linked directly to a marketing campaign list
+campaign_links = client.graphify.query_node(
+    node_id="src/marketing-schedule.xlsx",
     depth=1,
     include_annotations=True
 )
 
-for edge in auth_dependencies.edges:
-    print(f"Dependency: {edge.target} annotated with {edge.annotations}")`,
+for edge in campaign_links.edges:
+    print(f"Linked File: {edge.target} | Tags: {edge.annotations}")`,
     typescript: `import { DriveClient } from "@drive-io/sdk";
 
-// 1. Connect to workspace graph namespace
+// 1. Connect to your team workspace (e.g. acme-campaign)
 const client = new DriveClient({
   apiKey: "dr_live_8x2j9k...",
-  namespace: "acme-billing"
+  namespace: "acme-campaign"
 });
 
-// 2. Query latest graph structural index (L1 Tier)
-const graph = await client.graphify.latest({ tier: "L1" });
-console.log(\`Loaded \${graph.nodes.length} AST components.\`);
+// 2. Get quick summaries of files (Saves 90%+ on AI token bills)
+const summary = await client.graphify.latest({ tier: "L1" });
+console.log(\`Connected! Loaded \${summary.nodes.length} workspace files.\`);
 
-// 3. Traverse 1-hop dependencies of a core service
-const authDependencies = await client.graphify.queryNode({
-  nodeId: "src/auth.ts",
+// 3. Find files linked directly to a marketing campaign list
+const campaignLinks = await client.graphify.queryNode({
+  nodeId: "src/marketing-schedule.xlsx",
   depth: 1,
   includeAnnotations: true
 });
 
-authDependencies.edges.forEach(edge => {
-  console.log(\`Dependency: \${edge.target} [\${JSON.stringify(edge.annotations)}]\`);
+campaignLinks.edges.forEach(edge => {
+  console.log(\`Linked File: \${edge.target} | Tags: \${JSON.stringify(edge.annotations)}\`);
 });`,
-    curl: `# 1. Fetch latest graph structure summaries (L1 Tier)
-curl -X GET "https://api.drive.io/v1/graphify/latest?namespace=acme-billing&tier=L1" \\
+    curl: `# 1. Get quick file summaries for your AI assistants
+curl -X GET "https://api.drive.io/v1/graphify/latest?namespace=acme-campaign&tier=L1" \\
   -H "Authorization: Bearer dr_live_8x2j9k..."
 
-# 2. Query node dependencies and metadata at 1-hop depth
-curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src/auth.ts&depth=1&annotations=true" \\
+# 2. Get details and tags for a specific file and its links
+curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-campaign&id=src/marketing-schedule.xlsx&depth=1&annotations=true" \\
   -H "Authorization: Bearer dr_live_8x2j9k..."`
   };
 
@@ -130,14 +130,14 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
     setConsoleLogs([]);
 
     const steps = [
-      { delay: 400, text: "> Initializing connection to Graphify on namespace 'acme-billing'..." },
-      { delay: 900, text: "✓ Connection established. Graph store loaded successfully (142 nodes, 389 edges)." },
-      { delay: 1500, text: "> Running circular import & dependency loop audit..." },
-      { delay: 2200, text: "⚠ Found 1 circular loop: src/app/webdav/[[...path]]/route.ts <=> src/lib/redis.ts" },
-      { delay: 2800, text: "> Analyzing node centrality hotspots..." },
-      { delay: 3300, text: "✓ 3 dependency hotspots ranked by Eigenvector centrality score:" },
-      { delay: 3700, text: "[\n  { \"node\": \"src/lib/redis.ts\", \"centrality\": 0.94, \"inDegree\": 18, \"outDegree\": 4 },\n  { \"node\": \"src/lib/r2.ts\", \"centrality\": 0.81, \"inDegree\": 12, \"outDegree\": 2 },\n  { \"node\": \"src/app/api/upload/route.ts\", \"centrality\": 0.74, \"inDegree\": 1, \"outDegree\": 15 }\n]" },
-      { delay: 4100, text: "✓ L1 index summaries traversed (Saved 23,160 tokens vs. raw L2 file query; 96.5% cost reduction)" }
+      { delay: 400, text: "> Connecting to campaign workspace 'acme-campaign'..." },
+      { delay: 900, text: "✓ Connected. Loaded workspace map (142 files, 389 links)." },
+      { delay: 1500, text: "> Auditing file links and validation statuses..." },
+      { delay: 2200, text: "⚠ Found 1 broken link: 'summer-banner.png' has no matching entry in 'marketing-schedule.xlsx'" },
+      { delay: 2800, text: "> Analyzing most-connected hub files (hotspots)..." },
+      { delay: 3300, text: "✓ 3 most-connected files found in your workspace:" },
+      { delay: 3700, text: "[\n  { \"file\": \"src/marketing-schedule.xlsx\", \"importance\": \"High\", \"incomingLinks\": 18, \"outgoingLinks\": 4 },\n  { \"file\": \"src/assets/logo.png\", \"importance\": \"Medium\", \"incomingLinks\": 12, \"outgoingLinks\": 2 },\n  { \"file\": \"src/campaign-rules.docx\", \"importance\": \"Medium\", \"incomingLinks\": 1, \"outgoingLinks\": 15 }\n]" },
+      { delay: 4100, text: "✓ Checked smart summaries (Saved 23,160 AI tokens; 96.5% AI billing cost reduction)" }
     ];
 
     steps.forEach((step, index) => {
@@ -169,18 +169,18 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
           {/* Micro-badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-medium tracking-wide mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
-            Graph-Structured Context Storage for Autonomous Agents
+            Visual Workspace Graph for Teams and AI Assistants
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6 leading-[1.1]">
-            Graphify your agent's workspace. <br className="hidden sm:block" />
+            Connect your workspace files. <br className="hidden sm:block" />
             <span className="bg-gradient-to-r from-purple-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">
-              Traverse ASTs & query dependencies.
+              Map links, verify tags, and cut AI costs.
             </span>
           </h1>
 
           <p className="text-lg text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Give your AI assistants a structured map of your codebase. Instead of bloated vector context dumps, let LLMs query file relationships, traverse AST nodes, and pull tiered summaries (L0/L1/L2) at 1/10th the token cost.
+            Stop digging through folders or copying full files into AI tools. drive.io automatically links your spreadsheets, designs, and code files into a visual map. Let your team and AI assistants find connections, view summaries, and check statuses in seconds.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -196,7 +196,7 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
               href="/developers"
               className="w-full sm:w-auto px-6 py-3 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 font-semibold text-sm hover:bg-zinc-850 hover:text-white transition-all flex items-center justify-center"
             >
-              Read Documentation
+              Read SDK Reference
             </Link>
           </div>
 
@@ -228,7 +228,7 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
                   <div className="w-2.5 h-2.5 rounded-full bg-zinc-800" />
                   <div className="w-2.5 h-2.5 rounded-full bg-zinc-850" />
                   <div className="w-2.5 h-2.5 rounded-full bg-zinc-900" />
-                  <span className="text-[11px] text-zinc-500 font-mono ml-2">graphify_client.py</span>
+                  <span className="text-[11px] text-zinc-500 font-mono ml-2">workspace_client.py</span>
                 </div>
                 {/* SDK Language Switcher */}
                 <div className="flex gap-1.5">
@@ -358,10 +358,10 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
         >
           <div className="text-center mb-12">
             <h2 className="text-3xl font-extrabold text-white mb-3">
-              Comprehensive context visualizer
+              Comprehensive Workspace Viewer
             </h2>
             <p className="text-zinc-400 max-w-xl mx-auto">
-              A premium visual suite to traverse codebase structures, audit node annotations, and view version diffs.
+              A premium visual suite to audit file connections, check automated verification tags, and compare workspace versions.
             </p>
           </div>
 
@@ -475,10 +475,10 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
         <div className="max-w-5xl mx-auto w-full mb-36 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-extrabold text-white mb-3">
-              Graph Store Built for AI Scale
+              Smart Workspace Database
             </h2>
             <p className="text-zinc-400 max-w-xl mx-auto">
-              Drop-in codebase structure mapping and multi-hop traversal. Skip writing vector chunking pipelines or complex parser microservices.
+              Automatic file relationship mapping and smart summaries. Skip setting up complex vector storage or custom file-parsing scripts.
             </p>
           </div>
 
@@ -489,9 +489,9 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
                 <Database className="w-5 h-5 text-purple-400" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-zinc-200 mb-2">Multi-Hop Traversal</h3>
+                <h3 className="text-base font-bold text-zinc-200 mb-2">Connected Asset Mapping</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">
-                  Follow call trees, component hierarchies, and import loops. Let your AI agents traverse node relationship edges directly instead of relying on flat keyword similarity searches.
+                  Map links between creative banners, schedule spreadsheets, guidelines, and code. Let your team and AI assistants navigate connections directly instead of guessing file locations.
                 </p>
               </div>
             </div>
@@ -502,9 +502,9 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
                 <Sparkles className="w-5 h-5 text-purple-400" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-zinc-200 mb-2">Tiered Token Optimization</h3>
+                <h3 className="text-base font-bold text-zinc-200 mb-2">Smart Cost-Saving Summaries</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">
-                  Fetch L0 metadata summaries or L1 indices to keep agent prompts lean, conserving up to 90% in token overhead. Fetch full L2 source content only when debugging or editing is required.
+                  Use tiered summaries (L0 metadata summaries or L1 indices) to keep AI prompts tiny. Save up to 90% in AI usage billing, reading full files only when edits are required.
                 </p>
               </div>
             </div>
@@ -515,9 +515,9 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
                 <Code2 className="w-5 h-5 text-purple-400" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-zinc-200 mb-2">Interactive Visualizer Canvas</h3>
+                <h3 className="text-base font-bold text-zinc-200 mb-2">Interactive Visual Map</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">
-                  Enable agents and human developers to co-pilot. Highlight circular dependency warnings and node hotspots visually while panning the codebase representation dynamically.
+                  Help team members and AI tools work together. Visually inspect broken links, find disconnected assets, and highlight campaign files on an interactive map.
                 </p>
               </div>
             </div>
@@ -528,9 +528,9 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
                 <Shield className="w-5 h-5 text-purple-400" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-zinc-200 mb-2">Version History & Rollbacks</h3>
+                <h3 className="text-base font-bold text-zinc-200 mb-2">Workspace History & Rollbacks</h3>
                 <p className="text-sm text-zinc-500 leading-relaxed">
-                  Track and compare codebase state graphs across indexing runs. Safely roll back workspace structures and review node annotations to audit automated compliance changes.
+                  Track how your workspace connections change over time. Easily compare older versions, view tag edits, and roll back to previous campaign mappings safely.
                 </p>
               </div>
             </div>
@@ -544,7 +544,7 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
               Setup is simple
             </h2>
             <p className="text-zinc-500 text-sm">
-              Connect your AI agent to Drive.io in three simple actions.
+              Connect your workspace files and AI tools in three simple steps.
             </p>
           </div>
 
@@ -560,7 +560,7 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
               <div className="pb-4">
                 <h3 className="text-sm font-bold text-zinc-200 mb-1">Index Your Workspace Structure</h3>
                 <p className="text-xs text-zinc-500">
-                  Initialize the Graphify daemon CLI to automatically parse project folders, identify AST nodes, imports, and map file relations into the cloud graph ledger.
+                  Upload folders or sync directories. Drive automatically parses file relations, links documents, and builds a visual database structure.
                 </p>
               </div>
             </div>
@@ -574,9 +574,9 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
                 <div className="flex-1 w-px bg-zinc-900 my-2" />
               </div>
               <div className="pb-4">
-                <h3 className="text-sm font-bold text-zinc-200 mb-1">Query Multi-Hop Relations</h3>
+                <h3 className="text-sm font-bold text-zinc-200 mb-1">Query Connections Instantly</h3>
                 <p className="text-xs text-zinc-500">
-                  Pass graph traversal requests from your agent framework. Fetch tiered L0 metadata summaries, run-time dependencies, or specific nodes without blowing context budgets.
+                  Let your team members or AI assistants query file connections, find related assets, and view quick summaries without loading bloated documents.
                 </p>
               </div>
             </div>
@@ -589,9 +589,9 @@ curl -X GET "https://api.drive.io/v1/graphify/node?namespace=acme-billing&id=src
                 </div>
               </div>
               <div>
-                <h3 className="text-sm font-bold text-zinc-200 mb-1">Audit Node Annotations</h3>
+                <h3 className="text-sm font-bold text-zinc-200 mb-1">Audit Verification Tags</h3>
                 <p className="text-xs text-zinc-500">
-                  Enable agents (e.g. build bots or security checkers) to log annotations to the graph. Easily confirm that files carry the required safety tokens before proceeding.
+                  Inspect tags written by managers or automated verification bots to confirm that assets are compliant, approved, and linked properly.
                 </p>
               </div>
             </div>
