@@ -512,7 +512,8 @@ export function ApiKeyDashboard({ isBypass = false, plan: initialPlan = "free" }
             title: "SETUP",
             items: [
                 { id: "install", label: "Install guide", icon: BookOpen },
-                { id: "playground", label: "Playground", icon: PlayCircle },
+                // Temporarily hidden placeholders
+                // { id: "playground", label: "Playground", icon: PlayCircle },
                 { id: "api-keys", label: "API Keys", icon: Key },
             ]
         },
@@ -521,7 +522,8 @@ export function ApiKeyDashboard({ isBypass = false, plan: initialPlan = "free" }
             items: [
                 { id: "overview", label: "Dashboard", icon: LayoutDashboard },
                 { id: "requests", label: "Requests", icon: Clock },
-                { id: "entities", label: "Entities", icon: Tag },
+                // Temporarily hidden placeholders
+                // { id: "entities", label: "Entities", icon: Tag },
                 { id: "artifacts", label: "Artifact Library", icon: FolderOpen },
                 { id: "graphify", label: "Knowledge Graph", icon: Network },
                 // Temporarily hidden placeholders
@@ -921,7 +923,7 @@ export function ApiKeyDashboard({ isBypass = false, plan: initialPlan = "free" }
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                             {[
                                                 { title: 'Integrate SDK', desc: 'Read the setup guide to link agents.', tab: 'install' },
-                                                { title: 'Sandbox Playground', desc: 'Test query memory extraction.', tab: 'playground' },
+                                                { title: 'Request Logs', desc: 'Monitor file index audits and API requests.', tab: 'requests' },
                                                 { title: 'Manage API Keys', desc: 'Provision/revoke access keys.', tab: 'api-keys' },
                                                 { title: 'Knowledge Graph', desc: 'Visualize your workspace file relations.', tab: 'graphify' }
                                             ].map((explore, idx) => (
