@@ -178,3 +178,86 @@ To ensure reliable operation, please respect the following constraints:
     ```bash
     curl -H "Authorization: Bearer <your_api_key_or_env_var>" "https://drive.io/api/v1/handoff?id=<handoff_id>"
     ```
+
+---
+
+## Graphify Workspace Tools
+
+### publish_workspace_graph
+- **Description:** Publishes a locally-compiled workspace graph structure (nodes and edges) to drive.io's active cloud storage database, updating the visual canvas, version history ledger, and chatbot registry.
+- **Parameters:**
+  - `namespace`: (string) The workspace name to write to (e.g. `acme-campaign`).
+  - `nodes`: (array of objects) List of files and items in the workspace:
+    - `id`: (string) The unique file path key (e.g. `src/marketing-schedule.xlsx`).
+    - `label`: (string) Simple file classification label.
+    - `properties`: (object) Arbitrary keys (e.g. `description`, `group`, `version`).
+  - `edges`: (array of objects) List of connection lines:
+    - `source`: (string) Path of the pointing file.
+    - `target`: (string) Path of the target connected file.
+    - `annotations`: (array of strings, optional) Bot tags or status codes (e.g. `["#approved"]`).
+- **Returns:** JSON object confirming successful ingestion and version assignment.
+- **API Call & curl Examples:**
+  - **Endpoint:** `POST https://drive.io/api/graphify/ingest`
+  - **curl Command:**
+    ```bash
+    curl -X POST "https://drive.io/api/graphify/ingest" \
+      -H "Authorization: Bearer <your_api_key_or_env_var>" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "namespace": "acme-campaign",
+        "nodes": [
+          { "id": "src/marketing-schedule.xlsx", "label": "Document", "properties": { "description": "Campaign schedules" } },
+          { "id": "src/assets/logo.png", "label": "Asset", "properties": { "description": "Vector branding asset" } }
+        ],
+        "edges": [
+          { "source": "src/marketing-schedule.xlsx", "target": "src/assets/logo.png", "annotations": ["#approved"] }
+        ]
+      }'
+    ```
+
+### query_workspace_node
+- **Description:** Performs a local graph traversal from a starting file (node) up to a specific depth limit, returning adjacent linked files, annotations, and connection records.
+- **Parameters:**
+  - `namespace`: (string) The workspace name (e.g. `acme-campaign`).
+  - `id`: (string) The file path node key to start traversing from (e.g. `src/marketing-schedule.xlsx`).
+  - `depth`: (number, optional) The maximum search depth hops (default: 1).
+- **Returns:** JSON containing adjacent nodes, edges, and annotations.
+- **API Call & curl Examples:**
+  - **Endpoint:** `GET https://drive.io/api/graphify/node?namespace=<namespace>&id=<node_id>&depth=<depth>`
+  - **curl Command:**
+    ```bash
+    curl -H "Authorization: Bearer <your_api_key_or_env_var>" \
+      "https://drive.io/api/graphify/node?namespace=acme-campaign&id=src/marketing-schedule.xlsx&depth=1"
+    ```
+
+### search_workspace_relations
+- **Description:** Runs a text search query across all file path IDs, labels, descriptions, and annotation values inside the workspace to locate related nodes.
+- **Parameters:**
+  - `namespace`: (string) The workspace name.
+  - `q`: (string) The search keyword or phrase.
+- **Returns:** List of matching nodes sorted by relevance.
+- **API Call & curl Examples:**
+  - **Endpoint:** `GET https://drive.io/api/graphify/query?namespace=<namespace>&q=<query>`
+  - **curl Command:**
+    ```bash
+    curl -H "Authorization: Bearer <your_api_key_or_env_var>" \
+      "https://drive.io/api/graphify/query?namespace=acme-campaign&q=logo"
+    ```
+
+### get_latest_workspace_summary
+- **Description:** Gets a summary of the latest compiled workspace graph. Allows tier-based context reduction to optimize token bills on your LLM models.
+- **Parameters:**
+  - `namespace`: (string) The workspace name.
+  - `tier`: (string, optional) Optimization level:
+    - `L0`: Super compact metadata overview (counts only) for token routing.
+    - `L1`: Core file relations (removes secondary asset leaves).
+    - `L2`: Entire raw JSON graph.
+  - `version`: (string, optional) Retrieve a specific version (e.g. `v3`) instead of latest active graph.
+- **Returns:** The filtered graph structure.
+- **API Call & curl Examples:**
+  - **Endpoint:** `GET https://drive.io/api/graphify/latest?namespace=<namespace>&tier=<tier>`
+  - **curl Command:**
+    ```bash
+    curl -H "Authorization: Bearer <your_api_key_or_env_var>" \
+      "https://drive.io/api/graphify/latest?namespace=acme-campaign&tier=L1"
+    ```
