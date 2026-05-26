@@ -524,8 +524,9 @@ export function ApiKeyDashboard({ isBypass = false, plan: initialPlan = "free" }
                 { id: "entities", label: "Entities", icon: Tag },
                 { id: "artifacts", label: "Artifact Library", icon: FolderOpen },
                 { id: "graphify", label: "Knowledge Graph", icon: Network },
-                { id: "webhooks", label: "Webhooks", icon: Webhook },
-                { id: "exports", label: "Memory Exports", icon: Download },
+                // Temporarily hidden placeholders
+                // { id: "webhooks", label: "Webhooks", icon: Webhook },
+                // { id: "exports", label: "Memory Exports", icon: Download },
             ]
         },
         {
@@ -922,7 +923,7 @@ export function ApiKeyDashboard({ isBypass = false, plan: initialPlan = "free" }
                                                 { title: 'Integrate SDK', desc: 'Read the setup guide to link agents.', tab: 'install' },
                                                 { title: 'Sandbox Playground', desc: 'Test query memory extraction.', tab: 'playground' },
                                                 { title: 'Manage API Keys', desc: 'Provision/revoke access keys.', tab: 'api-keys' },
-                                                { title: 'Streaming Webhooks', desc: 'Configure instant event delivery.', tab: 'webhooks' }
+                                                { title: 'Knowledge Graph', desc: 'Visualize your workspace file relations.', tab: 'graphify' }
                                             ].map((explore, idx) => (
                                                 <button 
                                                     key={idx}
