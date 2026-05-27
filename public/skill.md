@@ -186,18 +186,39 @@ To ensure reliable operation, please respect the following constraints:
 ### publish_workspace_graph
 - **Description:** Publishes a locally-compiled workspace graph JSON file to drive.io's active cloud storage database, updating the visual canvas, version history ledger, and chatbot registry.
 - **Parameters:**
-  - `graphFile`: (string) Absolute path to the local compiled `graph.json` file.
-- **File Schema (`graph.json`):**
-  - `namespace`: (string) The workspace name to write to (e.g. `acme-campaign`).
-  - `nodes`: (array of objects) List of files and items in the workspace:
-    - `id`: (string) The unique file path key (e.g. `src/marketing-schedule.xlsx`).
-    - `label`: (string) Simple file classification label.
-    - `properties`: (object) Arbitrary keys (e.g. `description`, `group`, `version`).
-  - `edges`: (array of objects) List of connection lines:
-    - `source`: (string) Path of the pointing file.
-    - `target`: (string) Path of the target connected file.
-    - `annotations`: (array of strings, optional) Bot tags or status codes (e.g. `["#approved"]`).
+  - `graphFile`: (string) Absolute path to the local compiled `graph.json` file on the filesystem.
 - **Returns:** JSON object confirming successful ingestion and version assignment.
+- **Expected JSON Structure for `graph.json`:**
+  ```json
+  {
+    "namespace": "acme-campaign",
+    "nodes": [
+      {
+        "id": "src/marketing-schedule.xlsx",
+        "label": "Document",
+        "properties": {
+          "description": "Campaign timelines and schedules",
+          "group": "marketing"
+        }
+      },
+      {
+        "id": "src/assets/logo.png",
+        "label": "Asset",
+        "properties": {
+          "description": "Vector brand logo file",
+          "group": "assets"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "src/marketing-schedule.xlsx",
+        "target": "src/assets/logo.png",
+        "annotations": ["#approved"]
+      }
+    ]
+  }
+  ```
 - **API Call & curl Examples:**
   - **Endpoint:** `POST https://drive.io/api/graphify/ingest`
   - **curl Command:**
