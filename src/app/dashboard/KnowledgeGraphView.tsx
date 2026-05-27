@@ -169,7 +169,7 @@ interface KnowledgeGraphViewProps {
 export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphViewProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [typeFilter, setTypeFilter] = useState("all");
-    const [selectedNodeId, setSelectedNodeId] = useState<string | null>("node_3");
+    const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
     const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 
     // Live Graph State
@@ -212,17 +212,46 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
                 throw new Error(`Failed to load graph data: ${res.statusText}`);
             }
             const data = await res.json();
-            if (data && data.nodes && data.edges) {
-                setNodes(data.nodes);
-                setEdges(data.edges);
-                if (data.nodes.length > 0 && !data.nodes.some((n: any) => n.id === selectedNodeId)) {
-                    setSelectedNodeId(data.nodes[0].id);
+            if (data && data.nodes) {
+                const rawEdges = data.edges || data.links || [];
+                const normalizedNodes = data.nodes.map((node: any, idx: number) => {
+                    const fileType = node.type || node.file_type || "code";
+                    const groupName = node.group || (node.community !== undefined ? `Community ${node.community}` : "General");
+                    
+                    // Position nodes dynamically on a spiral layout if x and y are missing
+                    const defaultX = node.x !== undefined && node.x !== null ? node.x : 350 + Math.cos(idx * 0.9) * (110 + idx * 18);
+                    const defaultY = node.y !== undefined && node.y !== null ? node.y : 250 + Math.sin(idx * 0.9) * (90 + idx * 14);
+
+                    return {
+                        ...node,
+                        type: fileType,
+                        group: groupName,
+                        description: node.description || `Codebase file: ${node.label || node.id}`,
+                        properties: node.properties || {},
+                        x: defaultX,
+                        y: defaultY
+                    };
+                });
+
+                const normalizedEdges = rawEdges.map((edge: any) => {
+                    const rel = edge.relationship || edge.relation || "references";
+                    return {
+                        ...edge,
+                        relationship: rel
+                    };
+                });
+
+                setNodes(normalizedNodes);
+                setEdges(normalizedEdges);
+                if (normalizedNodes.length > 0 && !normalizedNodes.some((n: any) => n.id === selectedNodeId)) {
+                    setSelectedNodeId(normalizedNodes[0].id);
                 }
             }
         } catch (e) {
             console.error("Failed to load graph, using local fallback:", e);
             setNodes(INITIAL_NODES);
             setEdges(INITIAL_EDGES);
+            setSelectedNodeId(INITIAL_NODES[0].id);
         } finally {
             setIsLoading(false);
         }

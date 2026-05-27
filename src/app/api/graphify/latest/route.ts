@@ -235,6 +235,42 @@ export async function GET(request: Request) {
             }
         }
 
+        // Normalize graph structure for safety and layout guarantees
+        if (graph && graph.nodes) {
+            const rawEdges = graph.edges || graph.links || [];
+            const normalizedNodes = graph.nodes.map((node: any, idx: number) => {
+                const fileType = node.type || node.file_type || "code";
+                const groupName = node.group || (node.community !== undefined ? `Community ${node.community}` : "General");
+                
+                // Position nodes dynamically on a spiral layout if x and y are missing
+                const defaultX = node.x !== undefined && node.x !== null ? node.x : 350 + Math.cos(idx * 0.9) * (110 + idx * 18);
+                const defaultY = node.y !== undefined && node.y !== null ? node.y : 250 + Math.sin(idx * 0.9) * (90 + idx * 14);
+
+                return {
+                    ...node,
+                    type: fileType,
+                    group: groupName,
+                    description: node.description || `Codebase file: ${node.label || node.id}`,
+                    properties: node.properties || {},
+                    x: defaultX,
+                    y: defaultY
+                };
+            });
+
+            const normalizedEdges = rawEdges.map((edge: any) => {
+                const rel = edge.relationship || edge.relation || "references";
+                return {
+                    ...edge,
+                    relationship: rel
+                };
+            });
+
+            graph = {
+                nodes: normalizedNodes,
+                edges: normalizedEdges
+            };
+        }
+
         const tier = searchParams.get("tier") || "L2";
 
         if (tier === "L0") {
