@@ -115,7 +115,8 @@ export async function POST(request: Request) {
                     ...node,
                     type: fileType,
                     group: groupName,
-                    description: node.description || `Codebase file: ${node.label || node.id}`
+                    description: node.description || `Codebase file: ${node.label || node.id}`,
+                    properties: node.properties || {}
                 };
             });
 

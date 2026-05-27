@@ -748,7 +748,7 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
                                 <div>
                                     <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Properties</h4>
                                     <div className="grid grid-cols-1 gap-2.5">
-                                        {Object.entries(selectedNodeDetails?.properties || selectedNode.properties).map(([key, val]) => (
+                                        {Object.entries(selectedNodeDetails?.properties || selectedNode?.properties || {}).map(([key, val]) => (
                                             <div key={key} className="flex justify-between items-center text-xs border-b border-slate-50 pb-1.5">
                                                 <span className="text-slate-400 font-mono capitalize">{key.replace('_', ' ')}</span>
                                                 <span className="text-slate-700 font-bold max-w-[180px] truncate">{String(val)}</span>
