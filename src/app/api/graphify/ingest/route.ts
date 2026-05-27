@@ -71,7 +71,19 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { namespace, graph } = body;
+        let { namespace, graph } = body;
+
+        // Support both nested { namespace, graph: { nodes, edges } } and flat { namespace, nodes, edges } formats
+        if (!graph && body.nodes && body.edges) {
+            graph = {
+                nodes: body.nodes,
+                edges: body.edges
+            };
+        }
+
+        if (!namespace && body.namespace) {
+            namespace = body.namespace;
+        }
 
         if (!namespace || !graph || !graph.nodes || !graph.edges) {
             return NextResponse.json({ error: "Missing required fields: namespace, graph (with nodes and edges)" }, { status: 400, headers });
