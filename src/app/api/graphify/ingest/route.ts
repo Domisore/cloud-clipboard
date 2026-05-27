@@ -70,6 +70,9 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers });
         }
 
+        const { searchParams } = new URL(request.url);
+        const queryNamespace = searchParams.get("namespace");
+
         const body = await request.json();
         let { namespace, graph } = body;
 
@@ -83,6 +86,25 @@ export async function POST(request: Request) {
 
         if (!namespace && body.namespace) {
             namespace = body.namespace;
+        }
+
+        // Apply query parameter override/fallback
+        if (!namespace && queryNamespace) {
+            namespace = queryNamespace;
+        }
+
+        // Apply database fallback if namespace is still missing
+        if (!namespace) {
+            try {
+                const namespaces = await redis.smembers(`user:${userId}:namespaces`);
+                if (namespaces && namespaces.length > 0) {
+                    namespace = namespaces[0];
+                } else {
+                    namespace = "default";
+                }
+            } catch (e) {
+                namespace = "default";
+            }
         }
 
         if (!namespace || !graph || !graph.nodes || !graph.edges) {
