@@ -108,15 +108,22 @@ export async function POST(request: Request) {
 
         // Validate and normalize the graph structure for frontend compatibility
         if (nodes && edges) {
-            const normalizedNodes = (nodes || []).map((node: any) => {
+            const normalizedNodes = (nodes || []).map((node: any, idx: number) => {
                 const fileType = node.type || node.file_type || "code";
                 const groupName = node.group || (node.community !== undefined ? `Community ${node.community}` : "General");
+                
+                // Position nodes dynamically on a spiral layout if x and y are missing
+                const defaultX = node.x !== undefined ? node.x : 350 + Math.cos(idx * 0.9) * (110 + idx * 18);
+                const defaultY = node.y !== undefined ? node.y : 250 + Math.sin(idx * 0.9) * (90 + idx * 14);
+
                 return {
                     ...node,
                     type: fileType,
                     group: groupName,
                     description: node.description || `Codebase file: ${node.label || node.id}`,
-                    properties: node.properties || {}
+                    properties: node.properties || {},
+                    x: defaultX,
+                    y: defaultY
                 };
             });
 
