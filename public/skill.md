@@ -184,8 +184,10 @@ To ensure reliable operation, please respect the following constraints:
 ## Graphify Workspace Tools
 
 ### publish_workspace_graph
-- **Description:** Publishes a locally-compiled workspace graph structure (nodes and edges) to drive.io's active cloud storage database, updating the visual canvas, version history ledger, and chatbot registry.
+- **Description:** Publishes a locally-compiled workspace graph JSON file to drive.io's active cloud storage database, updating the visual canvas, version history ledger, and chatbot registry.
 - **Parameters:**
+  - `graphFile`: (string) Absolute path to the local compiled `graph.json` file.
+- **File Schema (`graph.json`):**
   - `namespace`: (string) The workspace name to write to (e.g. `acme-campaign`).
   - `nodes`: (array of objects) List of files and items in the workspace:
     - `id`: (string) The unique file path key (e.g. `src/marketing-schedule.xlsx`).
@@ -203,16 +205,7 @@ To ensure reliable operation, please respect the following constraints:
     curl -X POST "https://drive.io/api/graphify/ingest" \
       -H "Authorization: Bearer <your_api_key_or_env_var>" \
       -H "Content-Type: application/json" \
-      -d '{
-        "namespace": "acme-campaign",
-        "nodes": [
-          { "id": "src/marketing-schedule.xlsx", "label": "Document", "properties": { "description": "Campaign schedules" } },
-          { "id": "src/assets/logo.png", "label": "Asset", "properties": { "description": "Vector branding asset" } }
-        ],
-        "edges": [
-          { "source": "src/marketing-schedule.xlsx", "target": "src/assets/logo.png", "annotations": ["#approved"] }
-        ]
-      }'
+      -d @/path/to/local/graph.json
     ```
 
 ### query_workspace_node
