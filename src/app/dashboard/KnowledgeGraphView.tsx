@@ -478,12 +478,42 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
         return <Cpu size={16} className="text-purple-500" />;
     };
 
+    // Dynamically calculate unique active groups in the loaded nodes
+    const activeGroups = useMemo(() => {
+        const groups = new Set<string>();
+        nodes.forEach(n => {
+            if (n.group) groups.add(n.group);
+        });
+        return Array.from(groups).sort();
+    }, [nodes]);
+
     const getHexColorForGroup = (group: string) => {
-        if (group === 'API') return '#3b82f6'; // Blue
-        if (group === 'UI') return '#10b981'; // Green
-        if (group === 'Docs') return '#f59e0b'; // Amber
-        if (group === 'Database') return '#6366f1'; // Indigo
-        return '#a855f7'; // Purple
+        const lowerGroup = group.toLowerCase();
+        if (lowerGroup === 'api') return '#3b82f6'; // Blue
+        if (lowerGroup === 'ui') return '#10b981'; // Green
+        if (lowerGroup === 'docs' || lowerGroup === 'documentation') return '#f59e0b'; // Amber
+        if (lowerGroup === 'database' || lowerGroup === 'db') return '#6366f1'; // Indigo
+        if (lowerGroup === 'infrastructure' || lowerGroup === 'infra') return '#8b5cf6'; // Violet
+
+        // Curated distinct colors for custom communities/groups
+        const colors = [
+            '#ec4899', // Pink
+            '#14b8a6', // Teal
+            '#f97316', // Orange
+            '#06b6d4', // Cyan
+            '#eab308', // Yellow
+            '#f43f5e', // Rose
+            '#a855f7', // Purple
+            '#10b981', // Emerald
+        ];
+
+        // Simple hash of the group name to consistently select a color
+        let hash = 0;
+        for (let i = 0; i < group.length; i++) {
+            hash = group.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const index = Math.abs(hash) % colors.length;
+        return colors[index];
     };
 
     return (
@@ -610,26 +640,24 @@ export function KnowledgeGraphView({ namespace = "default" }: KnowledgeGraphView
 
                     {/* Legend */}
                     <div className="absolute bottom-4 left-4 bg-slate-950/80 border border-slate-800 backdrop-blur-md rounded-xl p-2.5 z-10 flex flex-wrap gap-x-3 gap-y-1.5 max-w-sm shadow-md">
-                        <div className="flex items-center gap-1.5">
-                            <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">API</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">UI</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                            <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Docs</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                            <div className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">DB</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                            <div className="w-2.5 h-2.5 rounded-full bg-purple-500" />
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Infra</span>
-                        </div>
+                        {activeGroups.length > 0 ? (
+                            activeGroups.map((groupName) => (
+                                <div key={groupName} className="flex items-center gap-1.5">
+                                    <div 
+                                        className="w-2 h-2 rounded-full" 
+                                        style={{ backgroundColor: getHexColorForGroup(groupName) }}
+                                    />
+                                    <span className="text-[9px] font-bold text-slate-300 uppercase tracking-wider">
+                                        {groupName}
+                                    </span>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-2 h-2 rounded-full bg-slate-500" />
+                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">No Groups</span>
+                            </div>
+                        )}
                     </div>
 
                     {/* SVG Graphic Canvas */}
