@@ -76,13 +76,12 @@ export async function POST(request: Request) {
         const body = await request.json();
         let { namespace, graph } = body;
 
-        // Support both nested { namespace, graph: { nodes, edges } } and flat { namespace, nodes, edges } formats
-        if (!graph && body.nodes && body.edges) {
-            graph = {
-                nodes: body.nodes,
-                edges: body.edges
-            };
-        }
+        // Support various formats:
+        // 1. Nested format: { namespace, graph: { nodes, edges } }
+        // 2. Flat format: { namespace, nodes, edges }
+        // 3. Flat with links instead of edges: { namespace, nodes, links }
+        const nodes = body.nodes || (graph && graph.nodes);
+        const edges = body.edges || (graph && graph.edges) || body.links || (graph && graph.links);
 
         if (!namespace && body.namespace) {
             namespace = body.namespace;
@@ -105,6 +104,33 @@ export async function POST(request: Request) {
             } catch (e) {
                 namespace = "default";
             }
+        }
+
+        // Validate and normalize the graph structure for frontend compatibility
+        if (nodes && edges) {
+            const normalizedNodes = (nodes || []).map((node: any) => {
+                const fileType = node.type || node.file_type || "code";
+                const groupName = node.group || (node.community !== undefined ? `Community ${node.community}` : "General");
+                return {
+                    ...node,
+                    type: fileType,
+                    group: groupName,
+                    description: node.description || `Codebase file: ${node.label || node.id}`
+                };
+            });
+
+            const normalizedEdges = (edges || []).map((edge: any) => {
+                const rel = edge.relationship || edge.relation || "references";
+                return {
+                    ...edge,
+                    relationship: rel
+                };
+            });
+
+            graph = {
+                nodes: normalizedNodes,
+                edges: normalizedEdges
+            };
         }
 
         if (!namespace || !graph || !graph.nodes || !graph.edges) {
