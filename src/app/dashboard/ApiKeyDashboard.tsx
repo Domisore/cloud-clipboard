@@ -70,7 +70,7 @@ export function ApiKeyDashboard({ isBypass = false, plan: initialPlan = "free" }
     // Workspace & Projects Selectors
     const [isOrgDropdownOpen, setIsOrgDropdownOpen] = useState(false);
     const [isProjDropdownOpen, setIsProjDropdownOpen] = useState(false);
-    const [selectedOrg, setSelectedOrg] = useState("deji-default-org");
+    const [selectedOrg, setSelectedOrg] = useState("default-org");
     const [selectedProject, setSelectedProject] = useState("default-project");
 
     // Real API keys state
@@ -125,7 +125,7 @@ export function ApiKeyDashboard({ isBypass = false, plan: initialPlan = "free" }
     const [exportReadyLink, setExportReadyLink] = useState<string | null>(null);
 
     // Settings states
-    const [orgNameInput, setOrgNameInput] = useState("deji-default-org");
+    const [orgNameInput, setOrgNameInput] = useState("default-org");
     const [llmProvider, setLlmProvider] = useState("openai");
     const [confidenceThreshold, setConfidenceThreshold] = useState(0.70);
     const [consolidationEnabled, setConsolidationEnabled] = useState(true);
@@ -577,11 +577,11 @@ export function ApiKeyDashboard({ isBypass = false, plan: initialPlan = "free" }
                                 >
                                     <div className="px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Select Workspace</div>
                                     <button 
-                                        onClick={() => { setSelectedOrg("deji-default-org"); setIsOrgDropdownOpen(false); }}
+                                        onClick={() => { setSelectedOrg("default-org"); setIsOrgDropdownOpen(false); }}
                                         className="w-full flex items-center justify-between px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg font-medium"
                                     >
-                                        <span>deji-default-org</span>
-                                        {selectedOrg === "deji-default-org" && <Check className="w-4 h-4 text-blue-600" />}
+                                        <span>default-org</span>
+                                        {selectedOrg === "default-org" && <Check className="w-4 h-4 text-blue-600" />}
                                     </button>
                                     <button 
                                         onClick={() => { setSelectedOrg("production-fleet-org"); setIsOrgDropdownOpen(false); }}
