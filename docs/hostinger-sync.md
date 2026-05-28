@@ -70,3 +70,24 @@ Create a cron job on Hostinger to run the sync command hourly. This will sync th
 0 * * * * rclone sync /path/to/llm-wiki/files/ drive-io:default-org/wiki/ --quiet
 ```
 *Note: Any files pushed this way will automatically populate on your web dashboard under the `default-org` workspace and remain accessible programmatically.*
+
+---
+
+## Managing Multiple Wikis via Namespaces
+
+`drive.io` uses **namespaces** to partition files, graph structures, and histories. Namespaces act as virtual root-level folders (or workspaces) under your account.
+
+If you have multiple wikis (e.g., `wiki-a` and `wiki-b`), you can manage them concurrently by assigning them different namespace tags:
+
+### 1. Ingesting Separate Graphs
+Adjust your sync script (`sync_graph.sh`) to specify the corresponding namespace for each repository:
+* For Wiki A: `NAMESPACE="wiki-a"`
+* For Wiki B: `NAMESPACE="wiki-b"`
+
+The dashboard UI will automatically detect all active namespaces and display them in the top-left dropdown selector, allowing you to toggle between graphs seamlessly.
+
+### 2. Syncing General Files via Rclone
+WebDAV paths automatically map namespaces as directories (`/webdav/<namespace>/`). You can configure a single Rclone remote and sync separate local folders to distinct virtual folders:
+* Sync Wiki A: `rclone sync /path/to/wiki-A/ drive-io:wiki-a/`
+* Sync Wiki B: `rclone sync /path/to/wiki-B/ drive-io:wiki-b/`
+
